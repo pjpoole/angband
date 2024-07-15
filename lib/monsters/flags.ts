@@ -1,5 +1,5 @@
 // Monster flag types
-enum RFT {
+export enum RFT {
   // placeholder flag
   NONE = 0,
   // an obvious property
@@ -34,7 +34,7 @@ enum RFT {
 }
 
 // Monster flags
-enum RF {
+export enum RF {
   NONE,
   UNIQUE,
   QUESTOR,
@@ -122,7 +122,8 @@ enum RF {
   NO_SLOW,
 }
 
-const MonsterFlagsTable: [RF, RFT, string][] = [
+// TODO: description I18n
+export const MonsterFlagsTable: [RF, RFT, string][] = [
   [RF.NONE, RFT.NONE, ''],
   [RF.UNIQUE, RFT.OBV, ''],
   [RF.QUESTOR, RFT.OBV, ''],
