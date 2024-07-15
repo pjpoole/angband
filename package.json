@@ -1,0 +1,17 @@
+{
+  "name": "jangband",
+  "version": "0.0.1",
+  "description": "Utility tools for the game angband",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peter Poole",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
