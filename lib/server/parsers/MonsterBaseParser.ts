@@ -4,7 +4,7 @@ import { RF } from '../../common/monsters/flags'
 import { setUnion } from '../../common/utilities/set'
 
 import { Parser, ParserValues } from './Parser'
-import { valueAsInteger, valueAsRF } from './parsers'
+import { keyToInteger, keyToString, valueAsRF } from './parsers'
 
 interface MonsterBaseSpec extends GameObject {
   name: string
@@ -20,9 +20,9 @@ export class MonsterBaseParser extends Parser<MonsterBaseSpec> {
 
     this.register('name', this.handleMonsterName.bind(this))
     this.register('glyph', this.handleMonsterGlyph.bind(this))
-    this.register('pain', this.handleMonsterPain.bind(this))
+    this.register('pain', keyToInteger('pain').bind(this))
     this.register('flags', this.handleMonsterFlags.bind(this))
-    this.register('desc', this.handleMonsterDescription.bind(this))
+    this.register('desc', keyToString('desc').bind(this))
   }
 
   finalize(): void {
@@ -45,23 +45,11 @@ export class MonsterBaseParser extends Parser<MonsterBaseSpec> {
     current.glyph = value.slice(0, 1)
   }
 
-  handleMonsterPain(value: ParserValues) {
-    const current = this.current
-
-    current.pain = valueAsInteger(value)
-  }
-
   handleMonsterFlags(value: ParserValues) {
     const current = this.current
 
     if (current.flags == null) current.flags = new Set<RF>()
 
     current.flags = setUnion(current.flags, valueAsRF(value))
-  }
-
-  handleMonsterDescription(value: ParserValues) {
-    const current = this.current
-
-    current.desc = value
   }
 }

@@ -2,7 +2,7 @@ import { GameObject } from '../../common/GameObject'
 
 export type ParserValues = string
 
-type ParserFunction = (values: ParserValues) => void
+export type ParserFunction = (values: ParserValues) => void
 
 export abstract class Parser<T extends GameObject> {
   private _error: Error

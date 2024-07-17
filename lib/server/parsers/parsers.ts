@@ -1,10 +1,25 @@
-import { ParserValues } from './Parser'
+import { ParserFunction, ParserValues } from './Parser'
 import { RF } from '../../common/monsters/flags'
 import {
   C,
   colorCharToAttribute,
   colorTextToAttribute
 } from '../../common/utilities/colors'
+
+export function keyToInteger<T>(key: keyof T): ParserFunction {
+  return function (value: ParserValues) {
+    const current = this.current
+    current[key] = valueAsInteger(value)
+  }
+}
+
+export function keyToString<T>(key: keyof T): ParserFunction {
+  return function (value: ParserValues) {
+    const current = this.current
+    if (!current[key]) current[key] = ''
+    current[key] += value
+  }
+}
 
 export function valueAsInteger(value: ParserValues): number {
   const number = parseInt(value)
