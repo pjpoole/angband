@@ -1,23 +1,13 @@
-export function colorTextToAttribute(name: string): C {
-  for (let i = 0; i < colorTable.length; i++)
-  for (const color of colorTable) {
-    if (color.name === name) return i
+export function colorStringToAttribute(name: string): C {
+  if (name === '' || name === ' ') return C.DARK
+
+  const key = name.length === 1 ? 'id' : 'name'
+
+  for (let i = 0; i < colorTable.length; i++) {
+    if (colorTable[i][key] === name) return i
   }
 
   // default to white on miss
-  return C.WHITE
-}
-
-export function colorCharToAttribute(maybeChar: string) {
-  // force to one character, in case upstream messed up and passed a string
-  const char = maybeChar[0]
-
-  if (char === ' ' || char === '') return C.DARK
-
-  for (let i = 0; i < colorTable.length; i++) {
-    if (colorTable[i].id === char) return i
-  }
-
   return C.WHITE
 }
 
