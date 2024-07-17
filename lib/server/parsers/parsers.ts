@@ -1,5 +1,5 @@
 import { ParserValues } from './Parser'
-import { RF } from '../../monsters/flags'
+import { RF } from '../../common/monsters/flags'
 
 export function valueAsInteger(value: ParserValues): number {
   const number = parseInt(value)

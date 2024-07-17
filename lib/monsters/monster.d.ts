@@ -1,5 +1,5 @@
-import { type RF } from './flags'
-import { type MonsterBase } from './monsterBase'
+import { type RF } from '../common/monsters/flags'
+import { type MonsterBase } from '../common/monsters/monsterBase'
 
 export interface Monster {
   name: string
@@ -18,7 +18,7 @@ export interface Monster {
   experience: number
   blow: string[][] // TODO
   flags: Set<RF>
-  flagsOff: Set<RF>
+  flagsOff?: Set<RF>
   innateFreq: number
   spellFreq: number
   spellPower: number
