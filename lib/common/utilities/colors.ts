@@ -1,10 +1,18 @@
+import { stricmp } from './string'
+
 export function colorStringToAttribute(name: string): C {
   if (name === '' || name === ' ') return C.DARK
 
-  const key = name.length === 1 ? 'id' : 'name'
-
-  for (let i = 0; i < colorTable.length; i++) {
-    if (colorTable[i][key] === name) return i
+  if (name.length === 1) {
+    // ids are case-sensitive
+    for (let i = 0; i < colorTable.length; i++) {
+      if (colorTable[i].id === name) return i
+    }
+  } else {
+    // names are case-insensitive
+    for (let i = 0; i < colorTable.length; i++) {
+      if (stricmp(colorTable[i].name, name)) return i
+    }
   }
 
   // default to white on miss
