@@ -38,6 +38,7 @@ export abstract class Parser<T extends GameObject> {
   }
 
   get current(): Partial<T> {
+    if (this._current == null) throw new Error('missing record header')
     return this._current
   }
 
