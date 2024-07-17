@@ -12,12 +12,12 @@ export function colorCharToAttribute(maybeChar: string) {
   // force to one character, in case upstream messed up and passed a string
   const char = maybeChar[0]
 
-  if (char === ' ') return C.DARK
+  if (char === ' ' || char === '') return C.DARK
 
   for (let i = 0; i < colorTable.length; i++) {
     if (colorTable[i].id === char) return i
   }
-  
+
   return C.WHITE
 }
 
