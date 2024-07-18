@@ -4,13 +4,13 @@ export type ParserValues = string
 
 export type ParserFunction = (values: ParserValues) => void
 
-export abstract class Parser<T extends GameObject> {
+export abstract class Parser<S, T extends GameObject> {
   private _error: Error
-  private _handlers: Map<keyof T, ParserFunction>
+  private _handlers: Map<S, ParserFunction>
   private _objects: Partial<T>[]
   private _current: Partial<T> | null = null
 
-  parse(key: keyof T, value: ParserValues): void {
+  parse(key: S, value: ParserValues): void {
     const handler = this._handlers.get(key)
     if (!handler) {
       throw new Error('no handler for key', { cause: { key } })
@@ -20,7 +20,7 @@ export abstract class Parser<T extends GameObject> {
 
   abstract finalize(): void
 
-  register(key: keyof T, handler: ParserFunction): void {
+  register(key: S, handler: ParserFunction): void {
     this._handlers.set(key, handler)
   }
 

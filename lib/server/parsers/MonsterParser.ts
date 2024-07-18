@@ -1,5 +1,4 @@
 import { Parser, ParserValues } from './Parser'
-import { GameObject } from '../../common/GameObject'
 import type { MonsterBase } from '../../common/monsters/monsterBase'
 import type { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/game/registries'
@@ -12,7 +11,14 @@ import {
   valueAsRF
 } from './parsers'
 
-interface MonsterSpec extends GameObject {
+type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
+  | 'hit-points' | 'light' | 'hearing' | 'smell' | 'armor-class' | 'sleepiness'
+  | 'depth' | 'rarity' | 'experience' | 'blow' | 'flags' | 'flags-off'
+  | 'innate-freq' | 'spell-freq' | 'spell-power' | 'spells' | 'message-vis'
+  | 'message-invis' | 'message-miss' | 'desc' | 'drop' | 'drop-base' | 'mimic'
+  | 'friends' | 'friends-base' | 'shape' | 'color-cycle'
+
+interface MonsterSpec {
   name: string
   plural?: string
   base: MonsterBase
@@ -24,7 +30,7 @@ interface MonsterSpec extends GameObject {
   hearing: number
   armorClass: number
   sleepiness: number
-  depth: number
+  level: number
   rarity: number
   experience: number
   blow: string[][] // TODO
@@ -34,8 +40,8 @@ interface MonsterSpec extends GameObject {
   spellFreq: number
   spellPower: number
   spells: string[][] // TODO
-  messageVis: string
-  messageInvis: string
+  messageVisible: string
+  messageInvisible: string
   messageMiss: string
   desc: string
   drop: string[][] // TODO
@@ -45,7 +51,7 @@ interface MonsterSpec extends GameObject {
   friendsBase: string[][] // TODO
 }
 
-export class MonsterParser extends Parser<MonsterSpec> {
+export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   constructor() {
     super()
 
@@ -55,7 +61,7 @@ export class MonsterParser extends Parser<MonsterSpec> {
     this.register('glyph', this.handleMonsterGlyph.bind(this))
     this.register('color', this.handleMonsterColor.bind(this))
     this.register('speed', keyToInteger('speed').bind(this))
-    this.register('hp', keyToInteger('averageHp').bind(this))
+    this.register('hit-points', keyToInteger('averageHp').bind(this))
     this.register('light', keyToInteger('light').bind(this))
     this.register('hearing', keyToInteger('hearing').bind(this))
     this.register('smell', keyToInteger('smell').bind(this))

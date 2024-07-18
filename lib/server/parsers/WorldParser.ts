@@ -3,18 +3,16 @@ import { Parser, ParserValues } from './Parser'
 import { valueAsInteger } from './parsers'
 import { LevelRegistry } from '../../common/game/registries'
 
-interface WorldSpec extends GameObject {
-  level: WorldEntry
-}
+type WorldFields = 'level'
 
-interface WorldEntry {
+interface WorldSpec {
   depth: number
   name: string
   up: string | undefined
   down: string | undefined
 }
 
-export class WorldParser extends Parser<WorldSpec> {
+export class WorldParser extends Parser<WorldFields, WorldSpec> {
   constructor() {
     super()
 
@@ -28,6 +26,9 @@ export class WorldParser extends Parser<WorldSpec> {
   }
 
   handleLevel(value: ParserValues) {
+    if (this.hasCurrent()) {
+      this.finalizeCurrent()
+    }
     const current = this.newCurrent()
     const [rawDepth, name, up, down] = value.split(':')
     const depth = valueAsInteger(rawDepth)
