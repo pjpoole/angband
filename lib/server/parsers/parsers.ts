@@ -2,12 +2,24 @@ import { ParserFunction, ParserValues } from './Parser'
 import { RF } from '../../common/monsters/flags'
 import { ELEM } from '../../common/spells/elements'
 import { MSG } from '../../common/game/messages'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { C, colorStringToAttribute } from '../../common/utilities/colors'
 
 type KeyOfType<T, V> = keyof {
     [P in keyof T as T[P] extends V? P: never]: any
 }
 
+// helper functions as separate objects
+//
+// the goal was to have these part of the Parser class, but I couldn't figure
+// out a way to convince TS to restrict the input keys to those that match the
+// type [P in keyof T as T[P] extends V] when they're actually a part of the
+// class
+//
+// ergonomic goals:
+// - always get warned if a key doesn't exist on the object
+// - always get warned if the key's value's type differs from the return type
+// - don't have to feed in the Spec to the generic each time <-- you are here
+// - can auto-bind the function without using a HoF
 export function keyToInteger<T>(key: KeyOfType<T, number>): ParserFunction {
   return function (value: ParserValues) {
     const current = this.current
