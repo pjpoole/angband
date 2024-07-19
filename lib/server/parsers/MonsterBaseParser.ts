@@ -1,5 +1,6 @@
 import { MonsterBaseRegistry } from '../../common/game/registries'
-import { RF } from '../../common/monsters/flags'
+import type { RF } from '../../common/monsters/flags'
+import type { MonsterBaseParams } from '../../common/monsters/monsterBase'
 import { setUnion } from '../../common/utilities/set'
 
 import { Parser, ParserValues } from './Parser'
@@ -7,23 +8,15 @@ import { keyToInteger, keyToString, valueAsRF } from './parsers'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
-interface MonsterBaseSpec {
-  name: string
-  glyph: string
-  pain: number
-  flags: Set<RF>
-  description: string
-}
-
-export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseSpec> {
+export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseParams> {
   constructor() {
     super()
 
     this.register('name', this.handleMonsterName.bind(this))
     this.register('glyph', this.handleMonsterGlyph.bind(this))
-    this.register('pain', keyToInteger<MonsterBaseSpec>('pain').bind(this))
+    this.register('pain', keyToInteger<MonsterBaseParams>('pain').bind(this))
     this.register('flags', this.handleMonsterFlags.bind(this))
-    this.register('desc', keyToString<MonsterBaseSpec>('description').bind(this))
+    this.register('desc', keyToString<MonsterBaseParams>('description').bind(this))
   }
 
   finalize(): void {

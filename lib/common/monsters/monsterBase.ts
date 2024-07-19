@@ -1,7 +1,7 @@
 import { RF } from './flags'
 import { GameObject } from '../GameObject'
 
-interface MonsterBaseParams extends GameObject {
+export interface MonsterBaseParams extends GameObject {
   name: string
   glyph: string // char; TODO: restrict glyph type to one char
   pain: number
