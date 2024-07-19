@@ -5,11 +5,6 @@ import { MonsterBaseRegistry } from '../../common/game/registries'
 import { setDifference, setUnion } from '../../common/utilities/set'
 import type { C } from '../../common/utilities/colors'
 import {
-  keyToColor,
-  keyToInteger,
-  keyToPercentile,
-  keyToString,
-  keyToUnsigned,
   valueAsInteger,
   valueAsRF
 } from './parsers'
@@ -60,27 +55,27 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
     super()
 
     this.register('name', this.handleName.bind(this))
-    this.register('plural', keyToString<MonsterSpec>('plural').bind(this))
+    this.register('plural', this.keyToString('plural'))
     this.register('base', this.handleBase.bind(this))
     this.register('glyph', this.handleGlyph.bind(this))
-    this.register('color', keyToColor<MonsterSpec>('color').bind(this))
-    this.register('speed', keyToInteger<MonsterSpec>('speed').bind(this))
-    this.register('hit-points', keyToInteger<MonsterSpec>('averageHp').bind(this))
-    this.register('light', keyToInteger<MonsterSpec>('light').bind(this))
-    this.register('hearing', keyToInteger<MonsterSpec>('hearing').bind(this))
-    this.register('smell', keyToInteger<MonsterSpec>('smell').bind(this))
-    this.register('armor-class', keyToInteger<MonsterSpec>('armorClass').bind(this))
-    this.register('sleepiness', keyToInteger<MonsterSpec>('sleepiness').bind(this))
+    this.register('color', this.keyToColor('color'))
+    this.register('speed', this.keyToInteger('speed'))
+    this.register('hit-points', this.keyToInteger('averageHp'))
+    this.register('light', this.keyToInteger('light'))
+    this.register('hearing', this.keyToInteger('hearing'))
+    this.register('smell', this.keyToInteger('smell'))
+    this.register('armor-class', this.keyToInteger('armorClass'))
+    this.register('sleepiness', this.keyToInteger('sleepiness'))
     this.register('depth', this.handleDepth.bind(this))
-    this.register('rarity', keyToInteger<MonsterSpec>('rarity').bind(this))
-    this.register('experience', keyToInteger<MonsterSpec>('experience').bind(this))
+    this.register('rarity', this.keyToInteger('rarity'))
+    this.register('experience', this.keyToInteger('experience'))
     this.register('blow', this.handleBlow.bind(this))
     this.register('flags', this.handleFlags.bind(this))
     this.register('flags-off', this.handleFlagsOff.bind(this))
-    this.register('desc', keyToString<MonsterSpec>('description').bind(this))
-    this.register('innate-freq', keyToPercentile<MonsterSpec>('innateFrequency').bind(this))
-    this.register('spell-freq', keyToPercentile<MonsterSpec>('spellFrequency').bind(this))
-    this.register('spell-power', keyToUnsigned<MonsterSpec>('spellPower').bind(this))
+    this.register('desc', this.keyToString('description'))
+    this.register('innate-freq', this.keyToPercentile('innateFrequency'))
+    this.register('spell-freq', this.keyToPercentile('spellFrequency'))
+    this.register('spell-power', this.keyToUnsigned('spellPower'))
     this.register('spells', this.handleSpells.bind(this))
     this.register('message-vis', this.handleMessageVisible.bind(this))
     this.register('message-invis', this.handleMessageInvisible.bind(this))
