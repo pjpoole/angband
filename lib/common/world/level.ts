@@ -1,6 +1,6 @@
 import { GameObject } from '../GameObject'
 
-interface LevelParams extends GameObject {
+export interface LevelParams extends GameObject {
   depth: number
   name: string
   up: string | undefined

@@ -1,18 +1,11 @@
-import { GameObject } from '../../common/GameObject'
 import { Parser, ParserValues } from './Parser'
 import { valueAsInteger } from './parsers'
 import { LevelRegistry } from '../../common/game/registries'
+import { LevelParams } from '../../common/world/level'
 
 type WorldFields = 'level'
 
-interface WorldSpec {
-  depth: number
-  name: string
-  up: string | undefined
-  down: string | undefined
-}
-
-export class WorldParser extends Parser<WorldFields, WorldSpec> {
+export class WorldParser extends Parser<WorldFields, LevelParams> {
   constructor() {
     super()
 
