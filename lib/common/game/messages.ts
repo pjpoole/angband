@@ -6,7 +6,7 @@ export enum MSG {
   FLEE,
   DROP,
   KILL,
-  LEVEL, 
+  LEVEL,
   DEATH,
   STUDY,
   TELEPORT,

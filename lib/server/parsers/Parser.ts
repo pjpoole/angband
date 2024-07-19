@@ -1,10 +1,8 @@
-import { GameObject } from '../../common/GameObject'
-
 export type ParserValues = string
 
 export type ParserFunction = (values: ParserValues) => void
 
-export abstract class Parser<S, T extends GameObject> {
+export abstract class Parser<S, T> {
   private _error: Error
   private _handlers: Map<S, ParserFunction>
   private _objects: T[]

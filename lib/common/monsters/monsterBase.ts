@@ -10,11 +10,11 @@ export interface MonsterBaseParams extends GameObject {
 }
 
 export class MonsterBase {
-  name: string
-  glyph: string
-  pain: number
-  flags: Set<RF>
-  description: string
+  readonly name: string
+  readonly glyph: string
+  readonly pain: number
+  readonly flags: Set<RF>
+  readonly description: string
 
   constructor(params: MonsterBaseParams) {
     this.name = params.name
