@@ -3,10 +3,13 @@ import type { MonsterBase } from '../../common/monsters/monsterBase'
 import type { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/game/registries'
 import { setDifference, setUnion } from '../../common/utilities/set'
-import { C, colorStringToAttribute } from '../../common/utilities/colors'
+import type { C } from '../../common/utilities/colors'
 import {
-  keyToInteger, keyToPercentile, keyToString, keyToUnsigned,
-  valueAsColor,
+  keyToColor,
+  keyToInteger,
+  keyToPercentile,
+  keyToString,
+  keyToUnsigned,
   valueAsInteger,
   valueAsRF
 } from './parsers'
@@ -25,9 +28,10 @@ interface MonsterSpec {
   glyph?: string // char
   color: C
   speed: number
-  hitPoints: number
+  averageHp: number
   light: number
   hearing: number
+  smell: number
   armorClass: number
   sleepiness: number
   level: number
@@ -36,14 +40,14 @@ interface MonsterSpec {
   blow: string[][] // TODO
   flags: Set<RF>
   flagsOff?: Set<RF>
-  innateFreq: number
-  spellFreq: number
+  innateFrequency: number
+  spellFrequency: number
   spellPower: number
   spells: string[][] // TODO
   messageVisible: string
   messageInvisible: string
   messageMiss: string
-  desc: string
+  description: string
   drop: string[][] // TODO
   dropBase: string[][] // TODO
   mimic: [string, string]
@@ -55,39 +59,39 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   constructor() {
     super()
 
-    this.register('name', this.handleMonsterName.bind(this))
-    this.register('plural', keyToString('plural').bind(this))
-    this.register('base', this.handleMonsterBase.bind(this))
-    this.register('glyph', this.handleMonsterGlyph.bind(this))
-    this.register('color', this.handleMonsterColor.bind(this))
-    this.register('speed', keyToInteger('speed').bind(this))
-    this.register('hit-points', keyToInteger('averageHp').bind(this))
-    this.register('light', keyToInteger('light').bind(this))
-    this.register('hearing', keyToInteger('hearing').bind(this))
-    this.register('smell', keyToInteger('smell').bind(this))
-    this.register('armor-class', keyToInteger('armorClass').bind(this))
-    this.register('sleepiness', keyToInteger('sleepiness').bind(this))
-    this.register('depth', this.handleMonsterDepth.bind(this))
-    this.register('rarity', keyToInteger('rarity').bind(this))
-    this.register('experience', keyToInteger('experience').bind(this))
-    this.register('blow', this.handleMonsterBlow.bind(this))
-    this.register('flags', this.handleMonsterFlags.bind(this))
-    this.register('flags-off', this.handleMonsterFlagsOff.bind(this))
-    this.register('desc', keyToString('description').bind(this))
-    this.register('innate-freq', keyToPercentile('innateFrequency').bind(this))
-    this.register('spell-freq', keyToPercentile('spellFrequency').bind(this))
-    this.register('spell-power', keyToUnsigned('spellPower').bind(this))
-    this.register('spells', this.handleMonsterSpells.bind(this))
-    this.register('message-vis', this.handleMonsterMessageVisible.bind(this))
-    this.register('message-invis', this.handleMonsterMessageInvisible.bind(this))
-    this.register('message-miss', this.handleMonsterMessageMiss.bind(this))
-    this.register('drop', this.handleMonsterDrop.bind(this))
-    this.register('drop-base', this.handleMonsterDropBase.bind(this))
-    this.register('friends', this.handleMonsterFriends.bind(this))
-    this.register('friends-base', this.handleMonsterFriendsBase.bind(this))
-    this.register('mimic', this.handleMonsterMimic.bind(this))
-    this.register('shape', this.handleMonsterShape.bind(this))
-    this.register('color-cycle', this.handleMonsterColorCycle.bind(this))
+    this.register('name', this.handleName.bind(this))
+    this.register('plural', keyToString<MonsterSpec>('plural').bind(this))
+    this.register('base', this.handleBase.bind(this))
+    this.register('glyph', this.handleGlyph.bind(this))
+    this.register('color', keyToColor<MonsterSpec>('color').bind(this))
+    this.register('speed', keyToInteger<MonsterSpec>('speed').bind(this))
+    this.register('hit-points', keyToInteger<MonsterSpec>('averageHp').bind(this))
+    this.register('light', keyToInteger<MonsterSpec>('light').bind(this))
+    this.register('hearing', keyToInteger<MonsterSpec>('hearing').bind(this))
+    this.register('smell', keyToInteger<MonsterSpec>('smell').bind(this))
+    this.register('armor-class', keyToInteger<MonsterSpec>('armorClass').bind(this))
+    this.register('sleepiness', keyToInteger<MonsterSpec>('sleepiness').bind(this))
+    this.register('depth', this.handleDepth.bind(this))
+    this.register('rarity', keyToInteger<MonsterSpec>('rarity').bind(this))
+    this.register('experience', keyToInteger<MonsterSpec>('experience').bind(this))
+    this.register('blow', this.handleBlow.bind(this))
+    this.register('flags', this.handleFlags.bind(this))
+    this.register('flags-off', this.handleFlagsOff.bind(this))
+    this.register('desc', keyToString<MonsterSpec>('description').bind(this))
+    this.register('innate-freq', keyToPercentile<MonsterSpec>('innateFrequency').bind(this))
+    this.register('spell-freq', keyToPercentile<MonsterSpec>('spellFrequency').bind(this))
+    this.register('spell-power', keyToUnsigned<MonsterSpec>('spellPower').bind(this))
+    this.register('spells', this.handleSpells.bind(this))
+    this.register('message-vis', this.handleMessageVisible.bind(this))
+    this.register('message-invis', this.handleMessageInvisible.bind(this))
+    this.register('message-miss', this.handleMessageMiss.bind(this))
+    this.register('drop', this.handleDrop.bind(this))
+    this.register('drop-base', this.handleDropBase.bind(this))
+    this.register('friends', this.handleFriends.bind(this))
+    this.register('friends-base', this.handleFriendsBase.bind(this))
+    this.register('mimic', this.handleMimic.bind(this))
+    this.register('shape', this.handleShape.bind(this))
+    this.register('color-cycle', this.handleColorCycle.bind(this))
   }
 
   // TODO
@@ -95,7 +99,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
   }
 
-  handleMonsterName(value: ParserValues) {
+  handleName(value: ParserValues) {
     if (this.hasCurrent()) {
       this.finalizeCurrent()
     }
@@ -103,7 +107,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
     current.name = value
   }
 
-  handleMonsterBase(value: ParserValues) {
+  handleBase(value: ParserValues) {
     const current = this.current
 
     const base = MonsterBaseRegistry.get(value)
@@ -114,7 +118,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
     current.flags = setUnion(current.flags || new Set(), base.flags)
   }
 
-  handleMonsterGlyph(value: ParserValues) {
+  handleGlyph(value: ParserValues) {
     const current = this.current
 
     // override base glyph; this relies on glyph being specified after base in
@@ -122,12 +126,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
     current.glyph = value[0]
   }
 
-  handleMonsterColor(value: ParserValues) {
-    const current = this.current
-    current.color = colorStringToAttribute(value)
-  }
-
-  handleMonsterDepth(value: ParserValues) {
+  handleDepth(value: ParserValues) {
     const current = this.current
     current.level = valueAsInteger(value)
 
@@ -136,11 +135,11 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   }
 
   // TODO
-  handleMonsterBlow(value: ParserValues) {
+  handleBlow(value: ParserValues) {
     const current = this.current
   }
 
-  handleMonsterFlags(value: ParserValues) {
+  handleFlags(value: ParserValues) {
     const current = this.current
 
     if (current.flags == null) current.flags = new Set<RF>()
@@ -148,7 +147,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
     current.flags = setUnion(current.flags, valueAsRF(value))
   }
 
-  handleMonsterFlagsOff(value: ParserValues) {
+  handleFlagsOff(value: ParserValues) {
     const current = this.current
 
     if (current.flags == null) current.flags = new Set<RF>()
@@ -157,57 +156,57 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   }
 
   // TODO
-  handleMonsterSpells(value: ParserValues) {
+  handleSpells(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterMessageVisible(value: ParserValues) {
+  handleMessageVisible(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterMessageInvisible(value: ParserValues) {
+  handleMessageInvisible(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterMessageMiss(value: ParserValues) {
+  handleMessageMiss(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterDrop(value: ParserValues) {
+  handleDrop(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterDropBase(value: ParserValues) {
+  handleDropBase(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterFriends(value: ParserValues) {
+  handleFriends(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterFriendsBase(value: ParserValues) {
+  handleFriendsBase(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterMimic(value: ParserValues) {
+  handleMimic(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterShape(value: ParserValues) {
+  handleShape(value: ParserValues) {
     const current = this.current
   }
 
   // TODO
-  handleMonsterColorCycle(value: ParserValues) {
+  handleColorCycle(value: ParserValues) {
     const current = this.current
   }
 

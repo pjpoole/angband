@@ -21,9 +21,9 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseSpec
 
     this.register('name', this.handleMonsterName.bind(this))
     this.register('glyph', this.handleMonsterGlyph.bind(this))
-    this.register('pain', keyToInteger('pain').bind(this))
+    this.register('pain', keyToInteger<MonsterBaseSpec>('pain').bind(this))
     this.register('flags', this.handleMonsterFlags.bind(this))
-    this.register('desc', keyToString('description').bind(this))
+    this.register('desc', keyToString<MonsterBaseSpec>('description').bind(this))
   }
 
   finalize(): void {
