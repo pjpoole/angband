@@ -28,11 +28,11 @@ export abstract class Parser<S, T extends GameObject> {
     return this._objects as T[]
   }
 
-  hasCurrent(): boolean {
-    return this._current != null
-  }
-
   newCurrent(): Partial<T> {
+    if (this._current) {
+      this.finalizeCurrent()
+    }
+
     this._current = {} as T
     return this._current
   }

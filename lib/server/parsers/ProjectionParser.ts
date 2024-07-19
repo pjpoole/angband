@@ -39,9 +39,6 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
   }
 
   handleCode(value: ParserValues) {
-    if (this.hasCurrent()) {
-      this.finalizeCurrent()
-    }
     const current = this.newCurrent()
     current.code = valueAsElem(value)
   }

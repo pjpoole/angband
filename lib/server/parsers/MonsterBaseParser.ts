@@ -33,9 +33,6 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseSpec
   }
 
   handleMonsterName(value: ParserValues) {
-    if (this.hasCurrent()) {
-      this.finalizeCurrent()
-    }
     const current = this.newCurrent()
     current.name = value
   }

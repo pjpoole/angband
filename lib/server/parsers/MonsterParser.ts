@@ -100,9 +100,6 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   }
 
   handleName(value: ParserValues) {
-    if (this.hasCurrent()) {
-      this.finalizeCurrent()
-    }
     const current = this.newCurrent()
     current.name = value
   }

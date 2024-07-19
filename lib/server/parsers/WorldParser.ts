@@ -19,9 +19,6 @@ export class WorldParser extends Parser<WorldFields, LevelParams> {
   }
 
   handleLevel(value: ParserValues) {
-    if (this.hasCurrent()) {
-      this.finalizeCurrent()
-    }
     const current = this.newCurrent()
     const [rawDepth, name, up, down] = value.split(':')
     const depth = valueAsInteger(rawDepth)
