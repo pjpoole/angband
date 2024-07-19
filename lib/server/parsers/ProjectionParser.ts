@@ -8,6 +8,7 @@ import {
   valueAsMsg
 } from './parsers'
 import { ProjectionParams } from '../../common/spells/Projection'
+import { ProjectionRegistry } from '../../common/game/registries'
 
 type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'
   | 'blind-desc' | 'lash-desc' | 'numerator' | 'denominator' | 'divisor'
@@ -35,7 +36,9 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
   }
 
   finalize() {
-
+    for (const obj of this.objects) {
+      ProjectionRegistry.build(obj.name, obj)
+    }
   }
 
   handleCode(value: ParserValues) {
