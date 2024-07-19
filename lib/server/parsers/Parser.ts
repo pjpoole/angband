@@ -7,8 +7,8 @@ export type ParserFunction = (values: ParserValues) => void
 export abstract class Parser<S, T extends GameObject> {
   private _error: Error
   private _handlers: Map<S, ParserFunction>
-  private _objects: Partial<T>[]
-  private _current: Partial<T> | null = null
+  private _objects: T[]
+  private _current: T | null = null
 
   parse(key: S, value: ParserValues): void {
     const handler = this._handlers.get(key)
@@ -33,11 +33,11 @@ export abstract class Parser<S, T extends GameObject> {
   }
 
   newCurrent(): Partial<T> {
-    this._current = {}
+    this._current = {} as T
     return this._current
   }
 
-  get current(): Partial<T> {
+  get current(): T {
     if (this._current == null) throw new Error('missing record header')
     return this._current
   }

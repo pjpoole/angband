@@ -1,14 +1,21 @@
 import { ParserFunction, ParserValues } from './Parser'
 import { RF } from '../../common/monsters/flags'
+import { ELEM } from '../../common/spells/elements'
+import { MSG } from '../../common/game/messages'
+import { colorStringToAttribute } from '../../common/utilities/colors'
 
-export function keyToInteger<T>(key: keyof T): ParserFunction {
+type KeyOfType<T, V> = keyof {
+    [P in keyof T as T[P] extends V? P: never]: any
+}
+
+export function keyToInteger<T>(key: KeyOfType<T, number>): ParserFunction {
   return function (value: ParserValues) {
     const current = this.current
     current[key] = valueAsInteger(value)
   }
 }
 
-export function keyToUnsigned<T>(key: keyof T): ParserFunction {
+export function keyToUnsigned<T>(key: KeyOfType<T, number>): ParserFunction {
   return function (value: ParserValues) {
     const current = this.current
     const int = valueAsInteger(value)
@@ -17,7 +24,7 @@ export function keyToUnsigned<T>(key: keyof T): ParserFunction {
   }
 }
 
-export function keyToString<T>(key: keyof T): ParserFunction {
+export function keyToString<T>(key: KeyOfType<T, string>): ParserFunction {
   return function (value: ParserValues) {
     const current = this.current
     if (!current[key]) current[key] = ''
@@ -25,7 +32,7 @@ export function keyToString<T>(key: keyof T): ParserFunction {
   }
 }
 
-export function keyToPercentile<T>(key: keyof T): ParserFunction {
+export function keyToPercentile<T>(key: KeyOfType<T, number>): ParserFunction {
   return function (value: ParserValues) {
     const current = this.current
     let percentile = valueAsInteger(value)
@@ -33,7 +40,22 @@ export function keyToPercentile<T>(key: keyof T): ParserFunction {
 
     // TODO: Figure out the logic here; could have some rounding issues
     //       this is original behavior, though
+    // TODO: This will be a float; see if it needs to be clamped to an int
     current[key] = 100 / percentile
+  }
+}
+
+export function keyToBoolean<T>(key: KeyOfType<T, boolean>): ParserFunction {
+  return function (value: ParserValues) {
+    const current = this.current
+    current[key] = value === '1'
+  }
+}
+
+export function keyToColor<T>(key: KeyOfType<T, C>): ParserFunction {
+  return function (value: ParserValues) {
+    const current = this.current
+    current[key] = colorStringToAttribute(value)
   }
 }
 
@@ -55,4 +77,16 @@ export function valueAsRF(value: ParserValues): Set<RF> {
   }
 
   return new Set(flags as unknown as RF[])
+}
+
+export function valueAsElem(value: ParserValues): ELEM {
+  if (!(value in ELEM)) throw new Error('invalid flag')
+
+  return value as unknown as ELEM
+}
+
+export function valueAsMsg(value: ParserValues): MSG {
+  if (!(value in MSG)) throw new Error('invalid flag')
+
+  return value as unknown as MSG
 }
