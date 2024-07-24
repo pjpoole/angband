@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
+    "composite": true,
     "lib": [
       "es2023"
     ],
     "module": "nodenext",
+    "outDir": "../../dist/server",
+    "rootDir": ".",
     "target": "es2022",
     "types": [
       "node"
     ]
-  }
+  },
+  "references": [
+    { "path":  "../common" }
+  ]
 }

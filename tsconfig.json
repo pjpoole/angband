@@ -1,12 +1,12 @@
-{
-  "compilerOptions": {
-    "lib": [
-      "es2023"
-    ],
-    "module": "nodenext",
-    "target": "es2022",
-    "types": [
-      "node"
+  {
+    "compilerOptions": {
+      "rootDir": "./lib/",
+      "outDir": "./dist/",
+    },
+    "files": [],
+    "references": [
+      { "path": "./lib/common" },
+      { "path": "./lib/server" },
+      { "path": "./lib/browser" }
     ]
   }
-}
