@@ -1,9 +1,5 @@
 import { Parser, ParserValues } from './Parser'
 import {
-  keyToBoolean,
-  keyToColor,
-  keyToInteger,
-  keyToString,
   valueAsElem,
   valueAsMsg
 } from './parsers'
@@ -19,20 +15,20 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
     super()
 
     this.register('code', this.handleCode.bind(this))
-    this.register('name', keyToString<ProjectionParams>('name').bind(this))
-    this.register('type', keyToString<ProjectionParams>('type').bind(this))
-    this.register('desc', keyToString<ProjectionParams>('description').bind(this))
-    this.register('player-desc', keyToString<ProjectionParams>('playerDescription').bind(this))
-    this.register('blind-desc', keyToString<ProjectionParams>('blindDescription').bind(this))
-    this.register('lash-desc', keyToString<ProjectionParams>('lashDescription').bind(this))
-    this.register('numerator', keyToInteger<ProjectionParams>('numerator').bind(this))
-    this.register('denominator', keyToString<ProjectionParams>('denominator').bind(this)) // TODO: dice
-    this.register('divisor', keyToInteger<ProjectionParams>('divisor').bind(this))
-    this.register('damage-cap', keyToInteger<ProjectionParams>('damageCap').bind(this))
+    this.register('name', this.keyToString('name'))
+    this.register('type', this.keyToString('type'))
+    this.register('desc', this.keyToString('description'))
+    this.register('player-desc', this.keyToString('playerDescription'))
+    this.register('blind-desc', this.keyToString('blindDescription'))
+    this.register('lash-desc', this.keyToString('lashDescription'))
+    this.register('numerator', this.keyToInteger('numerator'))
+    this.register('denominator', this.keyToString('denominator')) // TODO: dice
+    this.register('divisor', this.keyToInteger('divisor'))
+    this.register('damage-cap', this.keyToInteger('damageCap'))
     this.register('msgt', this.handleMessageType.bind(this))
-    this.register('obvious', keyToBoolean<ProjectionParams>('obvious').bind(this))
-    this.register('wake', keyToBoolean<ProjectionParams>('wake').bind(this))
-    this.register('color', keyToColor<ProjectionParams>('color').bind(this))
+    this.register('obvious', this.keyToBoolean('obvious'))
+    this.register('wake', this.keyToBoolean('wake'))
+    this.register('color', this.keyToColor('color'))
   }
 
   finalize() {

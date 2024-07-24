@@ -5,12 +5,12 @@ export type ParserValues = string
 
 export type ParserFunction = (values: ParserValues) => void
 
-type KeyOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T]
+type KeyOfType<T, U> = keyof { [K in keyof T as NonNullable<T[K]> extends U ? K : never]: T[K] }
 
 export abstract class ParserBase<S, T extends { [K in keyof T]: any }> {
-  private _error: Error
-  private _handlers: Map<S, ParserFunction>
-  private _objects: T[]
+  private _error?: Error
+  private _handlers: Map<S, ParserFunction> = new Map()
+  private _objects: T[] = []
   private _current: T | null = null
 
   parse(key: S, value: ParserValues): void {
@@ -46,14 +46,14 @@ export abstract class ParserBase<S, T extends { [K in keyof T]: any }> {
   }
 
   finalizeCurrent(): void {
-    this._objects.push(this._current)
+    if (this._current != null) this._objects.push(this._current)
   }
 
   set error(err: Error) {
     this._error = err
   }
 
-  get error(): Error {
+  get error(): Error | undefined {
     return this._error
   }
 }

@@ -4,7 +4,7 @@ import type { MonsterBaseParams } from '../../common/monsters/monsterBase'
 import { setUnion } from '../../common/utilities/set'
 
 import { Parser, ParserValues } from './Parser'
-import { keyToInteger, keyToString, valueAsRF } from './parsers'
+import { valueAsRF } from './parsers'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
@@ -14,9 +14,9 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBasePara
 
     this.register('name', this.handleMonsterName.bind(this))
     this.register('glyph', this.handleMonsterGlyph.bind(this))
-    this.register('pain', keyToInteger<MonsterBaseParams>('pain').bind(this))
+    this.register('pain', this.keyToInteger('pain'))
     this.register('flags', this.handleMonsterFlags.bind(this))
-    this.register('desc', keyToString<MonsterBaseParams>('description').bind(this))
+    this.register('desc', this.keyToString('description'))
   }
 
   finalize(): void {
