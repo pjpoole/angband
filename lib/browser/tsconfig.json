@@ -7,10 +7,7 @@
     "module": "esnext",
     "outDir": "../../dist/browser",
     "rootDir": ".",
-    "target": "es2022",
-    "types": [
-      "node"
-    ]
+    "target": "es2022"
   },
   "references": [
     { "path":  "../common" }
