@@ -2,6 +2,9 @@ import { asInteger } from './parsers'
 import { C, colorStringToAttribute } from '../../common/utilities/colors'
 import {
   PARSE_ERROR_INVALID_PERCENTILE,
+  PARSE_ERROR_MISSING_HANDLER,
+  PARSE_ERROR_MISSING_HEADER,
+  PARSE_ERROR_OUT_OF_BOUNDS,
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
 
@@ -20,7 +23,7 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   parse(key: string, value: ParserValues): void {
     const handler = this._handlers.get(key as S)
     if (!handler) {
-      throw new Error('no handler for key', { cause: { key } })
+      throw new Error(PARSE_ERROR_MISSING_HANDLER, { cause: { key } })
     }
     handler(value)
   }
@@ -45,7 +48,7 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   }
 
   get current(): T {
-    if (this._current == null) throw new Error('missing record header')
+    if (this._current == null) throw new Error(PARSE_ERROR_MISSING_HEADER)
     return this._current
   }
 
@@ -75,7 +78,7 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
     return (value: ParserValues) => {
       const current = this.current
       const int = asInteger(value)
-      if (int < 0) throw new Error('invalid value for unsigned int')
+      if (int < 0) throw new Error(PARSE_ERROR_OUT_OF_BOUNDS)
       current[key] = int as T[typeof key]
     }
   }
