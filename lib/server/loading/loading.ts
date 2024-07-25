@@ -24,7 +24,7 @@ export function getDocumentsPath(fileName: string): string {
   return path.join(DATA_DIR, fileName)
 }
 
-export async function getFileEntries<T extends GameObject>(filePath: string, parser: Parser<T>): Promise<void | Error> {
+export async function getFileEntries<S extends string, T extends GameObject>(filePath: string, parser: Parser<S, T>): Promise<void | Error> {
   const fileHandle = await fs.open(filePath, 'r')
 
   let lineNo = 0

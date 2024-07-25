@@ -7,14 +7,14 @@ export type ParserFunction = (values: ParserValues) => void
 
 type KeyOfType<T, U> = keyof { [K in keyof T as NonNullable<T[K]> extends U ? K : never]: T[K] }
 
-export abstract class ParserBase<S, T extends { [K in keyof T]: any }> {
+export abstract class ParserBase<S extends string, T extends { [K in keyof T]: any }> {
   private _error?: Error
   private _handlers: Map<S, ParserFunction> = new Map()
   private _objects: T[] = []
   private _current: T | null = null
 
-  parse(key: S, value: ParserValues): void {
-    const handler = this._handlers.get(key)
+  parse(key: string, value: ParserValues): void {
+    const handler = this._handlers.get(key as S)
     if (!handler) {
       throw new Error('no handler for key', { cause: { key } })
     }
@@ -58,7 +58,7 @@ export abstract class ParserBase<S, T extends { [K in keyof T]: any }> {
   }
 }
 
-export abstract class Parser<S, T> extends ParserBase<S, T> {
+export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
   keyToInteger(key: KeyOfType<T, number>): ParserFunction {
     return (value: ParserValues): void => {
       const current = this.current
