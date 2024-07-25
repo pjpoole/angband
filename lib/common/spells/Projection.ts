@@ -1,4 +1,4 @@
-import { GameObject } from '../GameObject'
+import type { GameObject } from '../GameObject'
 import { ELEM } from './elements'
 import { MSG } from '../game/messages'
 import { C } from '../utilities/colors'

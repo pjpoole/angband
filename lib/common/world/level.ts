@@ -1,4 +1,4 @@
-import { GameObject } from '../GameObject'
+import type { GameObject } from '../GameObject'
 
 export interface LevelParams extends GameObject {
   depth: number

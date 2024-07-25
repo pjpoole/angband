@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 
 import { type Parser } from '../parsers/Parser'
-import { type GameObject } from '../../common/GameObject'
+import type { GameObject } from '../../common/GameObject'
 
 /*
  * Directories

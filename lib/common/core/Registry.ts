@@ -1,4 +1,4 @@
-import { GameObject } from '../GameObject'
+import type { GameObject } from '../GameObject'
 
 export class Registry<T> {
   private data: Map<string, T> = new Map()

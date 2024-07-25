@@ -1,5 +1,5 @@
 import { RF } from './flags'
-import { GameObject } from '../GameObject'
+import type { GameObject } from '../GameObject'
 
 export interface MonsterBaseParams extends GameObject {
   name: string
