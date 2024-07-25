@@ -1,12 +1,12 @@
 import { Parser, ParserValues } from './Parser'
 import type { MonsterBase } from '../../common/monsters/monsterBase'
-import type { RF } from '../../common/monsters/flags'
+import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/game/registries'
 import { setDifference, setUnion } from '../../common/utilities/set'
 import type { C } from '../../common/utilities/colors'
 import {
-  valueAsInteger,
-  valueAsRF
+  allAsEnum,
+  asInteger
 } from './parsers'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
@@ -120,7 +120,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
   handleDepth(value: ParserValues) {
     const current = this.current
-    current.level = valueAsInteger(value)
+    current.level = asInteger(value)
 
     // Level is default spell power
     current.spellPower = current.level
@@ -136,7 +136,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
     if (current.flags == null) current.flags = new Set<RF>()
 
-    current.flags = setUnion(current.flags, valueAsRF(value))
+    current.flags = setUnion(current.flags, allAsEnum(value, RF))
   }
 
   handleFlagsOff(value: ParserValues) {
@@ -144,7 +144,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
     if (current.flags == null) current.flags = new Set<RF>()
 
-    current.flags = setDifference(current.flags, valueAsRF(value))
+    current.flags = setDifference(current.flags, allAsEnum(value, RF))
   }
 
   // TODO

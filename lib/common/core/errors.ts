@@ -1,0 +1,5 @@
+export const PARSE_ERROR_INVALID_FLAG = 'invalid flag'
+export const PARSE_ERROR_INVALID_OPTION = 'invalid option'
+export const PARSE_ERROR_INVALID_NUMBER = 'invalid number'
+export const PARSE_ERROR_INVALID_PERCENTILE = 'invalid percentile value'
+export const PARSE_ERROR_REPEATED_DIRECTIVE = 'field already defined'

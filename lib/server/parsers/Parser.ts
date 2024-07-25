@@ -1,5 +1,9 @@
-import { valueAsInteger } from './parsers'
+import { asInteger } from './parsers'
 import { C, colorStringToAttribute } from '../../common/utilities/colors'
+import {
+  PARSE_ERROR_INVALID_PERCENTILE,
+  PARSE_ERROR_REPEATED_DIRECTIVE
+} from '../../common/core/errors'
 
 export type ParserValues = string
 
@@ -62,7 +66,7 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
   keyToInteger(key: KeyOfType<T, number>): ParserFunction {
     return (value: ParserValues): void => {
       const current = this.current
-      const parsed = valueAsInteger(value)
+      const parsed = asInteger(value)
       current[key] = parsed as T[typeof key]
     }
   }
@@ -70,7 +74,7 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
   keyToUnsigned(key: KeyOfType<T, number>): ParserFunction {
     return (value: ParserValues) => {
       const current = this.current
-      const int = valueAsInteger(value)
+      const int = asInteger(value)
       if (int < 0) throw new Error('invalid value for unsigned int')
       current[key] = int as T[typeof key]
     }
@@ -83,12 +87,20 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
     }
   }
 
+  keyToSingleString(key: KeyOfType<T, string>): ParserFunction {
+    return (value: ParserValues): void => {
+      const current = this.current
+      if (current[key]) throw new Error(PARSE_ERROR_REPEATED_DIRECTIVE)
+      current[key] = value as T[typeof key]
+    }
+  }
+
   keyToPercentile(key: KeyOfType<T, number>): ParserFunction {
     return (value: ParserValues) => {
       const current = this.current
-      let percentile = valueAsInteger(value)
+      let percentile = asInteger(value)
       if (percentile < 1 || percentile > 100) throw new Error(
-        'invalid percentile value',
+        PARSE_ERROR_INVALID_PERCENTILE,
         { cause: { value } }
       )
 

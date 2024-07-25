@@ -4,7 +4,12 @@ import {
   PlayerPropertyParams, RESIST_VALUES
 } from '../../common/player/properties'
 import { PlayerPropertyRegistry } from '../../common/game/registries'
-import { valueAsElem, valueAsInteger, valueIsInArray } from './parsers'
+import {
+  asArrayMember,
+  asEnum,
+  asInteger
+} from './parsers'
+import { ELEM } from '../../common/spells/elements'
 
 type PlayerPropertyFields = 'type' | 'code' | 'name' | 'desc' | 'value'
 
@@ -27,28 +32,16 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
 
   handleCode(value: ParserValues) {
     const current = this.newCurrent()
-    current.code = valueAsElem(value)
+    current.code = asEnum(value, ELEM)
   }
 
   handleType(value: ParserValues) {
     const current = this.current
-
-    if (!valueIsInArray(value, PLAYER_PROPERTY_TYPES)) {
-      throw new Error('invalid value', { cause: { value } })
-    }
-
-    current.type = value
+    current.type = asArrayMember(value, PLAYER_PROPERTY_TYPES)
   }
 
   handleValue(value: ParserValues) {
     const current = this.current
-
-    const numeric = valueAsInteger(value)
-
-    if (!valueIsInArray(numeric, RESIST_VALUES)) {
-      throw new Error('invalid value', { cause: { value } })
-    }
-
-    current.value = numeric
+    current.value = asArrayMember(asInteger(value), RESIST_VALUES)
   }
 }

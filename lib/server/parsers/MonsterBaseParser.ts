@@ -1,10 +1,10 @@
 import { MonsterBaseRegistry } from '../../common/game/registries'
-import type { RF } from '../../common/monsters/flags'
+import { RF } from '../../common/monsters/flags'
 import type { MonsterBaseParams } from '../../common/monsters/monsterBase'
 import { setUnion } from '../../common/utilities/set'
 
 import { Parser, ParserValues } from './Parser'
-import { valueAsRF } from './parsers'
+import { allAsEnum } from './parsers'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
@@ -41,6 +41,6 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBasePara
 
     if (current.flags == null) current.flags = new Set<RF>()
 
-    current.flags = setUnion(current.flags, valueAsRF(value))
+    current.flags = setUnion(current.flags, allAsEnum(value, RF))
   }
 }

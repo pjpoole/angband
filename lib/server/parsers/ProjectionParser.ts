@@ -1,10 +1,9 @@
 import { Parser, ParserValues } from './Parser'
-import {
-  valueAsElem,
-  valueAsMsg
-} from './parsers'
+import { asEnum } from './parsers'
 import { ProjectionParams } from '../../common/spells/Projection'
 import { ProjectionRegistry } from '../../common/game/registries'
+import { ELEM } from '../../common/spells/elements'
+import { MSG } from '../../common/game/messages'
 
 type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'
   | 'blind-desc' | 'lash-desc' | 'numerator' | 'denominator' | 'divisor'
@@ -39,11 +38,11 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
 
   handleCode(value: ParserValues) {
     const current = this.newCurrent()
-    current.code = valueAsElem(value)
+    current.code = asEnum(value, ELEM)
   }
 
   handleMessageType(value: ParserValues) {
     const current = this.current
-    current.messageType = valueAsMsg(value)
+    current.messageType = asEnum(value, MSG)
   }
 }
