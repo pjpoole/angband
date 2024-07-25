@@ -1,6 +1,7 @@
 import { GameObject } from '../GameObject'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
+import { JsonObject } from '../utilities/json'
 
 export enum FEAT {
   NONE, /* nothing/unknown */
@@ -141,5 +142,27 @@ export class Feature {
 
   constructor(params: FeatureParams) {
     Object.assign(this, params)
+  }
+
+  toJSON(): JsonObject {
+    return {
+      code: FEAT[this.code],
+      name: this.name,
+      glyph: this.glyph,
+      color: C[this.color],
+      mimic: this.mimic ? FEAT[this.mimic] : undefined,
+      priority: this.priority,
+      flags: Array.from(this.flags.keys()).map(key => TF[key]),
+      digging: this.digging,
+      description: this.description,
+      walkMessage: this.walkMessage,
+      runMessage: this.runMessage,
+      hurtMessage: this.hurtMessage,
+      dieMessage: this.dieMessage,
+      confusedMessage: this.confusedMessage,
+      lookPrefix: this.lookPrefix,
+      lookInPreposition: this.lookInPreposition,
+      resistFlag: RF[this.resistFlag]
+    }
   }
 }
