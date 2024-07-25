@@ -2,6 +2,7 @@
   "compilerOptions": {
     "composite": true,
     "lib": [
+      "dom",
       "es2023"
     ],
     "module": "esnext",
