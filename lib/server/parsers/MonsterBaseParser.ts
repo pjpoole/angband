@@ -2,9 +2,8 @@ import { MonsterBaseRegistry } from '../../common/game/registries'
 import { RF } from '../../common/monsters/flags'
 import type { MonsterBaseParams } from '../../common/monsters/monsterBase'
 import { setUnion } from '../../common/utilities/set'
-
-import { Parser, ParserValues } from './Parser'
-import { allAsEnum } from './parsers'
+import { Parser } from './Parser'
+import { allAsEnum, ParserValues } from '../../common/utilities/parsers'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 

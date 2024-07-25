@@ -1,14 +1,16 @@
-import { Parser, ParserValues } from './Parser'
+import { Parser } from './Parser'
 import {
   PLAYER_PROPERTY_TYPES,
-  PlayerPropertyParams, RESIST_VALUES
+  PlayerPropertyParams,
+  RESIST_VALUES
 } from '../../common/player/properties'
 import { PlayerPropertyRegistry } from '../../common/game/registries'
 import {
   asArrayMember,
   asEnum,
-  asInteger
-} from './parsers'
+  asInteger,
+  ParserValues
+} from '../../common/utilities/parsers'
 import { ELEM } from '../../common/spells/elements'
 
 type PlayerPropertyFields = 'type' | 'code' | 'name' | 'desc' | 'value'

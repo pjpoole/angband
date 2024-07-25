@@ -1,5 +1,5 @@
-import { Parser, ParserValues } from './Parser'
-import { asEnum } from './parsers'
+import { Parser } from './Parser'
+import { asEnum, ParserValues } from '../../common/utilities/parsers'
 import { ProjectionParams } from '../../common/spells/Projection'
 import { ProjectionRegistry } from '../../common/game/registries'
 import { ELEM } from '../../common/spells/elements'

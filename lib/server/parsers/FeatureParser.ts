@@ -1,9 +1,6 @@
 import { FEAT, FeatureParams, TF } from '../../common/world/features'
-import { Parser, ParserValues } from './Parser'
-import {
-  allAsEnum,
-  asEnum
-} from './parsers'
+import { Parser } from './Parser'
+import { allAsEnum, asEnum, ParserValues } from '../../common/utilities/parsers'
 import { colorStringToAttribute } from '../../common/utilities/colors'
 import { RF } from '../../common/monsters/flags'
 import { FeatureRegistry } from '../../common/game/registries'

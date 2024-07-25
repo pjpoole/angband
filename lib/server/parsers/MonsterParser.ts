@@ -1,13 +1,10 @@
-import { Parser, ParserValues } from './Parser'
+import { Parser } from './Parser'
 import type { MonsterBase } from '../../common/monsters/monsterBase'
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/game/registries'
 import { setDifference, setUnion } from '../../common/utilities/set'
 import type { C } from '../../common/utilities/colors'
-import {
-  allAsEnum,
-  asInteger
-} from './parsers'
+import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
   | 'hit-points' | 'light' | 'hearing' | 'smell' | 'armor-class' | 'sleepiness'

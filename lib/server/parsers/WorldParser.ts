@@ -1,5 +1,5 @@
-import { Parser, ParserValues } from './Parser'
-import { asInteger } from './parsers'
+import { Parser } from './Parser'
+import { asInteger, ParserValues } from '../../common/utilities/parsers'
 import { LevelRegistry } from '../../common/game/registries'
 import { LevelParams } from '../../common/world/level'
 

@@ -1,4 +1,4 @@
-import { asInteger } from './parsers'
+import { asInteger, ParserValues } from '../../common/utilities/parsers'
 import { C, colorStringToAttribute } from '../../common/utilities/colors'
 import {
   PARSE_ERROR_INVALID_PERCENTILE,
@@ -7,8 +7,6 @@ import {
   PARSE_ERROR_OUT_OF_BOUNDS,
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
-
-export type ParserValues = string
 
 export type ParserFunction = (values: ParserValues) => void
 

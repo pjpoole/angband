@@ -2,6 +2,7 @@ import { GameObject } from '../GameObject'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
+import { asEnum } from '../utilities/parsers'
 
 export enum FEAT {
   NONE, /* nothing/unknown */

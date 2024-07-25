@@ -1,9 +1,10 @@
-import { ParserValues } from './Parser'
 import {
   PARSE_ERROR_INVALID_FLAG,
   PARSE_ERROR_INVALID_NUMBER,
   PARSE_ERROR_INVALID_OPTION
-} from '../../common/core/errors'
+} from '../core/errors'
+
+export type ParserValues = string
 
 export function asArrayMember<T>(value: unknown, ary: readonly T[]): T {
   if (!ary.includes(value as any)) {
