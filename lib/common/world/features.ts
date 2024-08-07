@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import { GameObject } from '../GameObject'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
@@ -102,25 +104,27 @@ export const TF_DESC = {
   [TF.FIERY]:       "Is fire-based"
 }
 
-export interface FeatureParams extends GameObject {
-  code: FEAT
-  name: string
-  glyph: string // char
-  color: C
-  mimic?: FEAT
-  priority: number
-  flags: Set<TF>
-  digging: number
-  description: string
-  walkMessage?: string
-  runMessage?: string
-  hurtMessage?: string
-  dieMessage?: string
-  confusedMessage?: string
-  lookPrefix?: string
-  lookInPreposition?: string
-  resistFlag?: RF
-}
+export const FeatureSchema = z.object({
+  code: z.nativeEnum(FEAT),
+  name: z.string(),
+  glyph: z.string().length(1),
+  color: z.nativeEnum(C),
+  mimic: z.nativeEnum(FEAT).optional(),
+  priority: z.number().int(),
+  flags: z.set(z.nativeEnum(TF)),
+  digging: z.number(),
+  description: z.string(),
+  walkMessage: z.string().optional(),
+  runMessage: z.string().optional(),
+  hurtMessage: z.string().optional(),
+  dieMessage: z.string().optional(),
+  confusedMessage: z.string().optional(),
+  lookPrefix: z.string().optional(),
+  lookInPreposition: z.string().optional(),
+  resistFlag: z.nativeEnum(RF).optional()
+})
+
+export type FeatureParams = z.infer<typeof FeatureSchema>
 
 export class Feature {
   readonly code: FEAT
@@ -143,6 +147,12 @@ export class Feature {
 
   constructor(params: FeatureParams) {
     Object.assign(this, params)
+  }
+
+  static fromJSON(parsed: JsonObject): Feature {
+    const params = FeatureSchema.parse(parsed)
+
+    return new Feature(params)
   }
 
   toJSON(): JsonObject {

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
+    "moduleResolution": "nodenext",
     "outDir": "../../dist/common",
     "rootDir": ".",
     "target": "es2022"
