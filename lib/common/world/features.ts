@@ -150,6 +150,7 @@ export class Feature {
   }
 
   static fromJSON(parsed: JsonObject): Feature {
+    // TODO: This is showing all params as optional? figure out why
     const params = FeatureSchema.parse(parsed)
 
     return new Feature(params)
