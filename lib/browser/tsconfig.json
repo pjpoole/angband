@@ -5,9 +5,11 @@
       "dom",
       "es2023"
     ],
-    "module": "esnext",
+    "module": "commonjs",
     "outDir": "../../dist/browser",
     "rootDir": ".",
+    "sourceMap": true,
+    "strict": true,
     "target": "es2022"
   },
   "references": [
