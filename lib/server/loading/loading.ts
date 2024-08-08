@@ -38,8 +38,10 @@ export async function getFileEntries<S extends string, T extends GameObject>(fil
     const firstColon = line.indexOf(':')
     if (firstColon === -1 || firstColon + 1 === line.length) {
       // TODO: ParserError
-      const error = new Error('invalid line', {
-        cause: { file: filePath, line: lineNo, data: line } })
+      const error = new Error(
+        'invalid line',
+        { cause: { file: filePath, line: lineNo, data: line } }
+      )
       parser.error = error
       return error
     }

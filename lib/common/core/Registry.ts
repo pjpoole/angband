@@ -7,7 +7,7 @@ export class Registry<T> {
     this.ctor = ctor
   }
 
-  get(key: string): T {
+  get(key: string): T | undefined {
     return this.data.get(key)
   }
 
