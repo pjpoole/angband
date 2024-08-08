@@ -1,10 +1,8 @@
 import { z } from 'zod'
 
-import { GameObject } from '../GameObject'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
-import { asEnum } from '../utilities/parsers'
 
 export enum FEAT {
   NONE, /* nothing/unknown */
@@ -146,7 +144,23 @@ export class Feature {
   readonly resistFlag?: RF
 
   constructor(params: FeatureParams) {
-    Object.assign(this, params)
+    this.code = params.code
+    this.name = params.name
+    this.glyph = params.glyph
+    this.color = params.color
+    this.mimic = params.mimic
+    this.priority = params.priority
+    this.flags = params.flags
+    this.digging = params.digging
+    this.description = params.description
+    this.walkMessage = params.walkMessage
+    this.runMessage = params.runMessage
+    this.hurtMessage = params.hurtMessage
+    this.dieMessage = params.dieMessage
+    this.confusedMessage = params.confusedMessage
+    this.lookPrefix = params.lookPrefix
+    this.lookInPreposition = params.lookInPreposition
+    this.resistFlag = params.resistFlag
   }
 
   static fromJSON(parsed: JsonObject): Feature {
@@ -173,7 +187,7 @@ export class Feature {
       confusedMessage: this.confusedMessage,
       lookPrefix: this.lookPrefix,
       lookInPreposition: this.lookInPreposition,
-      resistFlag: RF[this.resistFlag]
+      resistFlag: this.resistFlag ? RF[this.resistFlag] : undefined
     }
   }
 }
