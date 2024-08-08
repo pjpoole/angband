@@ -8,10 +8,16 @@ import {
   PARSE_ERROR_OUT_OF_BOUNDS,
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
+import { GameObject } from '../../common/GameObject'
 
 export type ParserFunction = (values: ParserValues) => void
 
 type KeyOfType<T, U> = keyof { [K in keyof T as NonNullable<T[K]> extends U ? K : never]: T[K] }
+
+export type ParserDerived<S extends string, T extends GameObject> = {
+  new (): Parser<S, T>
+  fileName: string
+}
 
 export abstract class ParserBase<S extends string, T extends { [K in keyof T]: any }> {
   private _error?: Error
