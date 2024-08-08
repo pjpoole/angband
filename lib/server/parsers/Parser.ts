@@ -4,6 +4,7 @@ import {
   PARSE_ERROR_INVALID_PERCENTILE,
   PARSE_ERROR_MISSING_HANDLER,
   PARSE_ERROR_MISSING_HEADER,
+  PARSE_ERROR_NO_TARGET_FILE,
   PARSE_ERROR_OUT_OF_BOUNDS,
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
@@ -17,6 +18,16 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   private _handlers: Map<S, ParserFunction> = new Map()
   private _objects: T[] = []
   private _current: T | null = null
+
+  static _fileName: string | undefined
+
+  static get fileName(): string {
+    if (!this._fileName) {
+      throw new Error(PARSE_ERROR_NO_TARGET_FILE)
+    }
+
+    return this._fileName
+  }
 
   parse(key: string, value: ParserValues): void {
     const handler = this._handlers.get(key as S)
