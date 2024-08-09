@@ -11,7 +11,7 @@ import type { GameObject } from '../../common/GameObject'
 // TODO: make pathing work on any system
 const USER_DIR = path.join('/Users', 'pjpoole')
 export const DATA_DIR = path.join(USER_DIR, 'Documents', 'Angband')
-export const PROJECTS_DIR = path.resolve(__dirname, '..', '..', '..')
+export const PROJECTS_DIR = path.resolve(__dirname, '..', '..', '..', '..', '..')
 
 const GAMEDATA_BASE = path.join('angband', 'angband', 'lib', 'gamedata')
 export const GAMEDATA_DIR = path.join(PROJECTS_DIR, GAMEDATA_BASE)

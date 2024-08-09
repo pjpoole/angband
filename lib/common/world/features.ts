@@ -110,7 +110,7 @@ export const FeatureSchema = z.object({
   color: z.nativeEnum(C),
   mimic: z.nativeEnum(FEAT).optional(),
   priority: z.number().int(),
-  flags: z.set(z.nativeEnum(TF)),
+  flags: z.set(z.nativeEnum(TF)).optional(),
   digging: z.number(),
   description: z.string(),
   walkMessage: z.string().optional(),
@@ -151,7 +151,7 @@ export class Feature implements SerializableBase {
     this.color = params.color
     this.mimic = params.mimic
     this.priority = params.priority
-    this.flags = params.flags
+    this.flags = params.flags || new Set()
     this.digging = params.digging
     this.description = params.description
     this.walkMessage = params.walkMessage
@@ -172,13 +172,13 @@ export class Feature implements SerializableBase {
 
   toJSON(): JsonObject {
     return {
-      code: FEAT[this.code],
+      code: this.code,
       name: this.name,
       glyph: this.glyph,
       color: C[this.color],
-      mimic: this.mimic ? FEAT[this.mimic] : undefined,
+      mimic: this.mimic,
       priority: this.priority,
-      flags: Array.from(this.flags.keys()).map(key => TF[key]),
+      flags: Array.from(this.flags.keys()),
       digging: this.digging,
       description: this.description,
       walkMessage: this.walkMessage,
@@ -188,7 +188,7 @@ export class Feature implements SerializableBase {
       confusedMessage: this.confusedMessage,
       lookPrefix: this.lookPrefix,
       lookInPreposition: this.lookInPreposition,
-      resistFlag: this.resistFlag ? RF[this.resistFlag] : undefined
+      resistFlag: this.resistFlag
     }
   }
 }
