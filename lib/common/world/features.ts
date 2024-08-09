@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
+import { SerializableBase } from '../core/serializable'
 
 export enum FEAT {
   NONE, /* nothing/unknown */
@@ -124,7 +125,7 @@ export const FeatureSchema = z.object({
 
 export type FeatureParams = z.infer<typeof FeatureSchema>
 
-export class Feature {
+export class Feature implements SerializableBase {
   readonly code: FEAT
   readonly name: string
   readonly glyph: string

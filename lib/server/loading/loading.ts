@@ -17,7 +17,8 @@ const GAMEDATA_BASE = path.join('angband', 'angband', 'lib', 'gamedata')
 export const GAMEDATA_DIR = path.join(PROJECTS_DIR, GAMEDATA_BASE)
 
 export function getGameDataPath(fileName: string): string {
-  return path.join(GAMEDATA_DIR, fileName)
+  const textFileName = fileName.endsWith('.txt') ? fileName : `${fileName}.txt`
+  return path.join(GAMEDATA_DIR, textFileName)
 }
 
 export function getDocumentsPath(fileName: string): string {

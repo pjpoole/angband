@@ -11,7 +11,8 @@ type FeatureFields = 'code' | 'name' | 'graphics' | 'mimic'
   | 'look-in-preposition' | 'resist-flag'
 
 export class FeatureParser extends Parser<FeatureFields, FeatureParams> {
-  static readonly _fileName = 'feature.txt'
+  static readonly fileName = 'feature'
+  static readonly registry = FeatureRegistry
 
   constructor() {
     super()
