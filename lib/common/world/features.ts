@@ -151,7 +151,7 @@ export class Feature implements SerializableBase {
     this.color = params.color
     this.mimic = params.mimic
     this.priority = params.priority
-    this.flags = params.flags || new Set()
+    this.flags = new Set(params.flags)
     this.digging = params.digging
     this.description = params.description
     this.walkMessage = params.walkMessage

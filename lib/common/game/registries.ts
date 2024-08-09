@@ -9,4 +9,4 @@ import { Feature } from '../world/features'
 export const ProjectionRegistry = new Registry(Projection)
 export const FeatureRegistry = new Registry(Feature)
 // export const PlayerPropertyRegistry = new Registry(PlayerProperty)
-// export const MonsterBaseRegistry = new Registry(MonsterBase)
+export const MonsterBaseRegistry = new Registry(MonsterBase)
