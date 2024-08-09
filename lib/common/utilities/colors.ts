@@ -1,5 +1,6 @@
 import { stricmp } from './string'
 
+// This function, contrasted with asEnum, returns a number, not a string
 export function colorStringToAttribute(name: string): C {
   if (name === '' || name === ' ') return C.DARK
 

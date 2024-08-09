@@ -24,6 +24,8 @@ export function asInteger(value: ParserValues): number {
   return number
 }
 
+// This returns values of the enum, which are natively stringifiable
+// contrast with color functions, which return the keys
 export function asEnum<T extends Record<string, string | number>>(
   value: unknown,
   enumObject: T
