@@ -1,4 +1,4 @@
-import { FEAT, Feature } from '../world/features'
+import { FEAT, Feature, TF } from '../world/features'
 import { FeatureRegistry } from './registries'
 
 export class Tile {
@@ -20,5 +20,9 @@ export class Tile {
 
   get glyph(): string {
     return this.feature.glyph
+  }
+
+  isPassable(): boolean {
+    return this.feature.flags.has(TF.PASSABLE)
   }
 }
