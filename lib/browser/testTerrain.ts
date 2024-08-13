@@ -1,4 +1,4 @@
-import { FEAT } from '../common/world/features'
+import { FEAT, TF_KEY } from '../common/world/features'
 
 const testRoom = `
 #############################################################################
@@ -26,7 +26,7 @@ const testRoom = `
 #############################################################################
 `
 
-export function loadTestRoom(): FEAT[][] {
+export function loadTestRoom(): (keyof typeof FEAT)[][] {
   return testRoom
     .split('\n')
     .filter(line => line.length !== 0)

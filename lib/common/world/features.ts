@@ -34,6 +34,8 @@ export const FEAT = {
   PASS_RUBBLE: 'PASS_RUBBLE'
 } as const
 
+export type TF_KEY = keyof typeof TF
+
 export const TF = {
   NONE: 'NONE',
   LOS: 'LOS',

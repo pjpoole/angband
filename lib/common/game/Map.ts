@@ -8,9 +8,9 @@ export class GameMap {
   private readonly tiles: Tile[][]
   private readonly entities: Set<Entity> = new Set()
 
-  constructor(features: FEAT[][]) {
-    this.width = features.length
-    this.height = features[0].length
+  constructor(features: (keyof typeof FEAT)[][]) {
+    this.height = features.length
+    this.width = features[0].length
 
     this.tiles = new Array(this.height)
 

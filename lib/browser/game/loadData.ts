@@ -3,9 +3,9 @@ import { FeatureRegistry } from '../../common/game/registries'
 import { FEAT, Feature } from '../../common/world/features'
 import type { Registry } from '../../common/core/Registry'
 
-
-
 export function loadGameObjects(): void {
+  // @ts-ignore
+  window.angband ??= {}
   window.angband.registries = {}
   loadTerrain()
 }
