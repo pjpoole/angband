@@ -2,8 +2,10 @@ import { loadTestRoom } from './testTerrain'
 import { GameMap } from '../common/game/Map'
 import { Entity } from '../common/game/Entity'
 import { CommandMap, COMMANDS } from './commands'
+import { loadGameObjects } from './game/loadData'
 
 document.addEventListener('DOMContentLoaded', () => {
+  loadGameObjects()
   const mapData = loadTestRoom()
   const map = new GameMap(mapData)
   const player = new Entity()

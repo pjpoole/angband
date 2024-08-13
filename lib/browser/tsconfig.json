@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "composite": true,
+    "esModuleInterop": true,
     "lib": [
       "dom",
       "es2023"
     ],
     "module": "commonjs",
     "outDir": "../../dist/browser",
+    "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,
