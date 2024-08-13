@@ -3,70 +3,71 @@ import { z } from 'zod'
 import { RF } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
+import { z_enumFromObject } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
 
-export enum FEAT {
-  NONE, /* nothing/unknown */
-  FLOOR, /* open floor */
-  CLOSED, /* closed door */
-  OPEN, /* open door */
-  BROKEN, /* broken door */
-  LESS, /* up staircase */
-  MORE, /* down staircase */
-  STORE_GENERAL,
-  STORE_ARMOR,
-  STORE_WEAPON,
-  STORE_BOOK,
-  STORE_ALCHEMY,
-  STORE_MAGIC,
-  STORE_BLACK,
-  HOME,
-  SECRET, /* secret door */
-  RUBBLE, /* impassable rubble */
-  MAGMA, /* magma vein wall */
-  QUARTZ, /* quartz vein wall */
-  MAGMA_K, /* magma vein wall with treasure */
-  QUARTZ_K, /* quartz vein wall with treasure */
-  GRANITE, /* granite wall */
-  PERM, /* permanent wall */
-  LAVA,
-  PASS_RUBBLE
-}
+export const FEAT = {
+  NONE: 'NONE', /* nothing/unknown */
+  FLOOR: 'FLOOR', /* open floor */
+  CLOSED: 'CLOSED', /* closed door */
+  OPEN: 'OPEN', /* open door */
+  BROKEN: 'BROKEN', /* broken door */
+  LESS: 'LESS', /* up staircase */
+  MORE: 'MORE', /* down staircase */
+  STORE_GENERAL: 'STORE_GENERAL',
+  STORE_ARMOR: 'STORE_ARMOR',
+  STORE_WEAPON: 'STORE_WEAPON',
+  STORE_BOOK: 'STORE_BOOK',
+  STORE_ALCHEMY: 'STORE_ALCHEMY',
+  STORE_MAGIC: 'STORE_MAGIC',
+  STORE_BLACK: 'STORE_BLACK',
+  HOME: 'HOME',
+  SECRET: 'SECRET', /* secret door */
+  RUBBLE: 'RUBBLE', /* impassable rubble */
+  MAGMA: 'MAGMA', /* magma vein wall */
+  QUARTZ: 'QUARTZ', /* quartz vein wall */
+  MAGMA_K: 'MAGMA_K', /* magma vein wall with treasure */
+  QUARTZ_K: 'QUARTZ_K', /* quartz vein wall with treasure */
+  GRANITE: 'GRANITE', /* granite wall */
+  PERM: 'PERM', /* permanent wall */
+  LAVA: 'LAVA',
+  PASS_RUBBLE: 'PASS_RUBBLE'
+} as const
 
-export enum TF {
-  NONE,
-  LOS,
-  PROJECT,
-  PASSABLE,
-  INTERESTING,
-  PERMANENT,
-  EASY,
-  TRAP,
-  NO_SCENT,
-  NO_FLOW,
-  OBJECT,
-  TORCH,
-  HIDDEN,
-  GOLD,
-  FLOOR,
-  WALL,
-  ROCK,
-  GRANITE,
-  MAGMA,
-  QUARTZ,
-  DOOR_ANY,
-  DOOR_CLOSED,
-  DOOR_JAMMED,
-  DOOR_LOCKED,
-  CLOSABLE,
-  SHOP,
-  STAIR,
-  UPSTAIR,
-  DOWNSTAIR,
-  SMOOTH,
-  BRIGHT,
-  FIERY,
-}
+export const TF = {
+  NONE: 'NONE',
+  LOS: 'LOS',
+  PROJECT: 'PROJECT',
+  PASSABLE: 'PASSABLE',
+  INTERESTING: 'INTERESTING',
+  PERMANENT: 'PERMANENT',
+  EASY: 'EASY',
+  TRAP: 'TRAP',
+  NO_SCENT: 'NO_SCENT',
+  NO_FLOW: 'NO_FLOW',
+  OBJECT: 'OBJECT',
+  TORCH: 'TORCH',
+  HIDDEN: 'HIDDEN',
+  GOLD: 'GOLD',
+  FLOOR: 'FLOOR',
+  WALL: 'WALL',
+  ROCK: 'ROCK',
+  GRANITE: 'GRANITE',
+  MAGMA: 'MAGMA',
+  QUARTZ: 'QUARTZ',
+  DOOR_ANY: 'DOOR_ANY',
+  DOOR_CLOSED: 'DOOR_CLOSED',
+  DOOR_JAMMED: 'DOOR_JAMMED',
+  DOOR_LOCKED: 'DOOR_LOCKED',
+  CLOSABLE: 'CLOSABLE',
+  SHOP: 'SHOP',
+  STAIR: 'STAIR',
+  UPSTAIR: 'UPSTAIR',
+  DOWNSTAIR: 'DOWNSTAIR',
+  SMOOTH: 'SMOOTH',
+  BRIGHT: 'BRIGHT',
+  FIERY: 'FIERY'
+} as const
 
 export const TF_DESC = {
   [TF.NONE]:        "",
@@ -101,16 +102,16 @@ export const TF_DESC = {
   [TF.SMOOTH]:      "Should have smooth boundaries",
   [TF.BRIGHT]:      "Is internally lit",
   [TF.FIERY]:       "Is fire-based"
-}
+} as const
 
 export const FeatureSchema = z.object({
-  code: z.nativeEnum(FEAT),
+  code: z_enumFromObject(FEAT),
   name: z.string(),
   glyph: z.string().length(1),
   color: z.nativeEnum(C),
-  mimic: z.nativeEnum(FEAT).optional(),
+  mimic: z_enumFromObject(FEAT).optional(),
   priority: z.number().int(),
-  flags: z.set(z.nativeEnum(TF)).optional(),
+  flags: z.array(z_enumFromObject(TF)).optional(),
   digging: z.number(),
   description: z.string(),
   walkMessage: z.string().optional(),
@@ -120,19 +121,19 @@ export const FeatureSchema = z.object({
   confusedMessage: z.string().optional(),
   lookPrefix: z.string().optional(),
   lookInPreposition: z.string().optional(),
-  resistFlag: z.nativeEnum(RF).optional()
+  resistFlag: z_enumFromObject(RF).optional()
 })
 
 export type FeatureParams = z.infer<typeof FeatureSchema>
 
 export class Feature implements SerializableBase {
-  readonly code: FEAT
+  readonly code: keyof typeof FEAT
   readonly name: string
   readonly glyph: string
   readonly color: C
-  readonly mimic?: FEAT
+  readonly mimic?: keyof typeof FEAT
   readonly priority: number
-  readonly flags: Set<TF>
+  readonly flags: Set<keyof typeof TF>
   readonly digging: number
   readonly description: string
   readonly walkMessage?: string
@@ -142,7 +143,7 @@ export class Feature implements SerializableBase {
   readonly confusedMessage?: string
   readonly lookPrefix?: string
   readonly lookInPreposition?: string
-  readonly resistFlag?: RF
+  readonly resistFlag?: keyof typeof RF
 
   constructor(params: FeatureParams) {
     this.code = params.code

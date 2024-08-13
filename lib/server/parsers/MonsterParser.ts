@@ -5,6 +5,7 @@ import { MonsterBaseRegistry } from '../../common/game/registries'
 import { setDifference, setUnion } from '../../common/utilities/set'
 import type { C } from '../../common/utilities/colors'
 import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
+import { arrayUnion } from '../../common/utilities/array'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
   | 'hit-points' | 'light' | 'hearing' | 'smell' | 'armor-class' | 'sleepiness'
@@ -131,9 +132,9 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   handleFlags(value: ParserValues) {
     const current = this.current
 
-    if (current.flags == null) current.flags = new Set<RF>()
+    if (current.flags == null) current.flags = []
 
-    current.flags = setUnion(current.flags, allAsEnum(value, RF))
+    current.flags = arrayUnion(current.flags, allAsEnum(value, RF))
   }
 
   handleFlagsOff(value: ParserValues) {

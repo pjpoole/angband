@@ -37,7 +37,7 @@ export class FeatureParser extends Parser<FeatureFields, FeatureParams> {
 
   finalize() {
     for (const obj of this.objects) {
-      FeatureRegistry.build(FEAT[obj.code], obj)
+      FeatureRegistry.build(obj.code, obj)
     }
   }
 

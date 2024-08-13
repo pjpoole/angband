@@ -24,29 +24,26 @@ export function asInteger(value: ParserValues): number {
   return number
 }
 
-// This returns values of the enum, which are natively stringifiable
-// contrast with color functions, which return the keys
 export function asEnum<T extends Record<string, string | number>>(
   value: unknown,
   enumObject: T
-): T[keyof T] {
-  if (!Object.values(enumObject).includes(value as T[keyof T])) {
+): keyof T {
+  if (typeof value !== 'string' || !(value in enumObject)) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return value as T[keyof T]
+  return value
 }
 
 export function allAsEnum<T extends Record<string, string | number>>(
   str: string,
   enumObject: T
-): Set<T[keyof T]> {
+): Array<keyof T> {
   const values = str.split('|').map(el => el.trim())
 
-  const enumValues = new Set(Object.values(enumObject))
-  if (!values.every(value => enumValues.has(value as T[keyof T]))) {
+  if (!values.every(value => value in enumObject)) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return new Set(values as Array<T[keyof T]>)
+  return values
 }
