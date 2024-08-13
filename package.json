@@ -9,6 +9,7 @@
   "scripts": {
     "build": "node ./esbuild.config.js",
     "watch": "esbuild ./lib/browser/app.ts --outfile ./build/app.js --build --watch --target=es2022",
+    "run:parser": "tsx ./lib/server/testLoading.ts",
     "typecheck": "tsc --noEmit lib/**/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
