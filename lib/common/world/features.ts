@@ -134,8 +134,8 @@ export class Feature implements SerializableBase {
   readonly mimic?: keyof typeof FEAT
   readonly priority: number
   readonly flags: Set<keyof typeof TF>
-  readonly digging: number
-  readonly description: string
+  readonly digging?: number
+  readonly description?: string
   readonly walkMessage?: string
   readonly runMessage?: string
   readonly hurtMessage?: string
