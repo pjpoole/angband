@@ -56,11 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         break
       }
       case COMMANDS.MOVE_SOUTH: {
-        player.move(player.x, player.y - 1)
+        player.move(player.x, player.y + 1)
         break
       }
       case COMMANDS.MOVE_SOUTHEAST: {
-        player.move(player.x + 1, player.y - 1)
+        player.move(player.x + 1, player.y + 1)
         break
       }
     }
