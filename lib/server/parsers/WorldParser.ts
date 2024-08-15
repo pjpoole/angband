@@ -30,6 +30,6 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
     current.depth = depth
     current.name = name
     current.up = up === "None" ? undefined : up
-    current.down = down === "None" ? undefined : up
+    current.down = down === "None" ? undefined : down
   }
 }
