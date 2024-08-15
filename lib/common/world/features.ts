@@ -5,7 +5,7 @@ import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
 import { z_enumValueParser } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
-import { EnumValueOnly } from '../utilities/enum'
+import { EnumValueOnly, valueSetToArray, valueToKey } from '../utilities/enum'
 
 export enum FEAT {
   NONE, /* nothing/unknown */
@@ -175,15 +175,15 @@ export class Feature extends SerializableBase {
     this.resistFlag = params.resistFlag
   }
 
-  toJSON(): JsonObject {
+  toJSON(): FeatureJSON {
     return {
-      code: this.code,
+      code: FEAT[this.code],
       name: this.name,
       glyph: this.glyph,
       color: this.color,
-      mimic: this.mimic,
+      mimic: valueToKey(this.mimic, FEAT),
       priority: this.priority,
-      flags: Array.from(this.flags.keys()),
+      flags: valueSetToArray(this.flags, TF),
       digging: this.digging,
       description: this.description,
       walkMessage: this.walkMessage,
@@ -193,7 +193,7 @@ export class Feature extends SerializableBase {
       confusedMessage: this.confusedMessage,
       lookPrefix: this.lookPrefix,
       lookInPreposition: this.lookInPreposition,
-      resistFlag: this.resistFlag
+      resistFlag: valueToKey(this.resistFlag, RF)
     }
   }
 }
