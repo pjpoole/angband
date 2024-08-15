@@ -26,7 +26,7 @@ const testRoom = `
 #############################################################################
 `
 
-export function loadTestRoom(): (keyof typeof FEAT)[][] {
+export function loadTestRoom(): FEAT[][] {
   return testRoom
     .split('\n')
     .filter(line => line.length !== 0)

@@ -10,7 +10,7 @@ export class Tile {
     this.x = x
     this.y = y
 
-    const found = FeatureRegistry.get(FEAT[feature])
+    const found = FeatureRegistry.get(feature)
     if (found == null) {
       throw new Error('invalid feature', { cause: { feature }})
     }
