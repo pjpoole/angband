@@ -29,7 +29,7 @@ export function asEnum<T extends NativeEnum>(
   value: string,
   enumObject: T
 ): keyof T {
-  if (Object.keys(enumObject).includes(value)) {
+  if (!Object.keys(enumObject).includes(value)) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 

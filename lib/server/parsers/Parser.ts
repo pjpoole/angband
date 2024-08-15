@@ -23,9 +23,10 @@ interface hasStaticProperties<S extends SerializableBase, T extends GameObject> 
 export type ParserDerived<
   S extends string,
   T extends GameObject,
-  U extends SerializableBase
+  U extends SerializableBase,
+  V extends GameObject
 > =
-  (new () => Parser<S, T>) & hasStaticProperties<U, T>
+  (new () => Parser<S, T>) & hasStaticProperties<U, V>
 
 export abstract class ParserBase<S extends string, T extends { [K in keyof T]: any }> {
   private _error?: Error

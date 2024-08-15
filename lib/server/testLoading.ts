@@ -6,9 +6,13 @@ import { FeatureParser } from './parsers/FeatureParser'
 import { GameObject } from '../common/GameObject'
 import { SerializableBase } from '../common/core/serializable'
 
-async function doParse<A extends string, B extends GameObject, C extends SerializableBase>(cls: ParserDerived<A, B, C>) {
+async function doParse<A extends string, B extends GameObject, C extends SerializableBase, D extends GameObject>(cls: ParserDerived<A, B, C, D>) {
   const parser = new cls()
   await getFileEntries(getGameDataPath(cls.fileName), parser)
+  if (parser.error) {
+    if (parser.error.cause) console.log(parser.error.cause)
+    throw parser.error
+  }
   parser.finalize()
 
   writeGameData(cls.fileName, cls.registry.toJSON())
@@ -21,4 +25,10 @@ const parsers = [
 for (const parser of parsers) {
   console.log(`running ${parser.name}...`)
   doParse(parser)
+    .then(() => {
+      console.log('done')
+    })
+    .catch(() => {
+      console.log(`failed to run ${parser.name}`)
+    })
 }

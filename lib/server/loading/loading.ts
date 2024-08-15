@@ -54,6 +54,7 @@ export async function getFileEntries<S extends string, T extends GameObject>(fil
       parser.parse(key, rest)
     } catch (e) {
       parser.error = new Error('parser error', { cause: { file: filePath, line: lineNo, data: line, error: e }})
+      break
     }
   }
 }

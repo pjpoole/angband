@@ -15,7 +15,7 @@ function loadTerrain() {
   for (const terrainObj of terrain) {
     try {
       const feature = Feature.fromJSON(terrainObj)
-      FeatureRegistry.add(FEAT[feature.code], feature)
+      FeatureRegistry.add(feature.code, feature)
     } catch (e) {
       console.log(`error loading ${JSON.stringify(terrainObj)}`)
       console.log(e)
