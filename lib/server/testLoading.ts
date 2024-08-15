@@ -23,13 +23,14 @@ const parsers: any[] = [
   FeatureParser
 ]
 
-for (const parser of parsers) {
-  console.log(`running ${parser.name}...`)
-  doParse(parser)
-    .then(() => {
-      console.log('done')
-    })
-    .catch(() => {
-      console.log(`failed to run ${parser.name}`)
-    })
-}
+;(async () => {
+  for (const parser of parsers) {
+    console.log(`${parser.name}: running...`)
+    try {
+      await doParse(parser)
+      console.log(`${parser.name}: done`)
+    } catch (e) {
+      console.log(`${parser.name}: failed`)
+    }
+  }
+})()
