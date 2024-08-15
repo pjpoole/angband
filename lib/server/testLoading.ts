@@ -1,10 +1,10 @@
 import { getFileEntries, getGameDataPath } from './loading/loading'
 import { writeGameData } from './loading/writing'
 
-import { ParserDerived } from './parsers/Parser'
-import { FeatureParser } from './parsers/FeatureParser'
+import { Parser, ParserDerived } from './parsers/Parser'
 import { GameObject } from '../common/GameObject'
 import { SerializableBase } from '../common/core/serializable'
+import { FeatureParser, WorldParser } from './parsers'
 
 async function doParse<A extends string, B extends GameObject, C extends SerializableBase, D extends GameObject>(cls: ParserDerived<A, B, C, D>) {
   const parser = new cls()
@@ -18,7 +18,8 @@ async function doParse<A extends string, B extends GameObject, C extends Seriali
   writeGameData(cls.fileName, cls.registry.toJSON())
 }
 
-const parsers = [
+const parsers: any[] = [
+  WorldParser,
   FeatureParser
 ]
 

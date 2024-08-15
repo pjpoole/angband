@@ -2,7 +2,6 @@ import { z } from 'zod'
 
 import { RF, RF_VALUE } from '../monsters/flags'
 import { C } from '../utilities/colors'
-import { JsonObject } from '../utilities/json'
 import { z_enumValueParser } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
 import { EnumValueOnly, valueSetToArray, valueToKey } from '../utilities/enum'

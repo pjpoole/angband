@@ -1,11 +1,14 @@
 import { Parser } from './Parser'
 import { asInteger, ParserValues } from '../../common/utilities/parsers'
 import { LevelRegistry } from '../../common/game/registries'
-import { LevelParams } from '../../common/world/level'
+import { Level, LevelJSON } from '../../common/world/level'
 
 type WorldFields = 'level'
 
-export class WorldParser extends Parser<WorldFields, LevelParams> {
+export class WorldParser extends Parser<WorldFields, LevelJSON> {
+  static readonly fileName = 'world'
+  static readonly registry = LevelRegistry
+
   constructor() {
     super()
 
@@ -14,7 +17,8 @@ export class WorldParser extends Parser<WorldFields, LevelParams> {
 
   finalize() {
     for (const obj of this.objects) {
-      LevelRegistry.build(obj.name, obj)
+      const level = Level.fromJSON(obj)
+      LevelRegistry.add(level.depth, level)
     }
   }
 
