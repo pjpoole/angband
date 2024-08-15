@@ -3,6 +3,7 @@ import {
   PARSE_ERROR_INVALID_NUMBER,
   PARSE_ERROR_INVALID_OPTION
 } from '../core/errors'
+import { NativeEnum } from './enum'
 
 export type ParserValues = string
 
@@ -24,26 +25,28 @@ export function asInteger(value: ParserValues): number {
   return number
 }
 
-export function asEnum<T extends Record<string, string | number>>(
-  value: unknown,
+export function asEnum<T extends NativeEnum>(
+  value: string,
   enumObject: T
 ): keyof T {
-  if (typeof value !== 'string' || !(value in enumObject)) {
+  if (Object.keys(enumObject).includes(value)) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return value
+  return value as keyof T
 }
 
-export function allAsEnum<T extends Record<string, string | number>>(
+export function allAsEnum<T extends NativeEnum>(
   str: string,
   enumObject: T
 ): Array<keyof T> {
   const values = str.split('|').map(el => el.trim())
 
-  if (!values.every(value => value in enumObject)) {
+  // handle auto-generated reverse mapping
+  const enumValues = new Set(Object.keys(enumObject).filter(val => typeof val === 'string'))
+  if (!values.every(value => enumValues.has(value))) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return values
+  return values as Array<keyof T>
 }

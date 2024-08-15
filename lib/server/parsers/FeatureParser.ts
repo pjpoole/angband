@@ -1,4 +1,9 @@
-import { FEAT, FeatureParams, TF } from '../../common/world/features'
+import {
+  FEAT,
+  Feature,
+  FeatureJSON,
+  TF
+} from '../../common/world/features'
 import { Parser } from './Parser'
 import { allAsEnum, asEnum, ParserValues } from '../../common/utilities/parsers'
 import { colorStringToAttribute } from '../../common/utilities/colors'
@@ -10,7 +15,7 @@ type FeatureFields = 'code' | 'name' | 'graphics' | 'mimic'
   | 'hurt-msg' | 'die-msg' | 'confused-msg' | 'look-prefix'
   | 'look-in-preposition' | 'resist-flag'
 
-export class FeatureParser extends Parser<FeatureFields, FeatureParams> {
+export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
   static readonly fileName = 'terrain'
   static readonly registry = FeatureRegistry
 
@@ -37,7 +42,8 @@ export class FeatureParser extends Parser<FeatureFields, FeatureParams> {
 
   finalize() {
     for (const obj of this.objects) {
-      FeatureRegistry.build(obj.code, obj)
+      const feature = Feature.fromJSON(obj)
+      FeatureRegistry.add(obj.code, feature)
     }
   }
 

@@ -1,75 +1,78 @@
 import { z } from 'zod'
 
-import { RF } from '../monsters/flags'
+import { RF, RF_VALUE } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
-import { z_enumFromObject } from '../utilities/zod'
+import { z_enumValueParser } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
+import { EnumValueOnly } from '../utilities/enum'
 
-export const FEAT = {
-  NONE: 'NONE', /* nothing/unknown */
-  FLOOR: 'FLOOR', /* open floor */
-  CLOSED: 'CLOSED', /* closed door */
-  OPEN: 'OPEN', /* open door */
-  BROKEN: 'BROKEN', /* broken door */
-  LESS: 'LESS', /* up staircase */
-  MORE: 'MORE', /* down staircase */
-  STORE_GENERAL: 'STORE_GENERAL',
-  STORE_ARMOR: 'STORE_ARMOR',
-  STORE_WEAPON: 'STORE_WEAPON',
-  STORE_BOOK: 'STORE_BOOK',
-  STORE_ALCHEMY: 'STORE_ALCHEMY',
-  STORE_MAGIC: 'STORE_MAGIC',
-  STORE_BLACK: 'STORE_BLACK',
-  HOME: 'HOME',
-  SECRET: 'SECRET', /* secret door */
-  RUBBLE: 'RUBBLE', /* impassable rubble */
-  MAGMA: 'MAGMA', /* magma vein wall */
-  QUARTZ: 'QUARTZ', /* quartz vein wall */
-  MAGMA_K: 'MAGMA_K', /* magma vein wall with treasure */
-  QUARTZ_K: 'QUARTZ_K', /* quartz vein wall with treasure */
-  GRANITE: 'GRANITE', /* granite wall */
-  PERM: 'PERM', /* permanent wall */
-  LAVA: 'LAVA',
-  PASS_RUBBLE: 'PASS_RUBBLE'
-} as const
+export enum FEAT {
+  NONE, /* nothing/unknown */
+  FLOOR, /* open floor */
+  CLOSED, /* closed door */
+  OPEN, /* open door */
+  BROKEN, /* broken door */
+  LESS, /* up staircase */
+  MORE, /* down staircase */
+  STORE_GENERAL,
+  STORE_ARMOR,
+  STORE_WEAPON,
+  STORE_BOOK,
+  STORE_ALCHEMY,
+  STORE_MAGIC,
+  STORE_BLACK,
+  HOME,
+  SECRET, /* secret door */
+  RUBBLE, /* impassable rubble */
+  MAGMA, /* magma vein wall */
+  QUARTZ, /* quartz vein wall */
+  MAGMA_K, /* magma vein wall with treasure */
+  QUARTZ_K, /* quartz vein wall with treasure */
+  GRANITE, /* granite wall */
+  PERM, /* permanent wall */
+  LAVA,
+  PASS_RUBBLE
+}
 
-export type TF_KEY = keyof typeof TF
+type FEAT_VALUE = EnumValueOnly<typeof FEAT>
 
-export const TF = {
-  NONE: 'NONE',
-  LOS: 'LOS',
-  PROJECT: 'PROJECT',
-  PASSABLE: 'PASSABLE',
-  INTERESTING: 'INTERESTING',
-  PERMANENT: 'PERMANENT',
-  EASY: 'EASY',
-  TRAP: 'TRAP',
-  NO_SCENT: 'NO_SCENT',
-  NO_FLOW: 'NO_FLOW',
-  OBJECT: 'OBJECT',
-  TORCH: 'TORCH',
-  HIDDEN: 'HIDDEN',
-  GOLD: 'GOLD',
-  FLOOR: 'FLOOR',
-  WALL: 'WALL',
-  ROCK: 'ROCK',
-  GRANITE: 'GRANITE',
-  MAGMA: 'MAGMA',
-  QUARTZ: 'QUARTZ',
-  DOOR_ANY: 'DOOR_ANY',
-  DOOR_CLOSED: 'DOOR_CLOSED',
-  DOOR_JAMMED: 'DOOR_JAMMED',
-  DOOR_LOCKED: 'DOOR_LOCKED',
-  CLOSABLE: 'CLOSABLE',
-  SHOP: 'SHOP',
-  STAIR: 'STAIR',
-  UPSTAIR: 'UPSTAIR',
-  DOWNSTAIR: 'DOWNSTAIR',
-  SMOOTH: 'SMOOTH',
-  BRIGHT: 'BRIGHT',
-  FIERY: 'FIERY'
-} as const
+export enum TF {
+  NONE,
+  LOS,
+  PROJECT,
+  PASSABLE,
+  INTERESTING,
+  PERMANENT,
+  EASY,
+  TRAP,
+  NO_SCENT,
+  NO_FLOW,
+  OBJECT,
+  TORCH,
+  HIDDEN,
+  GOLD,
+  FLOOR,
+  WALL,
+  ROCK,
+  GRANITE,
+  MAGMA,
+  QUARTZ,
+  DOOR_ANY,
+  DOOR_CLOSED,
+  DOOR_JAMMED,
+  DOOR_LOCKED,
+  CLOSABLE,
+  SHOP,
+  STAIR,
+  UPSTAIR,
+  DOWNSTAIR,
+  SMOOTH,
+  BRIGHT,
+  FIERY
+}
+
+type TF_VALUE = EnumValueOnly<typeof TF>
 
 export const TF_DESC = {
   [TF.NONE]:        "",
@@ -107,13 +110,13 @@ export const TF_DESC = {
 } as const
 
 export const FeatureSchema = z.object({
-  code: z_enumFromObject(FEAT),
+  code: z_enumValueParser(FEAT),
   name: z.string(),
   glyph: z.string().length(1),
   color: z.nativeEnum(C),
-  mimic: z_enumFromObject(FEAT).optional(),
+  mimic: z_enumValueParser(FEAT).optional(),
   priority: z.number().int(),
-  flags: z.array(z_enumFromObject(TF)).optional(),
+  flags: z.array(z_enumValueParser(TF)).optional(),
   digging: z.number().optional(),
   description: z.string().optional(),
   walkMessage: z.string().optional(),
@@ -123,19 +126,22 @@ export const FeatureSchema = z.object({
   confusedMessage: z.string().optional(),
   lookPrefix: z.string().optional(),
   lookInPreposition: z.string().optional(),
-  resistFlag: z_enumFromObject(RF).optional()
+  resistFlag: z_enumValueParser(RF).optional()
 })
 
-export type FeatureParams = z.infer<typeof FeatureSchema>
+export type FeatureJSON = z.input<typeof FeatureSchema>
+export type FeatureParams = z.output<typeof FeatureSchema>
 
-export class Feature implements SerializableBase {
-  readonly code: keyof typeof FEAT
+export class Feature extends SerializableBase {
+  static schema = FeatureSchema
+
+  readonly code: FEAT_VALUE
   readonly name: string
   readonly glyph: string
   readonly color: C
-  readonly mimic?: keyof typeof FEAT
+  readonly mimic?: FEAT_VALUE
   readonly priority: number
-  readonly flags: Set<keyof typeof TF>
+  readonly flags: Set<TF_VALUE>
   readonly digging?: number
   readonly description?: string
   readonly walkMessage?: string
@@ -145,9 +151,11 @@ export class Feature implements SerializableBase {
   readonly confusedMessage?: string
   readonly lookPrefix?: string
   readonly lookInPreposition?: string
-  readonly resistFlag?: keyof typeof RF
+  readonly resistFlag?: RF_VALUE
 
   constructor(params: FeatureParams) {
+    super(params)
+
     this.code = params.code
     this.name = params.name
     this.glyph = params.glyph
@@ -165,12 +173,6 @@ export class Feature implements SerializableBase {
     this.lookPrefix = params.lookPrefix
     this.lookInPreposition = params.lookInPreposition
     this.resistFlag = params.resistFlag
-  }
-
-  static fromJSON(parsed: JsonObject): Feature {
-    const params = FeatureSchema.parse(parsed)
-
-    return new Feature(params)
   }
 
   toJSON(): JsonObject {

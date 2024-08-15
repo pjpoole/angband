@@ -1,4 +1,4 @@
-import { FEAT, TF_KEY } from '../common/world/features'
+import { FEAT } from '../common/world/features'
 
 const testRoom = `
 #############################################################################

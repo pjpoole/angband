@@ -1,4 +1,5 @@
 import { JsonObject } from '../utilities/json'
+import { ZodObject } from 'zod'
 
 interface Serializable {
   toJSON(): JsonObject
@@ -12,10 +13,18 @@ type SerializableClass<T> = {
   new (...args: any[]): T & Serializable
 } & Deserializable<T>
 
-export abstract class SerializableBase implements Serializable {
-  abstract toJSON(): JsonObject
+export class SerializableBase implements Serializable {
+  static schema: ZodObject<any>
+
+  constructor(params: JsonObject) {}
+
+  toJSON(): JsonObject {
+    throw new Error('not implemented')
+  }
 
   static fromJSON(data: JsonObject): any {
-    throw new Error('fromJSON method must be implemented')
+    const params = this.schema.parse(data)
+
+    return new this(params)
   }
 }
