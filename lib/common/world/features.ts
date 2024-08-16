@@ -176,7 +176,7 @@ export class Feature extends SerializableBase {
 
   toJSON(): FeatureJSON {
     return {
-      code: FEAT[this.code],
+      code: valueToKey(this.code, FEAT),
       name: this.name,
       glyph: this.glyph,
       color: this.color,

@@ -6,7 +6,6 @@ import { GameObject } from '../common/GameObject'
 import { SerializableBase } from '../common/core/serializable'
 import { DungeonProfileParser, FeatureParser, WorldParser } from './parsers'
 import { ConstantsParser } from './parsers/ConstantsParser'
-import { Constants } from '../common/core/constants'
 
 async function doParse<A extends string, B extends GameObject, C extends SerializableBase, D extends GameObject>(cls: ParserDerived<A, B, C, D>) {
   const parser = new cls()

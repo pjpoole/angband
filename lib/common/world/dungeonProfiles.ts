@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 import { isValidRoomName } from './room'
+import { valueToKey } from '../utilities/enum'
+import { z_enumValueParser } from '../utilities/zod'
 
 export enum DUN {
   town,
@@ -8,14 +10,14 @@ export enum DUN {
   moria,
   lair,
   gauntlet,
-  hard_centre,
+  "hard centre",
   labyrinth,
   cavern,
   classic,
 }
 
 export const DungeonProfileSchema = z.object({
-  name: z.string(),
+  name: z_enumValueParser(DUN),
   blockSize: z.number(),
   rooms: z.number(),
   unusual: z.number(),
@@ -86,7 +88,7 @@ interface Room {
 export class DungeonProfile extends SerializableBase {
   static schema = DungeonProfileSchema
 
-  readonly name: string
+  readonly name: DUN
   readonly blockSize: number
   readonly rooms: number
   readonly unusual: number
@@ -114,7 +116,7 @@ export class DungeonProfile extends SerializableBase {
 
   toJSON(): DungeonProfileJSON {
     return {
-      name: this.name,
+      name: valueToKey(this.name, DUN),
       blockSize: this.blockSize,
       rooms: this.rooms,
       unusual: this.unusual,
