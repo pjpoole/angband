@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
+import { isValidRoomName } from './room'
 
 export enum DUN {
   town,
@@ -37,7 +38,10 @@ export const DungeonProfileSchema = z.object({
   allocation: z.number(),
   minLevel: z.number().optional(),
   allowedRooms: z.array(z.object({
-    name: z.string(),
+    name: z.string().refine(
+      name => isValidRoomName(name),
+      name => ({ message: `'${name}' is not a valid room name`})
+    ),
     rating: z.number(),
     height: z.number(),
     width: z.number(),

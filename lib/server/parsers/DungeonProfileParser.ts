@@ -2,13 +2,14 @@ import {
   DungeonProfile,
   DungeonProfileJSON
 } from '../../common/world/dungeonProfiles'
+import { isValidRoomName } from '../../common/world/room'
 import { DungeonProfileRegistry } from '../../common/game/registries'
-import { Parser } from './Parser'
 import {
   asBoolean,
   asInteger,
   ParserValues
 } from '../../common/utilities/parsers'
+import { Parser } from './Parser'
 
 type DungeonProfileFields = 'name' | 'params' | 'tunnel' | 'streamer' | 'alloc'
   | 'min-level' | 'room'
@@ -104,6 +105,9 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
     }
 
     const [name, rating, height, width, level, pit, rarity, cutoff] = strings
+
+    if (!isValidRoomName(name)) throw new Error('invalid room name')
+
     const currentRoom = {
       name,
       rating: asInteger(rating),
