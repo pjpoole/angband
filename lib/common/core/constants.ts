@@ -142,7 +142,6 @@ export class Constants extends SerializableBase {
   }
 
   toJSON(): ConstantsJSON {
-    console.log('called')
     return this.data
   }
 }
