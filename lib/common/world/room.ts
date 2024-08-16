@@ -1,3 +1,4 @@
+// list-rooms.h
 const ROOM = [
   { name: 'staircase room', rows: 0, cols: 0, fn: buildStaircase },
   { name: 'simple room', rows: 0, cols: 0, fn: buildSimple },

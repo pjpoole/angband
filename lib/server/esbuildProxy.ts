@@ -28,6 +28,7 @@ export async function doEsBuildProxy(req: express.Request, res: express.Response
   const options = {
     hostname: host,
     port: port,
+    // TODO: janky
     path: req.url.replace(/^\/static/, '/build'),
     method: req.method,
     headers: req.headers,
