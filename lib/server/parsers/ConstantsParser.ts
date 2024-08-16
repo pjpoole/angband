@@ -85,7 +85,7 @@ interface CriticalLevel {
 
 interface ZeroCriticalLevel {
   powerCutoff: number
-  addDice: number
+  addedDice: number
   messageName: string
 }
 
@@ -232,11 +232,11 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
   }
 
   private parseZeroCriticalLevel(values: ParserValues): ZeroCriticalLevel {
-    const [powerCutoff, addDice, messageName] = asTokens(values, 3)
+    const [powerCutoff, addedDice, messageName] = asTokens(values, 3)
 
     return {
       powerCutoff: asInteger(powerCutoff),
-      addDice: asInteger(addDice),
+      addedDice: asInteger(addedDice),
       messageName
     }
   }
