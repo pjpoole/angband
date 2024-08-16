@@ -1,13 +1,12 @@
-import constants from '../../gamedata/constants.json'
 import world from '../../gamedata/world.json'
 import terrain from '../../gamedata/terrain.json'
 
-import { Constants } from '../../common/core/constants'
 import { Registry } from '../../common/core/Registry'
 import { FeatureRegistry, LevelRegistry } from '../../common/game/registries'
 import { Feature } from '../../common/world/features'
 import { Level } from '../../common/world/level'
 import { JsonArray } from '../../common/utilities/json'
+import { getConstants } from '../../common/core/loading'
 
 const Loaders: [string, string, JsonArray, any, Registry<any, any>][] = [
   ['level', 'depth', world, Level, LevelRegistry],
@@ -17,11 +16,7 @@ const Loaders: [string, string, JsonArray, any, Registry<any, any>][] = [
 export function loadConstants(): void {
   // @ts-ignore
   window.angband ??= {}
-
-  // just parsing
-  const instance = Constants.fromJSON(constants)
-
-  window.angband.constants = instance.data
+  window.angband.constants = getConstants()
 }
 
 export function loadGameObjects(): void {

@@ -3,6 +3,7 @@
     "composite": true,
     "moduleResolution": "nodenext",
     "outDir": "../../dist/common",
+    "resolveJsonModule": true,
     "rootDir": ".",
     "strict": true,
     "target": "es2022"
