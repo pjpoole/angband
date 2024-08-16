@@ -7,6 +7,7 @@ import { DungeonProfileRegistry } from '../../common/game/registries'
 import {
   asBoolean,
   asInteger,
+  asTokens,
   ParserValues
 } from '../../common/utilities/parsers'
 import { Parser } from './Parser'
@@ -44,12 +45,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   handleParams(values: ParserValues) {
     const current = this.current
-    const strings = values.split(':')
-    if (strings.length !== 4) {
-      throw new Error('invalid params for dungeon profile')
-    }
-
-    const [blockSize, rooms, unusual, rarity] = strings
+    const [blockSize, rooms, unusual, rarity] = asTokens(values, 4)
 
     current.blockSize = asInteger(blockSize)
     current.rooms = asInteger(rooms)
@@ -59,12 +55,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   handleTunnel(values: ParserValues) {
     const current = this.current
-    const strings = values.split(':')
-    if (strings.length !== 5) {
-      throw new Error('invalid tunnel for dungeon profile')
-    }
-
-    const [rnd, chg, con, pen, jct] = strings
+    const [rnd, chg, con, pen, jct] = asTokens(values, 5)
 
     current.tunnel = {
       rnd: asInteger(rnd),
@@ -77,12 +68,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   handleStreamer(values: ParserValues) {
     const current = this.current
-    const strings = values.split(':')
-    if (strings.length !== 6) {
-      throw new Error('invalid tunnel for dungeon profile')
-    }
-
-    const [den, rng, mag, mc, qua, qc] = strings
+    const [den, rng, mag, mc, qua, qc] = asTokens(values, 6)
 
     current.streamer = {
       den: asInteger(den),
@@ -96,15 +82,9 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   handleRoom(values: ParserValues) {
     const current = this.current
-
     current.allowedRooms ??= []
 
-    const strings = values.split(':')
-    if (strings.length !== 8) {
-      throw new Error('invalid room for dungeon profile')
-    }
-
-    const [name, rating, height, width, level, pit, rarity, cutoff] = strings
+    const [name, rating, height, width, level, pit, rarity, cutoff] = asTokens(values, 8)
 
     if (!isValidRoomName(name)) throw new Error('invalid room name')
 

@@ -54,3 +54,15 @@ export function allAsEnum<T extends NativeEnum>(
 
   return values as Array<keyof T>
 }
+
+export function asTokens(str: string, count: number) {
+  const strings = str.split(':')
+  if (strings.length !== count) {
+    throw new Error(
+      'invalid tokens',
+      { cause: { expected: count, actual: strings.length, value: str } }
+    )
+  }
+
+  return strings
+}
