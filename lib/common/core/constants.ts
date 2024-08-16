@@ -2,6 +2,15 @@ import { z } from 'zod'
 import { HIT_MESSAGES } from '../game/messages'
 import { SerializableBase } from './serializable'
 
+function isMonotonic(ary: { powerCutoff: number}[]) {
+  let previousCutoff = -1
+  for (const level of ary) {
+    if (level.powerCutoff <= previousCutoff) return false
+    previousCutoff = level.powerCutoff
+  }
+  return true
+}
+
 const criticalConstants = z.object({
   debuffToHit: z.number(),
   chanceWeightScale: z.number(),
@@ -17,7 +26,7 @@ const criticalConstants = z.object({
     damageMultiplier: z.number(),
     damageAdded: z.number(),
     messageName: z.string().refine(str => HIT_MESSAGES.includes(str as `HIT_${string}`))
-  }))
+  })).refine(isMonotonic, { message: 'power levels are not strictly increasing'})
 })
 
 const zeroCriticalConstants = z.object({
