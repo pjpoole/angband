@@ -309,3 +309,9 @@ const MSG_TO_SOUND = {
   [MSG.MULTIPLY]: 'multiply',
   [MSG.SCRAMBLE]: 'scramble',
 }
+
+export const HIT_MESSAGES = Object.keys(MSG).filter(isHitMessage)
+
+function isHitMessage(message: string): message is `HIT_${string}` {
+  return message.startsWith('HIT_')
+}

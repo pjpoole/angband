@@ -6,10 +6,12 @@ interface Serializable {
 }
 
 interface Deserializable<T> {
+  schema: ZodObject<any>
   fromJSON(data: JsonObject): T
 }
 
-type SerializableClass<T> = {
+// TODO: get this safety elsewhere
+export type SerializableClass<T> = {
   new (...args: any[]): T & Serializable
 } & Deserializable<T>
 
