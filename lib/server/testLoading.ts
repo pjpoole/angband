@@ -1,24 +1,29 @@
 import { getFileEntries, getGameDataPath } from './loading/loading'
 import { writeGameData } from './loading/writing'
 
-import { Parser, ParserDerived } from './parsers/Parser'
+import { ParserDerived } from './parsers/Parser'
 import { GameObject } from '../common/GameObject'
 import { SerializableBase } from '../common/core/serializable'
-import { FeatureParser, WorldParser } from './parsers'
+import { DungeonProfileParser, FeatureParser, WorldParser } from './parsers'
 
 async function doParse<A extends string, B extends GameObject, C extends SerializableBase, D extends GameObject>(cls: ParserDerived<A, B, C, D>) {
   const parser = new cls()
-  await getFileEntries(getGameDataPath(cls.fileName), parser)
+  const fileName = cls.fileName
+
+  if (fileName == null) throw new Error('no filename specified')
+
+  await getFileEntries(getGameDataPath(fileName), parser)
   if (parser.error) {
     if (parser.error.cause) console.log(parser.error.cause)
     throw parser.error
   }
   parser.finalize()
 
-  writeGameData(cls.fileName, cls.registry.toJSON())
+  await writeGameData(cls.fileName, cls.registry.toJSON())
 }
 
 const parsers: any[] = [
+  DungeonProfileParser,
   WorldParser,
   FeatureParser
 ]
@@ -31,6 +36,7 @@ const parsers: any[] = [
       console.log(`${parser.name}: done`)
     } catch (e) {
       console.log(`${parser.name}: failed`)
+      throw e
     }
   }
 })()

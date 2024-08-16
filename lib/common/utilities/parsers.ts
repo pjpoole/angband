@@ -25,6 +25,10 @@ export function asInteger(value: ParserValues): number {
   return number
 }
 
+export function asBoolean(value: ParserValues): boolean {
+  return value === '1'
+}
+
 export function asEnum<T extends NativeEnum>(
   value: string,
   enumObject: T
