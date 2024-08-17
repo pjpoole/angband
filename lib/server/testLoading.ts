@@ -4,7 +4,7 @@ import { writeGameData } from './loading/writing'
 import { ParserDerived } from './parsers/Parser'
 import { GameObject } from '../common/GameObject'
 import { SerializableBase } from '../common/core/serializable'
-import { DungeonProfileParser, FeatureParser, WorldParser } from './parsers'
+import { BlowParser, DungeonProfileParser, FeatureParser, WorldParser } from './parsers'
 import { ConstantsParser } from './parsers/ConstantsParser'
 
 async function doParse<A extends string, B extends GameObject, C extends SerializableBase, D extends GameObject>(cls: ParserDerived<A, B, C, D>) {
@@ -49,6 +49,7 @@ function checkForParserError(parser: { error?: Error }) {
 }
 
 const parsers: any[] = [
+  BlowParser,
   DungeonProfileParser,
   WorldParser,
   FeatureParser
