@@ -10,6 +10,12 @@ export function valueToKey<T extends NativeEnum>(value: number | undefined, enum
   return undefined
 }
 
+export function valueToKeyOrThrow<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T {
+  const result = valueToKey(value, enumObject)
+  if (result) return result
+  throw new Error('key not found in enum')
+}
+
 export function valueSetToArray<T extends NativeEnum>(set: Set<T[keyof T]>, enumObject: T): Array<keyof T> {
   const results: Array<keyof T> = []
 

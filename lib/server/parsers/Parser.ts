@@ -100,7 +100,7 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
   keyToString(key: KeyOfType<T, string>): ParserFunction {
     return (value: ParserValues): void => {
       const current = this.current
-      current[key] = value as T[typeof key]
+      current[key] = (current[key] || '') + value as T[typeof key]
     }
   }
 
