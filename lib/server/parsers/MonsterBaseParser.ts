@@ -1,13 +1,13 @@
 import { MonsterBaseRegistry } from '../../common/game/registries'
 import { RF } from '../../common/monsters/flags'
-import type { MonsterBaseParams } from '../../common/monsters/monsterBase'
-import { setUnion } from '../../common/utilities/set'
+import { MonsterBase, MonsterBaseJSON } from '../../common/monsters/monsterBase'
+import { arrayUnion } from '../../common/utilities/array'
 import { Parser } from './Parser'
 import { allAsEnum, ParserValues } from '../../common/utilities/parsers'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
-export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseParams> {
+export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON> {
   constructor() {
     super()
 
@@ -20,7 +20,8 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBasePara
 
   finalize(): void {
     for (const obj of this.objects) {
-      MonsterBaseRegistry.build(obj.name, obj)
+      const monsterBase = MonsterBase.fromJSON(obj)
+      MonsterBaseRegistry.add(obj.name, monsterBase)
     }
   }
 
@@ -38,8 +39,8 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBasePara
   handleMonsterFlags(value: ParserValues) {
     const current = this.current
 
-    if (current.flags == null) current.flags = new Set<RF>()
+    if (current.flags == null) current.flags = []
 
-    current.flags = setUnion(current.flags, allAsEnum(value, RF))
+    current.flags = arrayUnion(current.flags, allAsEnum(value, RF))
   }
 }
