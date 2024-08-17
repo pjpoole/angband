@@ -3,6 +3,40 @@ import { MON_MESSAGES, MSG } from '../game/messages'
 import { SerializableBase } from '../core/serializable'
 import { valueToKeyOrThrow } from '../utilities/enum'
 
+// mon-blows.c, effect_handlers
+export enum BLOW_EF {
+  NONE,
+  HURT,
+  POISON,
+  DISENCHANT,
+  DRAIN_CHARGES,
+  EAT_GOLD,
+  EAT_ITEM,
+  EAT_FOOD,
+  EAT_LIGHT,
+  ACID,
+  ELEC,
+  FIRE,
+  COLD,
+  BLIND,
+  CONFUSE,
+  TERRIFY,
+  PARALYZE,
+  LOSE_STR,
+  LOSE_INT,
+  LOSE_WIS,
+  LOSE_DEX,
+  LOSE_CON,
+  LOSE_ALL,
+  SHATTER,
+  EXP_10,
+  EXP_20,
+  EXP_40,
+  EXP_80,
+  HALLU,
+  BLACK_BREATH,
+}
+
 export const BlowSchema = z.object({
   name: z.string(),
   cut: z.boolean(),

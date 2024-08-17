@@ -17,6 +17,13 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     return this.data.get(key)
   }
 
+  getOrThrow(key: V): T {
+    const result = this.data.get(key)
+    if (result) return result
+
+    throw new Error('value not found') // TODO: more verbose
+  }
+
   build(key: V, data: U): void {
     const obj = new this.ctor(data)
     this.add(key, obj)
