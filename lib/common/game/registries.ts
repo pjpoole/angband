@@ -1,4 +1,4 @@
-import { Registry } from '../core/Registry'
+import { NameRegistry, IdRegistry } from '../core/Registry'
 import { MonsterBase } from '../monsters/monsterBase'
 import { Projection } from '../spells/Projection'
 // import { PlayerProperty } from '../player/properties'
@@ -7,9 +7,9 @@ import { Feature } from '../world/features'
 import { Level } from '../world/level'
 
 
-export const DungeonProfileRegistry = new Registry(DungeonProfile)
-export const LevelRegistry = new Registry(Level)
-export const ProjectionRegistry = new Registry(Projection)
-export const FeatureRegistry = new Registry(Feature)
-// export const PlayerPropertyRegistry = new Registry(PlayerProperty)
-export const MonsterBaseRegistry = new Registry(MonsterBase)
+export const DungeonProfileRegistry = new IdRegistry(DungeonProfile)
+export const LevelRegistry = new IdRegistry(Level)
+export const ProjectionRegistry = new IdRegistry(Projection)
+export const FeatureRegistry = new IdRegistry(Feature)
+// export const PlayerPropertyRegistry = new IdRegistry(PlayerProperty)
+export const MonsterBaseRegistry = new NameRegistry(MonsterBase)
