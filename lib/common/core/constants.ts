@@ -4,9 +4,10 @@ import { SerializableBase } from './serializable'
 
 function isMonotonic(ary: { powerCutoff: number}[]) {
   let previousCutoff = -1
-  for (const level of ary) {
-    if (level.powerCutoff <= previousCutoff) return false
-    previousCutoff = level.powerCutoff
+  // last element is -1 by convention to act as a catch-all
+  for (let i = 0; i < ary.length - 1; i++) {
+    if (ary[i].powerCutoff <= previousCutoff) return false
+    previousCutoff = ary[i].powerCutoff
   }
   return true
 }
