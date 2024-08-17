@@ -1,3 +1,4 @@
+// list-randart-properties.h
 export enum ART_IDX {
   BOW_SHOTS,
   BOW_MIGHT,

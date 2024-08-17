@@ -1,3 +1,4 @@
+// list-object-modifiers.h
 export enum OBJ_MOD {
   STEALTH,
   SEARCH,
