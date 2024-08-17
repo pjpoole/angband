@@ -5,6 +5,7 @@ import {
   TF
 } from '../../common/world/features'
 import { Parser } from './Parser'
+import { arrayUnion } from '../../common/utilities/array'
 import { allAsEnum, asEnum, ParserValues } from '../../common/utilities/parsers'
 import { colorStringToAttribute } from '../../common/utilities/colors'
 import { RF } from '../../common/monsters/flags'
@@ -67,7 +68,8 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
 
   handleFlags(values: ParserValues) {
     const current = this.current
-    current.flags = allAsEnum(values, TF)
+    if (current.flags == null) current.flags = []
+    current.flags = arrayUnion(current.flags, allAsEnum(values, TF))
   }
 
   handleResists(values: ParserValues) {
