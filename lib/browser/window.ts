@@ -6,7 +6,7 @@ declare global {
     angband: {
       constants: ConstantsParams
       registries: {
-        [key: string]: Registry<any, any>
+        [key: string]: Registry<any, any, any>
       }
     }
   }

@@ -6,7 +6,7 @@ import { SerializableBase } from './serializable'
 // values, not keys, everywhere
 //
 // I suspect that in time I'll find this assumption violated
-abstract class Registry<T extends SerializableBase, U extends GameObject, V extends string | number> {
+export class Registry<T extends SerializableBase, U extends GameObject, V extends string | number> {
   readonly data: Map<V, T> = new Map()
 
   constructor(protected readonly ctor: new (params: U) => T) {

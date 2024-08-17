@@ -17,7 +17,7 @@ type KeyOfType<T, U> = keyof { [K in keyof T as NonNullable<T[K]> extends U ? K 
 
 interface hasStaticProperties<S extends SerializableBase, T extends GameObject> {
   fileName: string
-  registry: Registry<S, T>
+  registry: Registry<S, T, any>
 }
 
 export type ParserDerived<

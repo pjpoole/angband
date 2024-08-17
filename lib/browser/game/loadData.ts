@@ -8,7 +8,7 @@ import { Level } from '../../common/world/level'
 import { JsonArray } from '../../common/utilities/json'
 import { getConstants } from '../../common/core/loading'
 
-const Loaders: [string, string, JsonArray, any, Registry<any, any>][] = [
+const Loaders: [string, string, JsonArray, any, Registry<any, any, any>][] = [
   ['level', 'depth', world, Level, LevelRegistry],
   ['feature', 'code', terrain, Feature, FeatureRegistry ]
 ]
