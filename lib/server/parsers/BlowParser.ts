@@ -20,7 +20,7 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
     this.register('miss', this.keyToBoolean('miss'))
     this.register('phys', this.keyToBoolean('physical'))
     this.register('msg', this.handleMessage.bind(this))
-    this.register('act', this.keyToString('action'))
+    this.register('act', this.handleActions.bind(this))
     this.register('desc', this.keyToString('description'))
   }
 
@@ -36,6 +36,12 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
   handleName(values: ParserValues) {
     this.newCurrent()
     this.keyToSingleString('name')(values)
+  }
+
+  handleActions(values: ParserValues) {
+    const current = this.current
+    current.actions ??= []
+    current.actions.push(values)
   }
 
   handleMessage(values: ParserValues) {

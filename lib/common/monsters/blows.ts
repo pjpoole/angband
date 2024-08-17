@@ -10,7 +10,7 @@ export const BlowSchema = z.object({
   miss: z.boolean(),
   physical: z.boolean(),
   message: z.string().refine(str => MON_MESSAGES.includes(str as `MON_${string}`)),
-  action: z.string(),
+  actions: z.array(z.string()),
   description: z.string(),
 })
 
@@ -26,7 +26,7 @@ export class Blow extends SerializableBase {
   readonly miss: boolean
   readonly physical: boolean
   readonly message: MSG
-  readonly action: string
+  readonly actions: string[]
   readonly description: string
 
   constructor(params: BlowParams) {
@@ -38,7 +38,7 @@ export class Blow extends SerializableBase {
     this.miss = params.miss
     this.physical = params.physical
     this.message = MSG[params.message as keyof typeof MSG]
-    this.action = params.action
+    this.actions = params.actions
     this.description = params.description
   }
 
@@ -50,7 +50,7 @@ export class Blow extends SerializableBase {
       miss: this.miss,
       physical: this.physical,
       message: valueToKeyOrThrow(this.message, MSG),
-      action: this.action,
+      actions: this.actions,
       description: this.description,
     }
   }
