@@ -16,6 +16,8 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
   }
 
   finalize() {
+    this.finalizeCurrent()
+
     for (const obj of this.objects) {
       const level = Level.fromJSON(obj)
       LevelRegistry.add(level.depth, level)

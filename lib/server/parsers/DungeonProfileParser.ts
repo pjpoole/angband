@@ -32,6 +32,8 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
   }
 
   finalize() {
+    this.finalizeCurrent()
+
     for (const obj of this.objects) {
       const dungeonProfile = DungeonProfile.fromJSON(obj)
       DungeonProfileRegistry.add(dungeonProfile.name, dungeonProfile)

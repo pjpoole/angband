@@ -42,6 +42,8 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
   }
 
   finalize() {
+    this.finalizeCurrent()
+
     for (const obj of this.objects) {
       const feature = Feature.fromJSON(obj)
       FeatureRegistry.add(obj.code, feature)

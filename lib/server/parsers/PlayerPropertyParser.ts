@@ -27,6 +27,8 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
   }
 
   finalize() {
+    this.finalizeCurrent()
+
     for (const obj of this.objects) {
       PlayerPropertyRegistry.build(obj.name, obj)
     }

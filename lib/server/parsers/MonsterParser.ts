@@ -89,6 +89,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
   // TODO
   finalize() {
+    this.finalizeCurrent()
 
   }
 

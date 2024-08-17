@@ -31,6 +31,8 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
   }
 
   finalize() {
+    this.finalizeCurrent()
+
     for (const obj of this.objects) {
       ProjectionRegistry.build(obj.name, obj)
     }
