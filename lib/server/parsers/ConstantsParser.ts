@@ -118,7 +118,7 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
   }
 
   // we handle our own serialization because we're a singleton
-  async finalize() {
+  override async finalize() {
     this.finalizeCurrent()
 
     let seenOne = false
@@ -130,6 +130,9 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
       await writeGameData(ConstantsParser.fileName, constants.toJSON())
     }
   }
+
+  // Stub for class; TODO: is this necessary?
+  _finalize(obj: ConstantsJSONOverride) {}
 
   handleRemapper(jsonKey: keyof ConstantsJSON, remapper: Record<string, string>, values: ParserValues) {
     const current = this.current
