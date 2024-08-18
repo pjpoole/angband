@@ -311,7 +311,12 @@ const MSG_TO_SOUND = {
 }
 
 export const HIT_MESSAGES = Object.keys(MSG).filter(isHitMessage)
+export const MON_MESSAGES = Object.keys(MSG).filter(isMonsterMessage)
 
 function isHitMessage(message: string): message is `HIT_${string}` {
   return message.startsWith('HIT_')
+}
+
+function isMonsterMessage(message: string): message is `MON_${string}` {
+  return message.startsWith('MON_')
 }

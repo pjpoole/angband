@@ -140,7 +140,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   handleFlagsOff(value: ParserValues) {
     const current = this.current
 
-    if (current.flags == null) current.flags = new Set<RF>()
+    if (current.flags == null) current.flags = []
 
     current.flags = setDifference(current.flags, allAsEnum(value, RF))
   }

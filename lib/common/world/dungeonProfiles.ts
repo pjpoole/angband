@@ -17,6 +17,7 @@ export enum DUN {
   classic,
 }
 
+// TODO: Refine validators for e.g. boundary checks
 export const DungeonProfileSchema = z.object({
   name: z_enumValueParser(DUN),
   blockSize: z.number(),
