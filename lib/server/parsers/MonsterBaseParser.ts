@@ -8,6 +8,9 @@ import { allAsEnum, ParserValues } from '../../common/utilities/parsers'
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
 export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON> {
+  static readonly fileName = 'monster_base'
+  static readonly registry = MonsterBaseRegistry
+
   constructor() {
     super()
 
