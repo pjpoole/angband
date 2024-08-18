@@ -21,13 +21,9 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
     this.register('desc', this.keyToString('description'))
   }
 
-  finalize(): void {
-    this.finalizeCurrent()
-
-    for (const obj of this.objects) {
-      const monsterBase = MonsterBase.fromJSON(obj)
-      MonsterBaseRegistry.add(obj.name, monsterBase)
-    }
+  _finalize(obj: MonsterBaseJSON): void {
+    const monsterBase = MonsterBase.fromJSON(obj)
+    MonsterBaseRegistry.add(obj.name, monsterBase)
   }
 
   handleMonsterName(value: ParserValues) {

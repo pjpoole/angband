@@ -30,15 +30,11 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
     this.register('flags', this.handleFlags.bind(this))
   }
 
-  finalize() {
-    this.finalizeCurrent()
-
-    for (const obj of this.objects) {
-      const objectBase = ObjectBase.fromJSON(obj)
-      // TODO: Check on how ObjectBases are referenced from elsewhere
-      // currently indexed on tval; see TV
-      ObjectBaseRegistry.add(objectBase.type, objectBase)
-    }
+  _finalize(obj: ObjectBaseJSON) {
+    const objectBase = ObjectBase.fromJSON(obj)
+    // TODO: Check on how ObjectBases are referenced from elsewhere
+    // currently indexed on tval; see TV
+    ObjectBaseRegistry.add(objectBase.type, objectBase)
   }
 
   // Weird custom code

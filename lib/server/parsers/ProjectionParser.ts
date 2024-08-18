@@ -30,12 +30,8 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
     this.register('color', this.keyToColor('color'))
   }
 
-  finalize() {
-    this.finalizeCurrent()
-
-    for (const obj of this.objects) {
-      ProjectionRegistry.build(obj.name, obj)
-    }
+  _finalize(obj: ProjectionParams) {
+    ProjectionRegistry.build(obj.name, obj)
   }
 
   handleCode(value: ParserValues) {

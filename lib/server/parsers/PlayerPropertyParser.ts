@@ -26,12 +26,8 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
     this.register('value', this.handleValue.bind(this))
   }
 
-  finalize() {
-    this.finalizeCurrent()
-
-    for (const obj of this.objects) {
-      PlayerPropertyRegistry.build(obj.name, obj)
-    }
+  _finalize(obj: PlayerPropertyParams) {
+    PlayerPropertyRegistry.build(obj.name, obj)
   }
 
   handleCode(value: ParserValues) {
