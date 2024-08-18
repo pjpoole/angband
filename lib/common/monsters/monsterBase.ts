@@ -10,7 +10,7 @@ export const MonsterBaseSchema = z.object({
   name: z.string(),
   glyph: z.string().length(1),
   pain: z.number().nonnegative(),
-  flags: z.array(z_enumValueParser(RF)),
+  flags: z.array(z_enumValueParser(RF)).optional(),
   description: z.string()
 })
 
