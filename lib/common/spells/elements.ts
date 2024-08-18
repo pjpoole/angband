@@ -1,4 +1,6 @@
 // list-elements.h
+import { enumToKeyArray, EnumValueOnly } from '../utilities/enum'
+
 export enum ELEM {
   ACID,
   ELEC,
@@ -26,3 +28,6 @@ export enum ELEM {
   HOLY_ORB,
   ARROW,
 }
+
+export type ELEM_VALUES = EnumValueOnly<ELEM>
+export const ELEM_KEYS = enumToKeyArray(ELEM)

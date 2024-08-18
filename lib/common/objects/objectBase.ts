@@ -2,8 +2,17 @@ import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 
 import { C } from '../utilities/colors'
-import { TV, TV_NAMES } from './tval'
 import { Entries } from '../utilities/object'
+import { TV, TV_NAMES } from './tval'
+import { KF } from './kindFlags'
+import { OF } from './flags'
+import { ELEM, ELEM_KEYS } from '../spells/elements'
+
+type ObjectBaseFlag =
+  | keyof typeof KF
+  | keyof typeof OF
+  | `HATES_${keyof typeof ELEM}`
+  | `IGNORE_${keyof typeof ELEM}`
 
 export const ObjectBaseSchema = z.object({
   name: z.string(),
@@ -22,7 +31,27 @@ export const ObjectBaseSchema = z.object({
   graphics: z.nativeEnum(C),
   break: z.number().optional(),
   // Union of: KF, OF, and ELEM with 'HATES_' or 'IGNORE_'
-  flags: z.array(z.string()).optional(),
+  flags: z.array(z.string().transform((str, ctx): ObjectBaseFlag => {
+    if (Object.keys(KF).includes(str)) {
+      return str as keyof typeof KF
+    } else if (Object.keys(OF).includes(str)) {
+      return str as keyof typeof OF
+    } else {
+      if (str.startsWith('HATES_')) {
+        const substr = str.replace('HATES_', '')
+        if (ELEM_KEYS.includes(substr as unknown as keyof typeof ELEM)) return str as `HATES_${keyof typeof ELEM}`
+      } else if (str.startsWith('IGNORE_')) {
+        const substr = str.replace('HATES_', '')
+        if (ELEM_KEYS.includes(substr as unknown as keyof typeof ELEM)) return str as `IGNORE_${keyof typeof ELEM}`
+      }
+    }
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'invalid flag type'
+    })
+    return z.NEVER
+  })).optional(),
 })
 
 export type ObjectBaseJSON = z.input<typeof ObjectBaseSchema>
@@ -35,7 +64,7 @@ export class ObjectBase extends SerializableBase {
   readonly type: TV
   readonly graphics: C
   readonly break?: number
-  readonly flags: Set<string>
+  readonly flags: Set<ObjectBaseFlag>
 
   constructor(params: ObjectBaseParams) {
     super(params)

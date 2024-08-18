@@ -2,6 +2,17 @@ export type NativeEnum = Record<string, string | number>
 
 export type EnumValueOnly<T> = T[keyof T] extends number ? T[keyof T] : never
 
+export function enumToKeyArray<T extends NativeEnum>(enumObject: T): (keyof T)[] {
+  const results: (keyof T)[] = []
+  for (const [k, v] of Object.entries(enumObject)) {
+    if (typeof v === 'number') {
+      results.push(k)
+    }
+  }
+
+  return results
+}
+
 export function valueToKey<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T | undefined {
   for (const [k, v] of Object.entries(enumObject)) {
     if (v === value) return k
