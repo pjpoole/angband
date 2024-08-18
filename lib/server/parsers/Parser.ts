@@ -52,12 +52,12 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
     return this._objects as T[]
   }
 
-  newCurrent(): Partial<T> {
+  newCurrent(defaults?: Partial<T>): Partial<T> {
     if (this._current) {
       this.finalizeCurrent()
     }
 
-    this._current = {} as T
+    this._current = (defaults ?? {}) as T
     return this._current
   }
 

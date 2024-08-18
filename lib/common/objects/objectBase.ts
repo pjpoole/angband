@@ -15,7 +15,7 @@ type ObjectBaseFlag =
   | `IGNORE_${keyof typeof ELEM}`
 
 export const ObjectBaseSchema = z.object({
-  name: z.string(),
+  name: z.string().optional(),
   type: z.string().transform((str, ctx): TV => {
     // FIXME: Is there a more elegant way to accomplish this?
     for (const [k, v] of Object.entries(TV_NAMES) as unknown as Entries<typeof TV_NAMES>) {

@@ -55,12 +55,17 @@ export function allAsEnum<T extends NativeEnum>(
   return values as Array<keyof T>
 }
 
-export function asTokens(str: string, count: number) {
+export function asTokens(str: string, count: number): string[]
+export function asTokens(str: string, min: number, max: number): string[]
+export function asTokens(str: string, minOrCount: number, max?: number): string[] {
+  max ??= minOrCount
+
   const strings = str.split(':')
-  if (strings.length !== count) {
+
+  if (strings.length < minOrCount || strings.length > max) {
     throw new Error(
       'invalid tokens',
-      { cause: { expected: count, actual: strings.length, value: str } }
+      { cause: { min: minOrCount, max, actual: strings.length, value: str } }
     )
   }
 
