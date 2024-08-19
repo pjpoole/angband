@@ -6,9 +6,11 @@ import { ELEM } from './elements'
 import { MSG } from '../game/messages'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
+import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
+import { Dice } from '../utilities/dice'
 
 export const ProjectionSchema = z.object({
-  code: z.nativeEnum(ELEM),
+  code: z_enumValueParser(ELEM),
   name: z.string(),
   type: z.string(),
   description: z.string(),
@@ -16,16 +18,17 @@ export const ProjectionSchema = z.object({
   blindDescription: z.string(),
   lashDescription: z.string(),
   numerator: z.number(),
-  denominator: z.string(),
+  denominator: z_diceExpression(),
   divisor: z.number(),
   damageCap: z.number(),
-  messageType: z.nativeEnum(MSG),
+  messageType: z_enumValueParser(MSG),
   obvious: z.boolean(),
   wake: z.boolean(),
   color: z.nativeEnum(C)
 })
 
-export type ProjectionParams = z.infer<typeof ProjectionSchema>
+export type ProjectionJSON = z.input<typeof ProjectionSchema>
+export type ProjectionParams = z.output<typeof ProjectionSchema>
 
 export class Projection implements SerializableBase {
   readonly code: ELEM
@@ -36,7 +39,7 @@ export class Projection implements SerializableBase {
   readonly blindDescription: string
   readonly lashDescription: string
   readonly numerator: number
-  readonly denominator: string
+  readonly denominator: Dice
   readonly divisor: number
   readonly damageCap: number
   readonly messageType: MSG
@@ -78,7 +81,7 @@ export class Projection implements SerializableBase {
       blindDescription: this.blindDescription,
       lashDescription: this.lashDescription,
       numerator: this.numerator,
-      denominator: this.denominator,
+      denominator: this.denominator.toJSON(),
       divisor: this.divisor,
       damageCap: this.damageCap,
       messageType: MSG[this.messageType],

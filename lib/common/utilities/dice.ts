@@ -12,27 +12,6 @@ interface DiceParams {
   m: DiceParam
 }
 
-export type DiceString = string & { __brand: 'dice'}
-
-export function isDiceString(str: string): str is DiceString {
-  // numbers are dice strings
-  if (isNumber(str)) return true
-
-  // clumsy for now
-  const [num, sides] = str.split('d')
-  if (isNumber(num) && isNumber(sides)) return true
-
-  // TODO:
-  // Modifier case
-  // Expression case
-
-  return false
-}
-
-function isNumber(str: string): boolean {
-  return str === String(parseInt(str))
-}
-
 // dice input
 enum DI {
   AMP,
@@ -144,7 +123,8 @@ const DICE_STATE_TABLE: Record<Exclude<DS, DS.MAX>, Partial<Record<DI, DS>>> = {
   [DS.FLUSH_ALL]: {}
 }
 
-export function parseDice(str: string): Dice {
+// TODO: exhaustive tests
+export function stringToDice(str: string): Dice {
   const params: DiceParams = {
     expressions: [],
     // TODO: verify these are valid default values
@@ -164,6 +144,10 @@ export function parseDice(str: string): Dice {
     if (isSpace(char)) continue
 
     state = getNextStateAndUpdateToken(char, state, token)
+
+    if (state === DS.MAX) {
+      throw new Error('invalid dice expression')
+    }
 
     const lastSeenAndFlush = getLastSeen(state, lastSeen, token)
     lastSeen = lastSeenAndFlush[0]
@@ -322,5 +306,19 @@ export class Dice {
     this.x = params.x
     this.y = params.y
     this.m = params.m
+  }
+
+  isEqual(dice: Dice): boolean {
+    return (
+      this.b === dice.b &&
+      this.x === dice.x &&
+      this.y === dice.y &&
+      this.m === dice.m
+    )
+  }
+
+  // TODO: test two-way
+  toJSON(): string {
+    return ''
   }
 }

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { NativeEnum } from './enum'
+import { stringToDice } from './dice'
 
 /*
  * Converts a plain object's keys into ZodEnum with type safety and
@@ -24,4 +25,20 @@ export function z_enumValueParser<
   const keySchema = z.enum(keys)
 
   return keySchema.transform((key) => enumObj[key as R] as T[keyof T]);
+}
+
+export function z_diceExpression() {
+  return z.string().transform((str: string, ctx: z.RefinementCtx) => {
+    try {
+      return stringToDice(str)
+    } catch (e) {
+      // TODO: what's the expression?
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'invalid dice expression'
+      })
+
+      return z.NEVER
+    }
+  })
 }

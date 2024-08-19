@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
 import { asEnum, ParserValues } from '../../common/utilities/parsers'
-import { ProjectionParams } from '../../common/spells/Projection'
+import { ProjectionJSON } from '../../common/spells/Projection'
 import { ProjectionRegistry } from '../../common/game/registries'
 import { ELEM } from '../../common/spells/elements'
 import { MSG } from '../../common/game/messages'
@@ -9,7 +9,7 @@ type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'
   | 'blind-desc' | 'lash-desc' | 'numerator' | 'denominator' | 'divisor'
   | 'damage-cap' | 'msgt' | 'obvious' | 'wake' | 'color'
 
-export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams> {
+export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
   constructor() {
     super()
 
@@ -21,7 +21,7 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
     this.register('blind-desc', this.keyToString('blindDescription'))
     this.register('lash-desc', this.keyToString('lashDescription'))
     this.register('numerator', this.keyToInteger('numerator'))
-    this.register('denominator', this.keyToString('denominator')) // TODO: dice
+    this.register('denominator', this.keyToString('denominator'))
     this.register('divisor', this.keyToInteger('divisor'))
     this.register('damage-cap', this.keyToInteger('damageCap'))
     this.register('msgt', this.handleMessageType.bind(this))
@@ -30,7 +30,7 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionParams>
     this.register('color', this.keyToColor('color'))
   }
 
-  _finalize(obj: ProjectionParams) {
+  _finalize(obj: ProjectionJSON) {
     ProjectionRegistry.build(obj.name, obj)
   }
 

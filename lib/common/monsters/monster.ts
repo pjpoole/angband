@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { z_enumValueParser } from '../utilities/zod'
+import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 import { setDifference, setUnion } from '../utilities/set'
 
 import { C } from '../utilities/colors'
@@ -36,7 +36,7 @@ export const MonsterSchema = z.object({
   blows: z.array(z.object({
     blow: z.string(), // TODO: validate Blow
     effect: z_enumValueParser(BLOW_EF).optional(),
-    damage: z.string().optional(), // TODO: dice
+    damage: z_diceExpression().optional(),
   })),
   flags: z.array(z_enumValueParser(RF)),
   flagsOff: z.array(z_enumValueParser(RF)).optional(),
@@ -68,14 +68,14 @@ export const MonsterSchema = z.object({
   // friends:Chance of friend appearing:number in xdy format:name of friend
   friends: z.array(z.object({
     chance: z.number(),
-    count: z.string(), // TODO: dice
+    count: z_diceExpression(),
     type: z.string(), // TODO: self-validate; introspects monster data. Also
                       //       note that 'same' is valid value and refers to this
     role: z.enum(friendRoles).optional(),
   })).optional(),
   friendsBase: z.array(z.object({
     chance: z.number(),
-    count: z.string(), // TODO: dice
+    count: z_diceExpression(),
     baseType: z.string(), // TODO: validate,
     role: z.enum(friendRoles).optional(),
   })).optional(),
