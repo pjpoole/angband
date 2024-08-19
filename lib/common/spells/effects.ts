@@ -1,4 +1,5 @@
-export enum EFFECT {
+// list-effects.h
+export enum EF {
   RANDOM,
   DAMAGE,
   HEAL_HP,
@@ -138,7 +139,7 @@ enum EFINFO {
 }
 
 interface EffectData {
-  effect: EFFECT
+  effect: EF
   aim: boolean
   info: string | null
   args: number
@@ -148,9 +149,9 @@ interface EffectData {
 }
 
 // list-effects.h
-export const EFFECT_DATA: EffectData[] = [
+export const EF_DATA: EffectData[] = [
   {
-    effect: EFFECT.RANDOM,
+    effect: EF.RANDOM,
     aim: false,
     info: null,
     args: 0,
@@ -159,7 +160,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.DAMAGE,
+    effect: EF.DAMAGE,
     aim: false,
     info: 'hurt',
     args: 1,
@@ -168,7 +169,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.HEAL_HP,
+    effect: EF.HEAL_HP,
     aim: false,
     info: 'heal',
     args: 2,
@@ -177,7 +178,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'heal self'
   },
   {
-    effect: EFFECT.MON_HEAL_HP,
+    effect: EF.MON_HEAL_HP,
     aim: false,
     info: null,
     args: 0,
@@ -186,7 +187,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.MON_HEAL_KIN,
+    effect: EF.MON_HEAL_KIN,
     aim: false,
     info: null,
     args: 0,
@@ -195,7 +196,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.NOURISH,
+    effect: EF.NOURISH,
     aim: false,
     info: null,
     args: 3,
@@ -204,7 +205,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: '%s %s'
   },
   {
-    effect: EFFECT.CRUNCH,
+    effect: EF.CRUNCH,
     aim: false,
     info: null,
     args: 0,
@@ -213,7 +214,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.CURE,
+    effect: EF.CURE,
     aim: false,
     info: null,
     args: 1,
@@ -222,7 +223,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cure %s'
   },
   {
-    effect: EFFECT.TIMED_SET,
+    effect: EF.TIMED_SET,
     aim: false,
     info: null,
     args: 2,
@@ -231,7 +232,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'administer %s'
   },
   {
-    effect: EFFECT.TIMED_INC,
+    effect: EF.TIMED_INC,
     aim: false,
     info: 'dur',
     args: 2,
@@ -240,7 +241,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'extend %s'
   },
   {
-    effect: EFFECT.TIMED_INC_NO_RES,
+    effect: EF.TIMED_INC_NO_RES,
     aim: false,
     info: 'dur',
     args: 2,
@@ -249,7 +250,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'extend %s'
   },
   {
-    effect: EFFECT.MON_TIMED_INC,
+    effect: EF.MON_TIMED_INC,
     aim: false,
     info: null,
     args: 2,
@@ -258,7 +259,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.TIMED_DEC,
+    effect: EF.TIMED_DEC,
     aim: false,
     info: null,
     args: 2,
@@ -267,7 +268,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'reduce %s'
   },
   {
-    effect: EFFECT.GLYPH,
+    effect: EF.GLYPH,
     aim: false,
     info: null,
     args: 1,
@@ -276,7 +277,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'inscribe a glyph'
   },
   {
-    effect: EFFECT.WEB,
+    effect: EF.WEB,
     aim: false,
     info: null,
     args: 0,
@@ -285,7 +286,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create a web'
   },
   {
-    effect: EFFECT.RESTORE_STAT,
+    effect: EF.RESTORE_STAT,
     aim: false,
     info: null,
     args: 1,
@@ -294,7 +295,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'restore %s'
   },
   {
-    effect: EFFECT.DRAIN_STAT,
+    effect: EF.DRAIN_STAT,
     aim: false,
     info: null,
     args: 1,
@@ -303,7 +304,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.LOSE_RANDOM_STAT,
+    effect: EF.LOSE_RANDOM_STAT,
     aim: false,
     info: null,
     args: 1,
@@ -312,7 +313,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.GAIN_STAT,
+    effect: EF.GAIN_STAT,
     aim: false,
     info: null,
     args: 1,
@@ -321,7 +322,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.RESTORE_EXP,
+    effect: EF.RESTORE_EXP,
     aim: false,
     info: null,
     args: 0,
@@ -330,7 +331,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'restore experience'
   },
   {
-    effect: EFFECT.GAIN_EXP,
+    effect: EF.GAIN_EXP,
     aim: false,
     info: null,
     args: 1,
@@ -339,7 +340,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.DRAIN_LIGHT,
+    effect: EF.DRAIN_LIGHT,
     aim: false,
     info: null,
     args: 0,
@@ -348,7 +349,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.DRAIN_MANA,
+    effect: EF.DRAIN_MANA,
     aim: false,
     info: null,
     args: 0,
@@ -357,7 +358,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.RESTORE_MANA,
+    effect: EF.RESTORE_MANA,
     aim: false,
     info: null,
     args: 0,
@@ -366,7 +367,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'restore some mana'
   },
   {
-    effect: EFFECT.REMOVE_CURSE,
+    effect: EF.REMOVE_CURSE,
     aim: false,
     info: null,
     args: 1,
@@ -375,7 +376,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'remove curse'
   },
   {
-    effect: EFFECT.RECALL,
+    effect: EF.RECALL,
     aim: false,
     info: null,
     args: 0,
@@ -384,7 +385,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'recall'
   },
   {
-    effect: EFFECT.DEEP_DESCENT,
+    effect: EF.DEEP_DESCENT,
     aim: false,
     info: null,
     args: 0,
@@ -393,7 +394,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'descend to the depths'
   },
   {
-    effect: EFFECT.ALTER_REALITY,
+    effect: EF.ALTER_REALITY,
     aim: false,
     info: null,
     args: 0,
@@ -402,7 +403,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'alter reality'
   },
   {
-    effect: EFFECT.MAP_AREA,
+    effect: EF.MAP_AREA,
     aim: false,
     info: null,
     args: 0,
@@ -411,7 +412,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'map surroundings'
   },
   {
-    effect: EFFECT.READ_MINDS,
+    effect: EF.READ_MINDS,
     aim: false,
     info: null,
     args: 0,
@@ -420,7 +421,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'read minds'
   },
   {
-    effect: EFFECT.DETECT_TRAPS,
+    effect: EF.DETECT_TRAPS,
     aim: false,
     info: null,
     args: 0,
@@ -429,7 +430,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect traps'
   },
   {
-    effect: EFFECT.DETECT_DOORS,
+    effect: EF.DETECT_DOORS,
     aim: false,
     info: null,
     args: 0,
@@ -438,7 +439,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect doors'
   },
   {
-    effect: EFFECT.DETECT_STAIRS,
+    effect: EF.DETECT_STAIRS,
     aim: false,
     info: null,
     args: 0,
@@ -447,7 +448,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect stairs'
   },
   {
-    effect: EFFECT.DETECT_ORE,
+    effect: EF.DETECT_ORE,
     aim: false,
     info: null,
     args: 0,
@@ -456,7 +457,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect veins'
   },
   {
-    effect: EFFECT.SENSE_GOLD,
+    effect: EF.SENSE_GOLD,
     aim: false,
     info: null,
     args: 0,
@@ -465,7 +466,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'sense gold'
   },
   {
-    effect: EFFECT.DETECT_GOLD,
+    effect: EF.DETECT_GOLD,
     aim: false,
     info: null,
     args: 0,
@@ -474,7 +475,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect gold'
   },
   {
-    effect: EFFECT.SENSE_OBJECTS,
+    effect: EF.SENSE_OBJECTS,
     aim: false,
     info: null,
     args: 0,
@@ -483,7 +484,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'sense objects'
   },
   {
-    effect: EFFECT.DETECT_OBJECTS,
+    effect: EF.DETECT_OBJECTS,
     aim: false,
     info: null,
     args: 0,
@@ -492,7 +493,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect objects'
   },
   {
-    effect: EFFECT.DETECT_LIVING_MONSTERS,
+    effect: EF.DETECT_LIVING_MONSTERS,
     aim: false,
     info: null,
     args: 0,
@@ -501,7 +502,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect living'
   },
   {
-    effect: EFFECT.DETECT_VISIBLE_MONSTERS,
+    effect: EF.DETECT_VISIBLE_MONSTERS,
     aim: false,
     info: null,
     args: 0,
@@ -510,7 +511,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect visible'
   },
   {
-    effect: EFFECT.DETECT_INVISIBLE_MONSTERS,
+    effect: EF.DETECT_INVISIBLE_MONSTERS,
     aim: false,
     info: null,
     args: 0,
@@ -519,7 +520,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect invisible'
   },
   {
-    effect: EFFECT.DETECT_FEARFUL_MONSTERS,
+    effect: EF.DETECT_FEARFUL_MONSTERS,
     aim: false,
     info: null,
     args: 0,
@@ -528,7 +529,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect fearful'
   },
   {
-    effect: EFFECT.IDENTIFY,
+    effect: EF.IDENTIFY,
     aim: false,
     info: null,
     args: 0,
@@ -537,7 +538,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'identify'
   },
   {
-    effect: EFFECT.DETECT_EVIL,
+    effect: EF.DETECT_EVIL,
     aim: false,
     info: null,
     args: 0,
@@ -546,7 +547,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect evil'
   },
   {
-    effect: EFFECT.DETECT_SOUL,
+    effect: EF.DETECT_SOUL,
     aim: false,
     info: null,
     args: 0,
@@ -555,7 +556,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'detect souls'
   },
   {
-    effect: EFFECT.CREATE_STAIRS,
+    effect: EF.CREATE_STAIRS,
     aim: false,
     info: null,
     args: 0,
@@ -564,7 +565,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create stairs'
   },
   {
-    effect: EFFECT.DISENCHANT,
+    effect: EF.DISENCHANT,
     aim: false,
     info: null,
     args: 0,
@@ -573,7 +574,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'disenchant item'
   },
   {
-    effect: EFFECT.ENCHANT,
+    effect: EF.ENCHANT,
     aim: false,
     info: null,
     args: 0,
@@ -582,7 +583,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'enchant item'
   },
   {
-    effect: EFFECT.RECHARGE,
+    effect: EF.RECHARGE,
     aim: false,
     info: 'power',
     args: 0,
@@ -591,7 +592,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'recharge'
   },
   {
-    effect: EFFECT.PROJECT_LOS,
+    effect: EF.PROJECT_LOS,
     aim: false,
     info: 'power',
     args: 1,
@@ -600,7 +601,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: '%s in line of sight'
   },
   {
-    effect: EFFECT.PROJECT_LOS_AWARE,
+    effect: EF.PROJECT_LOS_AWARE,
     aim: false,
     info: 'power',
     args: 1,
@@ -609,7 +610,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: '%s in line of sight'
   },
   {
-    effect: EFFECT.ACQUIRE,
+    effect: EF.ACQUIRE,
     aim: false,
     info: null,
     args: 0,
@@ -618,7 +619,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create good items'
   },
   {
-    effect: EFFECT.WAKE,
+    effect: EF.WAKE,
     aim: false,
     info: null,
     args: 0,
@@ -627,7 +628,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'awaken all'
   },
   {
-    effect: EFFECT.SUMMON,
+    effect: EF.SUMMON,
     aim: false,
     info: null,
     args: 1,
@@ -636,7 +637,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'summon %s'
   },
   {
-    effect: EFFECT.BANISH,
+    effect: EF.BANISH,
     aim: false,
     info: null,
     args: 0,
@@ -645,7 +646,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'banish'
   },
   {
-    effect: EFFECT.MASS_BANISH,
+    effect: EF.MASS_BANISH,
     aim: false,
     info: null,
     args: 0,
@@ -654,7 +655,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'banish all'
   },
   {
-    effect: EFFECT.PROBE,
+    effect: EF.PROBE,
     aim: false,
     info: null,
     args: 0,
@@ -663,7 +664,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'probe'
   },
   {
-    effect: EFFECT.TELEPORT,
+    effect: EF.TELEPORT,
     aim: false,
     info: 'range',
     args: 2,
@@ -672,7 +673,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'teleport %s %s'
   },
   {
-    effect: EFFECT.TELEPORT_TO,
+    effect: EF.TELEPORT_TO,
     aim: false,
     info: null,
     args: 0,
@@ -681,7 +682,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'teleport to target'
   },
   {
-    effect: EFFECT.TELEPORT_LEVEL,
+    effect: EF.TELEPORT_LEVEL,
     aim: false,
     info: null,
     args: 0,
@@ -690,7 +691,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'teleport level'
   },
   {
-    effect: EFFECT.RUBBLE,
+    effect: EF.RUBBLE,
     aim: false,
     info: null,
     args: 0,
@@ -699,7 +700,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.GRANITE,
+    effect: EF.GRANITE,
     aim: false,
     info: null,
     args: 0,
@@ -708,7 +709,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.DESTRUCTION,
+    effect: EF.DESTRUCTION,
     aim: false,
     info: null,
     args: 1,
@@ -717,7 +718,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'destroy area'
   },
   {
-    effect: EFFECT.EARTHQUAKE,
+    effect: EF.EARTHQUAKE,
     aim: false,
     info: null,
     args: 1,
@@ -726,7 +727,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cause earthquake'
   },
   {
-    effect: EFFECT.LIGHT_LEVEL,
+    effect: EF.LIGHT_LEVEL,
     aim: false,
     info: null,
     args: 0,
@@ -735,7 +736,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'light level'
   },
   {
-    effect: EFFECT.DARKEN_LEVEL,
+    effect: EF.DARKEN_LEVEL,
     aim: false,
     info: null,
     args: 0,
@@ -744,7 +745,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'darken level'
   },
   {
-    effect: EFFECT.LIGHT_AREA,
+    effect: EF.LIGHT_AREA,
     aim: false,
     info: null,
     args: 0,
@@ -753,7 +754,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'light area'
   },
   {
-    effect: EFFECT.DARKEN_AREA,
+    effect: EF.DARKEN_AREA,
     aim: false,
     info: null,
     args: 0,
@@ -762,7 +763,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'darken area'
   },
   {
-    effect: EFFECT.SPOT,
+    effect: EF.SPOT,
     aim: false,
     info: 'dam',
     args: 4,
@@ -771,7 +772,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'engulf with %s'
   },
   {
-    effect: EFFECT.SPHERE,
+    effect: EF.SPHERE,
     aim: false,
     info: 'dam',
     args: 4,
@@ -780,7 +781,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'project %s'
   },
   {
-    effect: EFFECT.BALL,
+    effect: EF.BALL,
     aim: true,
     info: 'dam',
     args: 3,
@@ -789,7 +790,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'fire a ball of %s'
   },
   {
-    effect: EFFECT.BREATH,
+    effect: EF.BREATH,
     aim: true,
     info: null,
     args: 3,
@@ -798,7 +799,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'breathe a cone of %s'
   },
   {
-    effect: EFFECT.ARC,
+    effect: EF.ARC,
     aim: true,
     info: 'dam',
     args: 3,
@@ -807,7 +808,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'produce a cone of %s'
   },
   {
-    effect: EFFECT.SHORT_BEAM,
+    effect: EF.SHORT_BEAM,
     aim: true,
     info: 'dam',
     args: 3,
@@ -816,7 +817,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'produce a beam of %s'
   },
   {
-    effect: EFFECT.LASH,
+    effect: EF.LASH,
     aim: true,
     info: null,
     args: 2,
@@ -825,7 +826,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'lash with %s'
   },
   {
-    effect: EFFECT.SWARM,
+    effect: EF.SWARM,
     aim: true,
     info: 'dam',
     args: 3,
@@ -834,7 +835,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'fire a swarm of %s balls'
   },
   {
-    effect: EFFECT.STRIKE,
+    effect: EF.STRIKE,
     aim: true,
     info: 'dam',
     args: 3,
@@ -843,7 +844,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'strike with %s'
   },
   {
-    effect: EFFECT.STAR,
+    effect: EF.STAR,
     aim: false,
     info: 'dam',
     args: 2,
@@ -852,7 +853,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'fire a line of %s in all directions'
   },
   {
-    effect: EFFECT.STAR_BALL,
+    effect: EF.STAR_BALL,
     aim: false,
     info: 'dam',
     args: 3,
@@ -861,7 +862,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'fire balls of %s in all directions'
   },
   {
-    effect: EFFECT.BOLT,
+    effect: EF.BOLT,
     aim: true,
     info: 'dam',
     args: 2,
@@ -870,7 +871,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cast a bolt of %s'
   },
   {
-    effect: EFFECT.BEAM,
+    effect: EF.BEAM,
     aim: true,
     info: 'dam',
     args: 2,
@@ -879,7 +880,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cast a beam of %s'
   },
   {
-    effect: EFFECT.BOLT_OR_BEAM,
+    effect: EF.BOLT_OR_BEAM,
     aim: true,
     info: 'dam',
     args: 2,
@@ -888,7 +889,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cast a bolt or beam of %s'
   },
   {
-    effect: EFFECT.LINE,
+    effect: EF.LINE,
     aim: true,
     info: 'dam',
     args: 2,
@@ -897,7 +898,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create a line of %s'
   },
   {
-    effect: EFFECT.ALTER,
+    effect: EF.ALTER,
     aim: true,
     info: null,
     args: 1,
@@ -906,7 +907,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create a line which %s'
   },
   {
-    effect: EFFECT.BOLT_STATUS,
+    effect: EF.BOLT_STATUS,
     aim: true,
     info: null,
     args: 1,
@@ -915,7 +916,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cast a bolt which %s'
   },
   {
-    effect: EFFECT.BOLT_STATUS_DAM,
+    effect: EF.BOLT_STATUS_DAM,
     aim: true,
     info: 'dam',
     args: 2,
@@ -924,7 +925,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'cast a bolt which %s'
   },
   {
-    effect: EFFECT.BOLT_AWARE,
+    effect: EF.BOLT_AWARE,
     aim: true,
     info: null,
     args: 1,
@@ -933,7 +934,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create a bolt which %s'
   },
   {
-    effect: EFFECT.TOUCH,
+    effect: EF.TOUCH,
     aim: false,
     info: null,
     args: 1,
@@ -942,7 +943,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: '%s all adjacent'
   },
   {
-    effect: EFFECT.TOUCH_AWARE,
+    effect: EF.TOUCH_AWARE,
     aim: false,
     info: null,
     args: 1,
@@ -951,7 +952,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: '%s all adjacent'
   },
   {
-    effect: EFFECT.CURSE_ARMOR,
+    effect: EF.CURSE_ARMOR,
     aim: false,
     info: null,
     args: 0,
@@ -960,7 +961,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'curse armor'
   },
   {
-    effect: EFFECT.CURSE_WEAPON,
+    effect: EF.CURSE_WEAPON,
     aim: false,
     info: null,
     args: 0,
@@ -969,7 +970,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'curse weapon'
   },
   {
-    effect: EFFECT.BRAND_WEAPON,
+    effect: EF.BRAND_WEAPON,
     aim: false,
     info: null,
     args: 0,
@@ -978,7 +979,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'brand weapon'
   },
   {
-    effect: EFFECT.BRAND_AMMO,
+    effect: EF.BRAND_AMMO,
     aim: false,
     info: null,
     args: 0,
@@ -987,7 +988,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'brand ammunition'
   },
   {
-    effect: EFFECT.BRAND_BOLTS,
+    effect: EF.BRAND_BOLTS,
     aim: false,
     info: null,
     args: 0,
@@ -996,7 +997,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'brand bolts'
   },
   {
-    effect: EFFECT.CREATE_ARROWS,
+    effect: EF.CREATE_ARROWS,
     aim: false,
     info: null,
     args: 0,
@@ -1005,7 +1006,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'use staff for arrows'
   },
   {
-    effect: EFFECT.TAP_DEVICE,
+    effect: EF.TAP_DEVICE,
     aim: false,
     info: null,
     args: 0,
@@ -1014,7 +1015,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'tap device'
   },
   {
-    effect: EFFECT.TAP_UNLIFE,
+    effect: EF.TAP_UNLIFE,
     aim: false,
     info: 'dam',
     args: 1,
@@ -1023,7 +1024,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'tap unlife'
   },
   {
-    effect: EFFECT.SHAPECHANGE,
+    effect: EF.SHAPECHANGE,
     aim: false,
     info: null,
     args: 0,
@@ -1032,7 +1033,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'change shape'
   },
   {
-    effect: EFFECT.CURSE,
+    effect: EF.CURSE,
     aim: true,
     info: 'dam',
     args: 0,
@@ -1041,7 +1042,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'curse'
   },
   {
-    effect: EFFECT.COMMAND,
+    effect: EF.COMMAND,
     aim: true,
     info: null,
     args: 0,
@@ -1050,7 +1051,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'command'
   },
   {
-    effect: EFFECT.JUMP_AND_BITE,
+    effect: EF.JUMP_AND_BITE,
     aim: false,
     info: null,
     args: 0,
@@ -1059,7 +1060,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'jump and bite'
   },
   {
-    effect: EFFECT.MOVE_ATTACK,
+    effect: EF.MOVE_ATTACK,
     aim: true,
     info: 'blows',
     args: 1,
@@ -1068,7 +1069,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'move and attack'
   },
   {
-    effect: EFFECT.SINGLE_COMBAT,
+    effect: EF.SINGLE_COMBAT,
     aim: true,
     info: null,
     args: 0,
@@ -1077,7 +1078,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'engage in single combat'
   },
   {
-    effect: EFFECT.MELEE_BLOWS,
+    effect: EF.MELEE_BLOWS,
     aim: true,
     info: 'blows',
     args: 1,
@@ -1086,7 +1087,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'pummel'
   },
   {
-    effect: EFFECT.SWEEP,
+    effect: EF.SWEEP,
     aim: false,
     info: 'blows',
     args: 1,
@@ -1095,7 +1096,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'sweep'
   },
   {
-    effect: EFFECT.BIZARRE,
+    effect: EF.BIZARRE,
     aim: true,
     info: null,
     args: 0,
@@ -1104,7 +1105,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'do bizarre things'
   },
   {
-    effect: EFFECT.WONDER,
+    effect: EF.WONDER,
     aim: true,
     info: null,
     args: 0,
@@ -1113,7 +1114,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: 'create random effects'
   },
   {
-    effect: EFFECT.SELECT,
+    effect: EF.SELECT,
     aim: false,
     info: null,
     args: 0,
@@ -1122,7 +1123,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.SET_VALUE,
+    effect: EF.SET_VALUE,
     aim: false,
     info: null,
     args: 0,
@@ -1131,7 +1132,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.CLEAR_VALUE,
+    effect: EF.CLEAR_VALUE,
     aim: false,
     info: null,
     args: 0,
@@ -1140,7 +1141,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.SCRAMBLE_STATS,
+    effect: EF.SCRAMBLE_STATS,
     aim: false,
     info: null,
     args: 0,
@@ -1149,7 +1150,7 @@ export const EFFECT_DATA: EffectData[] = [
     menuName: ''
   },
   {
-    effect: EFFECT.UNSCRAMBLE_STATS,
+    effect: EF.UNSCRAMBLE_STATS,
     aim: false,
     info: null,
     args: 0,
