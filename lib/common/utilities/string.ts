@@ -31,6 +31,13 @@ export function isDigit(char: string) {
   )
 }
 
+const CODE_A = 'A'.charCodeAt(0)
+const CODE_Z = 'Z'.charCodeAt(0)
+
 export function isUpper(char: string) {
-  return char.length === 1 && char === char.toUpperCase()
+  return (
+    char.length === 1 &&
+    char.charCodeAt(0) >= CODE_A &&
+    char.charCodeAt(0) <= CODE_Z
+  )
 }

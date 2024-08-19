@@ -12,6 +12,9 @@ export interface DiceParams {
   m: DiceParam
 }
 
+type DiceKeyables = Omit<DiceParams, 'expressions'>
+const DICE_KEYABLE_KEYS = ['b', 'x', 'y', 'm'] as const
+
 // dice input
 enum DI {
   AMP,
@@ -53,7 +56,7 @@ enum DLS {
   BONUS,
 }
 
-const LAST_SEEN_TO_PARAM_NAME: Record<Exclude<DLS, DLS.NONE>, keyof Omit<DiceParams, 'expressions'>> = {
+const LAST_SEEN_TO_PARAM_NAME: Record<Exclude<DLS, DLS.NONE>, keyof DiceKeyables> = {
   [DLS.BASE]: 'b',
   [DLS.DICE]: 'x',
   [DLS.SIDE]: 'y',
@@ -128,10 +131,10 @@ export function stringToDice(str: string): Dice {
   const params: DiceParams = {
     expressions: [],
     // TODO: verify these are valid default values
-    b: 0,
-    x: 0,
-    y: 0,
-    m: 0,
+    b: null,
+    x: null,
+    y: null,
+    m: null,
   }
 
   let state: DS = DS.START
@@ -146,7 +149,7 @@ export function stringToDice(str: string): Dice {
     state = getNextStateAndUpdateToken(char, state, token)
 
     if (state === DS.MAX) {
-      throw new Error('invalid dice expression')
+      throw new Error(`invalid dice expression: ${str}`)
     }
 
     const lastSeenAndFlush = getLastSeen(state, lastSeen, token)
@@ -301,6 +304,8 @@ export class Dice {
   readonly m: DiceParam
 
   constructor(params: DiceParams) {
+    // TODO: unclear if this array holds any value post-initialization
+    // TODO: probably deep-duplicate expressions
     this.expressions = params.expressions
     this.b = params.b
     this.x = params.x
@@ -309,16 +314,61 @@ export class Dice {
   }
 
   isEqual(dice: Dice): boolean {
-    return (
-      this.b === dice.b &&
-      this.x === dice.x &&
-      this.y === dice.y &&
-      this.m === dice.m
-    )
+    return DICE_KEYABLE_KEYS.every((key: keyof DiceKeyables) => {
+      const thisValue = this[key]
+      const diceValue = dice[key]
+
+      if (thisValue == null) return diceValue == null
+      if (diceValue == null) return false
+      if (typeof thisValue === 'number') {
+        return typeof diceValue === 'number' ? thisValue === diceValue : false
+      }
+      if (typeof diceValue === 'number') return false
+
+      // both are expressions
+      // TODO: expression equality
+      return thisValue.name === diceValue.name
+    })
   }
 
   // TODO: test two-way
-  toJSON(): string {
-    return ''
+  toString(): string {
+    let result = ''
+
+    if (typeof this.b === 'number') {
+      result += `${this.b}`
+    } else if (this.b !== null) {
+      result += `$${this.b.name}`
+    }
+
+    if (result.length > 0 && (this.x !== null || this.y !== null || this.m != null)) {
+      result += '+'
+    }
+
+    if (this.x !== null) {
+      const xStr = typeof this.x === 'number' ? this.x : `$${this.x.name}`
+      if (typeof this.y === 'number') {
+        result += `${xStr}d${this.y}`
+      } else if (this.y !== null) {
+        result += `${xStr}d$${this.y.name}`
+      }
+    }
+
+    if (this.m !== null) {
+      if (result.length > 0) result += 'm'
+      result += typeof this.m === 'number' ? this.m : `$${this.m.name}`
+    }
+
+    return result
+  }
+
+  toJSON(): DiceParams {
+    return {
+      expressions: this.expressions,
+      b: this.b,
+      x: this.x,
+      y: this.y,
+      m: this.m,
+    }
   }
 }
