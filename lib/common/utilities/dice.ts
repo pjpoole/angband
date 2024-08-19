@@ -355,7 +355,7 @@ export class Dice {
     }
 
     if (this.m !== null) {
-      if (result.length > 0) result += 'm'
+      result += 'm'
       result += typeof this.m === 'number' ? this.m : `$${this.m.name}`
     }
 

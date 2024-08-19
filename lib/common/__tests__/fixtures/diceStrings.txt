@@ -165,8 +165,7 @@ $S
 8d8
 90
 9d8
-# TODO: Verify this against original C behavior
-# M$M
-# M60
-# M80
+M$M
+M60
+M80
 d$S
