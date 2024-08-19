@@ -1,6 +1,8 @@
 // Monster flag types
 import { EnumValueOnly } from '../utilities/enum'
 
+// monster.h, monster_flag_type
+// Race flag types
 export enum RFT {
   // placeholder flag
   NONE,
@@ -34,7 +36,8 @@ export enum RFT {
   PROT
 }
 
-// Monster flags
+// list-mon-race-flags.h
+// Monster flags, i.e. "Race Flag"
 export enum RF {
   NONE,
   UNIQUE,

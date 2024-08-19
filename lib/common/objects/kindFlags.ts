@@ -1,4 +1,5 @@
 // list-kind-flags.h
+// [Object] Kind Flags
 export enum KF {
   NONE,
   RAND_HI_RES,

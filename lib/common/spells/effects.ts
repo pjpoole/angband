@@ -1,4 +1,5 @@
 // list-effects.h
+// Effect
 export enum EF {
   RANDOM,
   DAMAGE,

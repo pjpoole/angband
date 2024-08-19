@@ -17,6 +17,7 @@ export const RST = {
 }
 
 // list-mon-spells.h
+// R[?] Spell Flag
 export enum RSF {
   NONE,
   SHRIEK,

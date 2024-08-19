@@ -1,6 +1,7 @@
-// list-elements.h
 import { enumToKeyArray, EnumValueOnly } from '../utilities/enum'
 
+// list-elements.h
+// Elements
 export enum ELEM {
   ACID,
   ELEC,

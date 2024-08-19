@@ -1,5 +1,7 @@
 import { MSG } from './messages'
 
+// list-mon-message.h
+// Monster messages
 export enum MON_MSG {
    NONE,
    DIE,

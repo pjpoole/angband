@@ -6,6 +6,8 @@ import { z_enumValueParser } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
 import { EnumValueOnly, valueSetToArray, valueToKey } from '../utilities/enum'
 
+// list-terrain.h
+// Terrain features
 export enum FEAT {
   NONE, /* nothing/unknown */
   FLOOR, /* open floor */
@@ -36,6 +38,8 @@ export enum FEAT {
 
 type FEAT_VALUE = EnumValueOnly<typeof FEAT>
 
+// list-terrain-flags.h
+// Terrain flags
 export enum TF {
   NONE,
   LOS,

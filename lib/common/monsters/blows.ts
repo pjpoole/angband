@@ -4,6 +4,7 @@ import { SerializableBase } from '../core/serializable'
 import { valueToKeyOrThrow } from '../utilities/enum'
 
 // mon-blows.c, effect_handlers
+// Blow effects
 export enum BLOW_EF {
   NONE,
   HURT,

@@ -1,4 +1,5 @@
 // list-tvals.h
+// Type values; object base types
 export enum TV {
   NULL,
   CHEST,

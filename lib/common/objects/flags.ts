@@ -1,4 +1,5 @@
 // list-object-flags.h
+// Object Flags
 export enum OF {
   SUST_STR,
   SUST_INT,

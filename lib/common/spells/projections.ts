@@ -1,3 +1,5 @@
+// list-projections.h
+// Projections (i.e. from spells)
 export enum PROJ {
   LIGHT_WEAK,
   DARK_WEAK,
