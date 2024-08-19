@@ -83,20 +83,65 @@ const LAST_SEEN_TO_PARAM_NAME: Record<Exclude<DLS, DLS.NONE>, keyof Omit<DicePar
 
 // z-dice.c, dice_parse_state_transition
 // translated to values to reduce overall magic
-const DICE_STATE_TABLE: Record<Exclude<DS, DS.MAX>, DS[]> = {
- [DS.START]:   [DS.MAX, DS.BASE_DIGIT, DS.MAX, DS.FLUSH_DICE, DS.BONUS, DS.VAR, DS.BASE_DIGIT, DS.MAX, DS.MAX],
- [DS.BASE_DIGIT]:   [DS.MAX, DS.MAX, DS.FLUSH_BASE, DS.FLUSH_DICE, DS.MAX, DS.MAX, DS.BASE_DIGIT, DS.MAX, DS.FLUSH_BASE],
- [DS.FLUSH_BASE]:   [DS.MAX, DS.MAX, DS.MAX, DS.FLUSH_DICE, DS.BONUS, DS.VAR, DS.DICE_DIGIT, DS.MAX, DS.MAX],
- [DS.DICE_DIGIT]:   [DS.MAX, DS.MAX, DS.MAX, DS.FLUSH_DICE, DS.MAX, DS.MAX, DS.DICE_DIGIT, DS.MAX, DS.MAX],
- [DS.FLUSH_DICE]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.VAR, DS.SIDE_DIGIT, DS.MAX, DS.MAX],
- [DS.SIDE_DIGIT]:   [DS.FLUSH_SIDE, DS.MAX, DS.MAX, DS.MAX, DS.BONUS, DS.MAX, DS.SIDE_DIGIT, DS.MAX, DS.FLUSH_SIDE],
- [DS.FLUSH_SIDE]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.BONUS, DS.MAX, DS.MAX, DS.MAX, DS.MAX],
- [DS.BONUS]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.VAR, DS.BONUS_DIGIT, DS.MAX, DS.MAX],
- [DS.BONUS_DIGIT]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.BONUS_DIGIT, DS.MAX, DS.FLUSH_BONUS],
- [DS.FLUSH_BONUS]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX],
- [DS.VAR]:   [DS.MAX, DS.MAX,  DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.VAR_CHAR, DS.MAX],
- [DS.VAR_CHAR]:   [DS.FLUSH_SIDE, DS.MAX, DS.FLUSH_BASE, DS.FLUSH_DICE, DS.BONUS, DS.MAX, DS.MAX, DS.VAR_CHAR, DS.FLUSH_ALL],
- [DS.FLUSH_ALL]:   [DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX, DS.MAX],
+const DICE_STATE_TABLE: Record<Exclude<DS, DS.MAX>, Partial<Record<DI, DS>>> = {
+  [DS.START]: {
+    [DI.MINUS]: DS.BASE_DIGIT,
+    [DI.DICE]: DS.FLUSH_DICE,
+    [DI.BONUS]: DS.BONUS,
+    [DI.VAR]: DS.VAR,
+    [DI.DIGIT]: DS.BASE_DIGIT,
+  },
+  [DS.BASE_DIGIT]: {
+    [DI.BASE]: DS.FLUSH_BASE,
+    [DI.DICE]: DS.FLUSH_DICE,
+    [DI.DIGIT]: DS.BASE_DIGIT,
+    [DI.NULL]: DS.FLUSH_BASE,
+  },
+  [DS.FLUSH_BASE]: {
+    [DI.DICE]: DS.FLUSH_DICE,
+    [DI.BONUS]: DS.BONUS,
+    [DI.VAR]: DS.VAR,
+    [DI.DIGIT]: DS.DICE_DIGIT,
+  },
+  [DS.DICE_DIGIT]: {
+    [DI.DICE]: DS.FLUSH_DICE,
+    [DI.DIGIT]: DS.DICE_DIGIT,
+  },
+  [DS.FLUSH_DICE]: {
+    [DI.VAR]: DS.VAR,
+    [DI.DIGIT]: DS.SIDE_DIGIT,
+  },
+  [DS.SIDE_DIGIT]: {
+    [DI.AMP]: DS.FLUSH_SIDE,
+    [DI.BONUS]: DS.BONUS,
+    [DI.DIGIT]: DS.SIDE_DIGIT,
+    [DI.NULL]: DS.FLUSH_SIDE,
+  },
+  [DS.FLUSH_SIDE]: {
+    [DI.BONUS]: DS.BONUS,
+  },
+  [DS.BONUS]: {
+    [DI.VAR]: DS.VAR,
+    [DI.DIGIT]: DS.BONUS_DIGIT,
+  },
+  [DS.BONUS_DIGIT]: {
+    [DI.DIGIT]: DS.BONUS_DIGIT,
+    [DI.NULL]: DS.FLUSH_BONUS,
+  },
+  [DS.FLUSH_BONUS]: {},
+  [DS.VAR]: {
+    [DI.BASE]: DS.MAX,
+    [DI.UPPER]: DS.VAR_CHAR,
+  },
+  [DS.VAR_CHAR]: {
+    [DI.AMP]: DS.FLUSH_SIDE,
+    [DI.BASE]: DS.FLUSH_BASE,
+    [DI.DICE]: DS.FLUSH_DICE,
+    [DI.BONUS]: DS.BONUS,
+    [DI.UPPER]: DS.VAR_CHAR,
+    [DI.NULL]: DS.FLUSH_ALL,
+  },
+  [DS.FLUSH_ALL]: {}
 }
 
 export function parseDice(str: string): Dice {
@@ -113,7 +158,9 @@ export function parseDice(str: string): Dice {
   let lastSeen: DLS = DLS.NONE
   let token: string[] = []
 
-  for (const char of str) {
+  // DELIBERATE out of bounds to trigger DS.NULL state transition
+  for (let i = 0; i < str.length + 1; i++) {
+    const char: string | undefined = str[i]
     if (isSpace(char)) continue
 
     state = getNextStateAndUpdateToken(char, state, token)
@@ -132,25 +179,23 @@ export function parseDice(str: string): Dice {
   return new Dice(params)
 }
 
-function getNextStateAndUpdateToken(char: string, state: DS, token: string[]) {
-  const input = diceInputForChar(char)
+function getNextStateAndUpdateToken(char: string | undefined, state: DS, token: string[]) {
+  const input: DI = diceInputForChar(char)
 
-  switch (input) {
-    case DI.AMP:
-    case DI.BASE:
-    case DI.DICE:
-    case DI.VAR:
-      state = parseStateTransition(input, state)
-      break
+  if (
+    input === DI.MINUS ||
+    input === DI.DIGIT ||
+    input === DI.UPPER
+  ) {
+    // original enforces a max length of 16 here
+    //
+    // winnowing out undefined chars (should never happen, but we code
+    // defensively)
+    if (char) token.push(char)
+  }
 
-    case DI.MINUS:
-    case DI.DIGIT:
-    case DI.UPPER:
-      // original enforces a max length of 16 here
-      token.push(char)
-
-      state = parseStateTransition(input, state)
-      break
+  if (input !== DI.MAX && input !== DI.BONUS) {
+    state = parseStateTransition(input, state)
   }
 
   // Allow M for both bonus rolls and variable names
@@ -220,10 +265,12 @@ function updateParams(params: DiceParams, lastSeen: DLS, token: string[]) {
 function parseStateTransition(input: DI, state: DS): DS {
   if (input === DI.MAX || state === DS.MAX) return DS.MAX
 
-  return DICE_STATE_TABLE[state][input]
+  return DICE_STATE_TABLE[state][input] ?? DS.MAX
 }
 
-function diceInputForChar(char: string): DI | undefined {
+function diceInputForChar(char: string | undefined): DI {
+  if (char == null) return DI.NULL
+
   switch (char) {
     case '&':
       return DI.AMP
@@ -238,12 +285,12 @@ function diceInputForChar(char: string): DI | undefined {
       return DI.BONUS
     case '$':
       return DI.VAR
-    default:
-      break
   }
 
   if (isDigit(char)) return DI.DIGIT
   if (isUpper(char)) return DI.UPPER
+
+  return DI.MAX
 }
 
 function diceParamsAddExpression(diceParams: DiceParams, str: string): Expression | null {

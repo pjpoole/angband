@@ -7,8 +7,8 @@ export function kebabToPascal(str: string): string {
 }
 
 // ctype.h-compatible space checker
-export function isSpace(char: string) {
-  return char.length === 1 && (
+export function isSpace(char: string | undefined) {
+  return char && char.length === 1 && (
     char === ' ' ||
     char === '\n' ||
     char === '\t' ||
