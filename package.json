@@ -16,7 +16,12 @@
   "author": "Peter Poole",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-typescript": "^7.24.7",
+    "@jest/globals": "^29.7.0",
     "@types/node": "~20.0.0",
+    "babel-jest": "^29.7.0",
     "esbuild": "0.23.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
@@ -24,6 +29,7 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "express": "^4.19.2",
+    "jest": "^29.7.0",
     "zod": "^3.23.8"
   }
 }
