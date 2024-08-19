@@ -18,7 +18,7 @@ export type SerializableClass<T> = {
 export class SerializableBase implements Serializable {
   static schema: ZodObject<any>
 
-  constructor(params: JsonObject) {}
+  constructor(params: any) {}
 
   toJSON(): JsonObject {
     throw new Error('not implemented')
