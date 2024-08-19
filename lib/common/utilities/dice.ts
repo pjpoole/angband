@@ -4,7 +4,7 @@ import { Expression } from '../spells/expressions'
 const DICE_MAX_EXPRESSIONS = 4
 type DiceParam = number | Expression | null
 
-interface DiceParams {
+export interface DiceParams {
   expressions: Expression[]
   b: DiceParam
   x: DiceParam
