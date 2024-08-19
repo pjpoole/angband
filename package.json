@@ -11,7 +11,7 @@
     "watch": "esbuild ./lib/browser/app.ts --outfile ./build/app.js --build --watch --target=es2022",
     "run:parser": "tsx ./lib/server/testLoading.ts",
     "typecheck": "tsc --noEmit lib/**/*.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Peter Poole",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "@types/express": "^4.17.21",
     "express": "^4.19.2",
     "jest": "^29.7.0",
+    "ts-jest": "^29.2.4",
     "zod": "^3.23.8"
   }
 }
