@@ -21,6 +21,11 @@ export const EX_HANDLERS = {
   [EX.MONSTER_PERCENT_HP_GONE]: effectValueMonsterPercentHpGone,
 }
 
+// TODO: flesh out; understand expression logic
+export interface Expression {
+  name: string
+}
+
 function effectValueSpellPower() {}
 function effectValuePlayerLevel() {}
 function effectValueDungeonLevel() {}
