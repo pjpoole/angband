@@ -7,8 +7,6 @@ import { TV, TV_NAMES } from './tval'
 import { KF } from './kindFlags'
 import { OF } from './flags'
 import {
-  ELEM,
-  ELEM_KEYS,
   HATES_ELEM,
   IGNORE_ELEM,
   isHatesElem, isIgnoreElem

@@ -1,11 +1,10 @@
 import { Parser } from './Parser'
-import type { MonsterBase } from '../../common/monsters/monsterBase'
-import { RF } from '../../common/monsters/flags'
-import { MonsterBaseRegistry } from '../../common/game/registries'
-import { setDifference, setUnion } from '../../common/utilities/set'
-import type { C } from '../../common/utilities/colors'
 import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
+
+import { MonsterBaseRegistry } from '../../common/game/registries'
+import { MonsterJSON } from '../../common/monsters/monster'
+import { RF } from '../../common/monsters/flags'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
   | 'hit-points' | 'light' | 'hearing' | 'smell' | 'armor-class' | 'sleepiness'
@@ -14,41 +13,7 @@ type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
   | 'message-invis' | 'message-miss' | 'desc' | 'drop' | 'drop-base' | 'mimic'
   | 'friends' | 'friends-base' | 'shape' | 'color-cycle'
 
-interface MonsterSpec {
-  name: string
-  plural?: string
-  base: MonsterBase
-  glyph?: string // char
-  color: C
-  speed: number
-  averageHp: number
-  light: number
-  hearing: number
-  smell: number
-  armorClass: number
-  sleepiness: number
-  level: number
-  rarity: number
-  experience: number
-  blow: string[][] // TODO
-  flags: Set<RF>
-  flagsOff?: Set<RF>
-  innateFrequency: number
-  spellFrequency: number
-  spellPower: number
-  spells: string[][] // TODO
-  messageVisible: string
-  messageInvisible: string
-  messageMiss: string
-  description: string
-  drop: string[][] // TODO
-  dropBase: string[][] // TODO
-  mimic: [string, string]
-  friends: string[][] // TODO
-  friendsBase: string[][] // TODO
-}
-
-export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
+export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
   constructor() {
     super()
 
@@ -100,17 +65,15 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
   handleBase(value: ParserValues) {
     const current = this.current
 
-    const base = MonsterBaseRegistry.get(value)
+    if (!MonsterBaseRegistry.has(value)) {
+      throw new Error('monster base not found', { cause: { key: value } })
+    }
 
-    if (base == null) throw new Error('monster base not found', { cause: { key: value } })
-
-    current.glyph = base.glyph
-    current.flags = setUnion(current.flags || new Set(), base.flags)
+    current.base = value
   }
 
   handleGlyph(value: ParserValues) {
     const current = this.current
-
     // override base glyph; this relies on glyph being specified after base in
     // the data file
     current.glyph = value[0]
@@ -131,18 +94,12 @@ export class MonsterParser extends Parser<MonsterFields, MonsterSpec> {
 
   handleFlags(value: ParserValues) {
     const current = this.current
-
-    if (current.flags == null) current.flags = []
-
-    current.flags = arrayUnion(current.flags, allAsEnum(value, RF))
+    current.flags = arrayUnion(current.flags ?? [], allAsEnum(value, RF))
   }
 
   handleFlagsOff(value: ParserValues) {
     const current = this.current
-
-    if (current.flags == null) current.flags = []
-
-    current.flags = setDifference(current.flags, allAsEnum(value, RF))
+    current.flagsOff = arrayUnion(current.flags ?? [], allAsEnum(value, RF))
   }
 
   // TODO

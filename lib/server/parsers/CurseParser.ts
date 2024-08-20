@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
 import { Curse, CurseFlag, CurseJSON } from '../../common/objects/curse'
-import { CurseRegistry, ObjectBaseRegistry } from '../../common/game/registries'
+import { CurseRegistry } from '../../common/game/registries'
 import {
   allAsEnum,
   asEnum,
@@ -11,9 +11,10 @@ import {
 } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
 
-import { EX } from '../../common/spells/expressions'
-import { EF } from '../../common/spells/effects'
 import { OF } from '../../common/objects/flags'
+import { TV } from '../../common/objects/tval'
+import { EF } from '../../common/spells/effects'
+import { EX } from '../../common/spells/expressions'
 import { isHatesElem, isIgnoreElem } from '../../common/spells/elements'
 
 
@@ -56,8 +57,8 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   handleType(values: ParserValues) {
     const current = this.current
-    if (!ObjectBaseRegistry.has(values)) throw new Error('invalid item type')
-    current.types = arrayUnion(current.types ?? [], [values])
+    const type = asEnum(values, TV)
+    current.types = arrayUnion(current.types ?? [], [type])
   }
 
   handleCombat(values: ParserValues) {

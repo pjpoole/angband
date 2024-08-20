@@ -38,7 +38,7 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
     this.register('confused-msg', this.keyToString('confusedMessage'))
     this.register('look-prefix', this.keyToString('lookPrefix'))
     this.register('look-in-preposition', this.keyToString('lookInPreposition'))
-    this.register('resist-flag', this.handleResists.bind(this))
+    this.register('resist-flag', this.handleResistFlag.bind(this))
   }
 
   _finalize(obj: FeatureJSON) {
@@ -66,11 +66,10 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
 
   handleFlags(values: ParserValues) {
     const current = this.current
-    if (current.flags == null) current.flags = []
-    current.flags = arrayUnion(current.flags, allAsEnum(values, TF))
+    current.flags = arrayUnion(current.flags ?? [], allAsEnum(values, TF))
   }
 
-  handleResists(values: ParserValues) {
+  handleResistFlag(values: ParserValues) {
     const current = this.current
     current.resistFlag = asEnum(values, RF)
   }

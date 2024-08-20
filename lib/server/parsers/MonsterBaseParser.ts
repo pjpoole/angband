@@ -39,9 +39,6 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
 
   handleMonsterFlags(value: ParserValues) {
     const current = this.current
-
-    if (current.flags == null) current.flags = []
-
-    current.flags = arrayUnion(current.flags, allAsEnum(value, RF))
+    current.flags = arrayUnion(current.flags ?? [], allAsEnum(value, RF))
   }
 }
