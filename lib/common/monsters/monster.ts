@@ -1,14 +1,16 @@
 import { z } from 'zod'
+import { SerializableBase } from '../core/serializable'
 import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 import { setDifference, setUnion } from '../utilities/set'
+import { BlowRegistry, MonsterBaseRegistry } from '../game/registries'
 
 import { C } from '../utilities/colors'
-import { RF } from './flags'
-import { RSF } from './spells'
-import { SerializableBase } from '../core/serializable'
-import { MonsterBase } from './monsterBase'
+import { Dice } from '../utilities/dice'
+
 import { Blow, BLOW_EF } from './blows'
-import { BlowRegistry, MonsterBaseRegistry } from '../game/registries'
+import { RF } from './flags'
+import { MonsterBase } from './monsterBase'
+import { RSF } from './spells'
 
 const messageObject = z.array(z.object({
   spell: z_enumValueParser(RSF),
@@ -34,7 +36,16 @@ export const MonsterSchema = z.object({
   rarity: z.number(),
   experience: z.number(),
   blows: z.array(z.object({
-    blow: z.string(), // TODO: validate Blow
+    blow: z.string().transform((str, ctx) => {
+      const blow = BlowRegistry.get(str)
+      if (blow != null) return blow
+
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'invalid blow'
+      })
+      return z.NEVER
+    }),
     effect: z_enumValueParser(BLOW_EF).optional(),
     damage: z_diceExpression().optional(),
   })),
@@ -48,13 +59,16 @@ export const MonsterSchema = z.object({
   messageInvisible: messageObject,
   messageMiss: messageObject,
   description: z.string(),
-  drop: z.array(z.object({ // TODO: refine min < max
+  drop: z.array(z.object({
     type: z.string(), // TODO: validate against object types
     name: z.string(), // TODO: validate
     chance: z.number(),
     min: z.number(),
     max: z.number(),
-  })).optional(),
+  }).refine(
+    (drop) => drop.min <= drop.max,
+    { message: 'improper values for drop min/max'}
+  )).optional(),
   dropBase: z.array(z.object({
     type: z.string(), // TODO: validate
     chance: z.number(),
@@ -87,7 +101,7 @@ export type MonsterParams = z.output<typeof MonsterSchema>
 interface MonsterBlow {
   blow: Blow,
   effect?: BLOW_EF,
-  damage?: string,
+  damage?: Dice,
 }
 
 interface MonsterMessage {
@@ -113,14 +127,14 @@ interface MonsterMimic {
 
 interface MonsterFriendBase {
   chance: number
-  count: string
+  count: Dice
   baseType: string // TODO: validate
   role?: typeof friendRoles[number]
 }
 
 interface MonsterFriend {
   chance: number
-  count: string
+  count: Dice
   type: string // TODO: validate
   role?: typeof friendRoles[number]
 }
@@ -177,13 +191,7 @@ export class Monster extends SerializableBase {
     this.level = params.level
     this.rarity = params.rarity
     this.experience = params.experience
-    this.blows = params.blows.map(blow => {
-      return {
-        blow: BlowRegistry.getOrThrow(blow.blow),
-        effect: blow.effect,
-        damage: blow.damage
-      }
-    })
+    this.blows = params.blows,
     this.flags = setUnion(
       setDifference(this.base.flags, new Set(params.flagsOff)),
       new Set(params.flags)
