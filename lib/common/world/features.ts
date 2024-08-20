@@ -4,7 +4,7 @@ import { RF, RF_VALUE } from '../monsters/flags'
 import { C } from '../utilities/colors'
 import { z_enumValueParser } from '../utilities/zod'
 import { SerializableBase } from '../core/serializable'
-import { EnumValueOnly, valueSetToArray, valueToKey } from '../utilities/enum'
+import { EnumValueOnly, enumValueSetToArray, enumValueToKey } from '../utilities/enum'
 
 // list-terrain.h
 // Terrain features
@@ -180,13 +180,13 @@ export class Feature extends SerializableBase {
 
   toJSON(): FeatureJSON {
     return {
-      code: valueToKey(this.code, FEAT),
+      code: enumValueToKey(this.code, FEAT),
       name: this.name,
       glyph: this.glyph,
       color: this.color,
-      mimic: valueToKey(this.mimic, FEAT),
+      mimic: enumValueToKey(this.mimic, FEAT),
       priority: this.priority,
-      flags: valueSetToArray(this.flags, TF),
+      flags: enumValueSetToArray(this.flags, TF),
       digging: this.digging,
       description: this.description,
       walkMessage: this.walkMessage,
@@ -196,7 +196,7 @@ export class Feature extends SerializableBase {
       confusedMessage: this.confusedMessage,
       lookPrefix: this.lookPrefix,
       lookInPreposition: this.lookInPreposition,
-      resistFlag: valueToKey(this.resistFlag, RF)
+      resistFlag: enumValueToKey(this.resistFlag, RF)
     }
   }
 }

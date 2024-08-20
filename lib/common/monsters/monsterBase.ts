@@ -4,7 +4,7 @@ import { RF } from './flags'
 import { SerializableBase } from '../core/serializable'
 import { JsonObject } from '../utilities/json'
 import { z_enumValueParser } from '../utilities/zod'
-import { valueSetToArray } from '../utilities/enum'
+import { enumValueSetToArray } from '../utilities/enum'
 
 export const MonsterBaseSchema = z.object({
   name: z.string(),
@@ -47,7 +47,7 @@ export class MonsterBase extends SerializableBase {
       name: this.name,
       glyph: this.glyph,
       pain: this.pain,
-      flags: valueSetToArray(this.flags, RF),
+      flags: enumValueSetToArray(this.flags, RF),
       description: this.description,
     }
   }

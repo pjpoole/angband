@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 import { isValidRoomName } from './room'
-import { valueToKey } from '../utilities/enum'
+import { enumValueToKey } from '../utilities/enum'
 import { z_enumValueParser } from '../utilities/zod'
 
 // list-dun-profiles.h
@@ -119,7 +119,7 @@ export class DungeonProfile extends SerializableBase {
 
   toJSON(): DungeonProfileJSON {
     return {
-      name: valueToKey(this.name, DUN),
+      name: enumValueToKey(this.name, DUN),
       blockSize: this.blockSize,
       rooms: this.rooms,
       unusual: this.unusual,

@@ -13,7 +13,7 @@ export function enumToKeyArray<T extends NativeEnum>(enumObject: T): (keyof T)[]
   return results
 }
 
-export function valueToKey<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T | undefined {
+export function enumValueToKey<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T | undefined {
   for (const [k, v] of Object.entries(enumObject)) {
     if (v === value) return k
   }
@@ -21,13 +21,13 @@ export function valueToKey<T extends NativeEnum>(value: number | undefined, enum
   return undefined
 }
 
-export function valueToKeyOrThrow<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T {
-  const result = valueToKey(value, enumObject)
+export function enumValueToKeyOrThrow<T extends NativeEnum>(value: number | undefined, enumObject: T): keyof T {
+  const result = enumValueToKey(value, enumObject)
   if (result) return result
   throw new Error('key not found in enum')
 }
 
-export function valueSetToArray<T extends NativeEnum>(set: Set<T[keyof T]>, enumObject: T): Array<keyof T> {
+export function enumValueSetToArray<T extends NativeEnum>(set: Set<T[keyof T]>, enumObject: T): Array<keyof T> {
   const results: Array<keyof T> = []
 
   const objectEntries = Object.entries(enumObject).filter(valueIsNumeric)

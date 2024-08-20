@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { MON_MESSAGES, MSG } from '../game/messages'
 import { SerializableBase } from '../core/serializable'
-import { valueToKeyOrThrow } from '../utilities/enum'
+import { enumValueToKeyOrThrow } from '../utilities/enum'
 
 // mon-blows.c, effect_handlers
 // Blow effects
@@ -84,7 +84,7 @@ export class Blow extends SerializableBase {
       stun: this.stun,
       miss: this.miss,
       physical: this.physical,
-      message: valueToKeyOrThrow(this.message, MSG),
+      message: enumValueToKeyOrThrow(this.message, MSG),
       actions: this.actions,
       description: this.description,
     }
