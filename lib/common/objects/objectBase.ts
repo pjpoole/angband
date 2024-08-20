@@ -6,13 +6,15 @@ import { Entries } from '../utilities/object'
 import { TV, TV_NAMES } from './tval'
 import { KF } from './kindFlags'
 import { OF } from './flags'
-import { ELEM, ELEM_KEYS } from '../spells/elements'
+import {
+  ELEM,
+  ELEM_KEYS,
+  HATES_ELEM,
+  IGNORE_ELEM,
+  isHatesElem, isIgnoreElem
+} from '../spells/elements'
 
-type ObjectBaseFlag =
-  | keyof typeof KF
-  | keyof typeof OF
-  | `HATES_${keyof typeof ELEM}`
-  | `IGNORE_${keyof typeof ELEM}`
+type ObjectBaseFlag = keyof typeof KF | keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 
 export const ObjectBaseSchema = z.object({
   name: z.string().optional(),
@@ -37,13 +39,8 @@ export const ObjectBaseSchema = z.object({
     } else if (Object.keys(OF).includes(str)) {
       return str as keyof typeof OF
     } else {
-      if (str.startsWith('HATES_')) {
-        const substr = str.replace('HATES_', '')
-        if (ELEM_KEYS.includes(substr as unknown as keyof typeof ELEM)) return str as `HATES_${keyof typeof ELEM}`
-      } else if (str.startsWith('IGNORE_')) {
-        const substr = str.replace('HATES_', '')
-        if (ELEM_KEYS.includes(substr as unknown as keyof typeof ELEM)) return str as `IGNORE_${keyof typeof ELEM}`
-      }
+      if (isHatesElem(str)) return str
+      else if (isIgnoreElem(str)) return str
     }
 
     ctx.addIssue({

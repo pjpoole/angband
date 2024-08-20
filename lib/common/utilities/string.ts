@@ -6,6 +6,11 @@ export function kebabToPascal(str: string): string {
   return str.replace(/-[a-z]/g, (substr) => substr.replace('-', '').toUpperCase())
 }
 
+export function getPrefixAndSuffix(str: string, separator: string = '_') {
+  const cutPoint = str.indexOf(separator) + separator.length
+  return [str.substring(0, cutPoint), str.substring(cutPoint)]
+}
+
 // ctype.h-compatible space checker
 export function isSpace(char: string | undefined) {
   return char && char.length === 1 && (
