@@ -13,6 +13,10 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     this.ctor = ctor
   }
 
+  has(key: unknown): boolean {
+    return this.data.has(key as V)
+  }
+
   get(key: V): T | undefined {
     return this.data.get(key)
   }
