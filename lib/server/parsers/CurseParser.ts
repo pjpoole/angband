@@ -29,7 +29,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
   constructor() {
     super()
 
-    this.register('name', this.handleName.bind(this))
+    this.register('name', this.stringRecordHeader('name'))
     this.register('type', this.handleType.bind(this))
     this.register('weight', this.keyToInteger('weight'))
     this.register('combat', this.handleCombat.bind(this))
@@ -48,11 +48,6 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
   _finalize(obj: CurseJSON) {
     const curse = Curse.fromJSON(obj)
     CurseRegistry.add(curse.name, curse)
-  }
-
-  handleName(values: ParserValues) {
-    const current = this.newCurrent()
-    current.name = values
   }
 
   handleType(values: ParserValues) {

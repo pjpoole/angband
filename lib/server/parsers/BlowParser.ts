@@ -14,7 +14,7 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
   constructor() {
     super()
 
-    this.register('name', this.handleName.bind(this))
+    this.register('name', this.stringRecordHeader('name'))
     this.register('cut', this.keyToBoolean('cut'))
     this.register('stun', this.keyToBoolean('stun'))
     this.register('miss', this.keyToBoolean('miss'))
@@ -27,11 +27,6 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
   _finalize(obj: BlowJSON) {
     const blow = Blow.fromJSON(obj)
     BlowRegistry.add(blow.name, blow)
-  }
-
-  handleName(values: ParserValues) {
-    this.newCurrent()
-    this.keyToSingleString('name')(values)
   }
 
   handleActions(values: ParserValues) {

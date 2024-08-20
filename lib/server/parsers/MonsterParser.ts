@@ -17,7 +17,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
   constructor() {
     super()
 
-    this.register('name', this.handleName.bind(this))
+    this.register('name', this.stringRecordHeader('name'))
     this.register('plural', this.keyToString('plural'))
     this.register('base', this.handleBase.bind(this))
     this.register('glyph', this.handleGlyph.bind(this))
@@ -55,11 +55,6 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
   // TODO
   _finalize(obj: MonsterJSON) {
 
-  }
-
-  handleName(value: ParserValues) {
-    const current = this.newCurrent()
-    current.name = value
   }
 
   handleBase(value: ParserValues) {

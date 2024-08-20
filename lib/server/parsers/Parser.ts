@@ -93,6 +93,13 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
 }
 
 export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
+  stringRecordHeader(key: KeyOfType<T, string>): ParserFunction {
+    return (value: ParserValues): void => {
+      const current = this.newCurrent()
+      current[key] = value as T[typeof key]
+    }
+  }
+
   keyToInteger(key: KeyOfType<T, number>): ParserFunction {
     return (value: ParserValues): void => {
       const current = this.current

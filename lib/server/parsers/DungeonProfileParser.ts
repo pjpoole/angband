@@ -22,7 +22,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
   constructor() {
     super()
 
-    this.register('name', this.handleName.bind(this))
+    this.register('name', this.stringRecordHeader('name'))
     this.register('params', this.handleParams.bind(this))
     this.register('tunnel', this.handleTunnel.bind(this))
     this.register('streamer', this.handleStreamer.bind(this))
@@ -34,11 +34,6 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
   _finalize(obj: DungeonProfileJSON) {
     const dungeonProfile = DungeonProfile.fromJSON(obj)
     DungeonProfileRegistry.add(dungeonProfile.name, dungeonProfile)
-  }
-
-  handleName(values: ParserValues) {
-    const current = this.newCurrent()
-    current.name = values
   }
 
   handleParams(values: ParserValues) {
