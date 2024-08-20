@@ -4,8 +4,10 @@ import { WorldParser } from './WorldParser'
 import { FeatureParser } from './FeatureParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
+import { CurseParser } from './CurseParser'
 
 export { BlowParser } from './BlowParser'
+export { CurseParser } from './CurseParser'
 export { DungeonProfileParser } from './DungeonProfileParser'
 export { FeatureParser } from './FeatureParser'
 export { MonsterBaseParser } from './MonsterBaseParser'
@@ -18,6 +20,7 @@ export const PARSERS: any[] = [
   BlowParser,
   DungeonProfileParser,
   ObjectBaseParser,
+  CurseParser,
   MonsterBaseParser,
   WorldParser,
   FeatureParser,
