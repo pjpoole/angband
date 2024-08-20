@@ -21,7 +21,7 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     return this.data.get(key)
   }
 
-  getOrThrow(key: V): T {
+  getOrThrow(key: any): T {
     const result = this.data.get(key)
     if (result) return result
 

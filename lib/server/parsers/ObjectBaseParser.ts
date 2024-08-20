@@ -8,6 +8,7 @@ import {
   ParserValues
 } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
+import { TV_NAMES } from '../../common/objects/tval'
 
 type ObjectBaseFields = 'name' | 'graphics' | 'max-stack' | 'break' | 'flags'
   | 'default'
@@ -53,6 +54,8 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
   handleName(values: ParserValues) {
     const current = this.newCurrent(this.defaults)
     const [tvName, name] = asTokens(values, 1, 2)
+
+    if (TV_NAMES[tvName] == null) throw new Error('invalid object type')
 
     current.name = name
     current.type = tvName

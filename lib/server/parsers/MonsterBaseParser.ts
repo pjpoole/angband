@@ -14,10 +14,10 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
   constructor() {
     super()
 
-    this.register('name', this.handleMonsterName.bind(this))
-    this.register('glyph', this.handleMonsterGlyph.bind(this))
+    this.register('name', this.stringRecordHeader('name'))
+    this.register('glyph', this.handleGlyph.bind(this))
     this.register('pain', this.keyToInteger('pain'))
-    this.register('flags', this.handleMonsterFlags.bind(this))
+    this.register('flags', this.handleFlags.bind(this))
     this.register('desc', this.keyToString('description'))
   }
 
@@ -26,18 +26,13 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
     MonsterBaseRegistry.add(obj.name, monsterBase)
   }
 
-  handleMonsterName(value: ParserValues) {
-    const current = this.newCurrent()
-    current.name = value
-  }
-
-  handleMonsterGlyph(value: ParserValues) {
+  handleGlyph(value: ParserValues) {
     const current = this.current
     // ensure it's one character
     current.glyph = value.slice(0, 1)
   }
 
-  handleMonsterFlags(value: ParserValues) {
+  handleFlags(value: ParserValues) {
     const current = this.current
     current.flags = arrayUnion(current.flags ?? [], allAsEnum(value, RF))
   }

@@ -40,6 +40,14 @@ export function asEnum<T extends NativeEnum>(
   return value as keyof T
 }
 
+export function maybeAsEnum<T extends NativeEnum>(
+  value: string,
+  enumObject: T
+): keyof T | undefined {
+  if (!Object.keys(enumObject).includes(value)) return undefined
+  return value as keyof T
+}
+
 export function allAsEnum<T extends NativeEnum>(
   str: string,
   enumObject: T

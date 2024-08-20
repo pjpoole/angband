@@ -8,9 +8,12 @@ import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
 import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 import { Dice } from '../utilities/dice'
+import { PROJ } from './projections'
 
 export const ProjectionSchema = z.object({
-  code: z_enumValueParser(ELEM),
+  // TODO: can be ELEM or PROJ... figure out how to handle the union
+  //       non-obvious because, as enums, they will have overlapping values
+  code: z.union([z_enumValueParser(ELEM), z_enumValueParser(PROJ)]),
   name: z.string(),
   type: z.string(),
   description: z.string(),
@@ -31,7 +34,7 @@ export type ProjectionJSON = z.input<typeof ProjectionSchema>
 export type ProjectionParams = z.output<typeof ProjectionSchema>
 
 export class Projection implements SerializableBase {
-  readonly code: ELEM
+  readonly code: ELEM | PROJ
   readonly name: string
   readonly type: string
   readonly description: string
@@ -81,7 +84,7 @@ export class Projection implements SerializableBase {
       blindDescription: this.blindDescription,
       lashDescription: this.lashDescription,
       numerator: this.numerator,
-      denominator: this.denominator.toJSON(),
+      denominator: this.denominator.toString(),
       divisor: this.divisor,
       damageCap: this.damageCap,
       messageType: MSG[this.messageType],

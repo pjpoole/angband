@@ -1,5 +1,9 @@
 import { Parser } from './Parser'
-import { asInteger, ParserValues } from '../../common/utilities/parsers'
+import {
+  asInteger,
+  asTokens,
+  ParserValues
+} from '../../common/utilities/parsers'
 import { LevelRegistry } from '../../common/game/registries'
 import { Level, LevelJSON } from '../../common/world/level'
 
@@ -22,10 +26,9 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
 
   handleLevel(value: ParserValues) {
     const current = this.newCurrent()
-    const [rawDepth, name, up, down] = value.split(':')
-    const depth = asInteger(rawDepth)
+    const [rawDepth, name, up, down] = asTokens(value, 4)
 
-    current.depth = depth
+    current.depth = asInteger(rawDepth)
     current.name = name
     current.up = up === "None" ? undefined : up
     current.down = down === "None" ? undefined : down

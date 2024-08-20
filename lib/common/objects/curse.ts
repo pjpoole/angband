@@ -10,11 +10,10 @@ import { EF } from '../spells/effects'
 import { OF } from './flags'
 import { EX } from '../spells/expressions'
 import {
-  ELEM,
-  ELEM_KEYS,
   HATES_ELEM,
   IGNORE_ELEM,
-  isHatesElem, isIgnoreElem
+  isHatesElem,
+  isIgnoreElem,
 } from '../spells/elements'
 import { ObjectBase } from './objectBase'
 import { ObjectBaseRegistry } from '../game/registries'
@@ -31,16 +30,13 @@ export const CurseSchema = z.object({
   name: z.string(),
   types: z.array(z.string().transform((str, ctx) => {
     const objectBase = ObjectBaseRegistry.get(str)
-    if (objectBase == null) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'invalid object base type'
-      })
+    if (objectBase != null) return objectBase
 
-      return z.NEVER
-    }
-
-    return objectBase
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'invalid object base type'
+    })
+    return z.NEVER
   })),
   weight: z.number().optional(), // never used
   combat: z.object({

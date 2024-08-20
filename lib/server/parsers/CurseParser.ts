@@ -7,12 +7,13 @@ import {
   asFlags,
   asInteger,
   asTokens,
-  ParserValues
+  maybeAsEnum,
+  ParserValues,
 } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { OF } from '../../common/objects/flags'
-import { TV } from '../../common/objects/tval'
+import { TV_NAMES } from '../../common/objects/tval'
 import { EF } from '../../common/spells/effects'
 import { EX } from '../../common/spells/expressions'
 import { isHatesElem, isIgnoreElem } from '../../common/spells/elements'
@@ -41,7 +42,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
     this.register('values', this.handleValues.bind(this))
     this.register('msg', this.keyToString('message'))
     this.register('desc', this.keyToString('description'))
-    this.register('conflict', this.handleConflict.bind('this'))
+    this.register('conflict', this.handleConflicts.bind(this))
     this.register('conflict-flags', this.handleConflictFlags.bind(this))
   }
 
@@ -52,8 +53,8 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   handleType(values: ParserValues) {
     const current = this.current
-    const type = asEnum(values, TV)
-    current.types = arrayUnion(current.types ?? [], [type])
+    if (TV_NAMES[values] == null) throw new Error('invalid object type')
+    current.types = arrayUnion(current.types ?? [], [values])
   }
 
   handleCombat(values: ParserValues) {
@@ -64,7 +65,8 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   handleEffect(values: ParserValues) {
     const current = this.current
-    current.effect = arrayUnion(current.effect ?? [], allAsEnum(values, EF))
+    const effects = asTokens(values, 1, 2).map(token => asEnum(token, EF))
+    current.effect = arrayUnion(current.effect ?? [], effects)
   }
 
   handleExpression(values: ParserValues) {
@@ -79,7 +81,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
     const results: CurseFlag[] = []
     for (const flag of flags) {
-      let mapped = OF[flag]
+      let mapped = maybeAsEnum(flag, OF)
       if (mapped) {
         results.push(mapped)
       } else {
@@ -101,7 +103,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
     current.values = arrayUnion(current.values ?? [], asFlags(values))
   }
 
-  handleConflict(values: ParserValues) {
+  handleConflicts(values: ParserValues) {
     const current = this.current
     current.conflicts = arrayUnion(current.conflicts ?? [], [values])
   }
