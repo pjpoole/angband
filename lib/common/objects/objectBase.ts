@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 
 import { C } from '../utilities/colors'
-import { Entries } from '../utilities/object'
+import { objectValueToKey } from '../utilities/object'
 import { TV, TV_NAMES } from './tval'
 import { KF } from './kindFlags'
 import { OF } from './flags'
@@ -18,9 +18,8 @@ export const ObjectBaseSchema = z.object({
   name: z.string().optional(),
   type: z.string().transform((str, ctx): TV => {
     // FIXME: Is there a more elegant way to accomplish this?
-    for (const [k, v] of Object.entries(TV_NAMES) as unknown as Entries<typeof TV_NAMES>) {
-      if (v === str) return k
-    }
+    const tval = TV_NAMES[str]
+    if (tval) return tval
 
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -72,9 +71,11 @@ export class ObjectBase extends SerializableBase {
   }
 
   toJSON(): ObjectBaseJSON {
+    const type = objectValueToKey(this.type, TV_NAMES)
+    if (type == null) throw new Error('invalid type for object base')
     return {
       name: this.name,
-      type: TV_NAMES[this.type],
+      type,
       graphics: this.graphics,
       break: this.break,
       flags: Array.from(this.flags),
