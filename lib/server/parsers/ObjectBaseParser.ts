@@ -2,12 +2,12 @@ import { Parser } from './Parser'
 import { ObjectBase, ObjectBaseJSON } from '../../common/objects/objectBase'
 import { ObjectBaseRegistry } from '../../common/game/registries'
 import {
+  asFlags,
   asInteger,
   asTokens,
   ParserValues
 } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
-import { ValuesOfType } from '../../common/utilities/object'
 
 type ObjectBaseFields = 'name' | 'graphics' | 'max-stack' | 'break' | 'flags'
   | 'default'
@@ -60,6 +60,6 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
 
   handleFlags(values: ParserValues) {
     const current = this.current
-    current.flags = arrayUnion(current.flags ?? [], values.split('|').map(el => el.trim()))
+    current.flags = arrayUnion(current.flags ?? [], asFlags(values))
   }
 }

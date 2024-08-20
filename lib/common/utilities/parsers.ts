@@ -71,3 +71,7 @@ export function asTokens(str: string, minOrCount: number, max?: number): string[
 
   return strings
 }
+
+export function asFlags(str: string): string[] {
+  return str.split('|').map(el => el.trim())
+}
