@@ -57,7 +57,7 @@ export type ObjectBaseParams = z.output<typeof ObjectBaseSchema>
 export class ObjectBase extends SerializableBase {
   static schema = ObjectBaseSchema
 
-  readonly name: string
+  readonly name?: string
   readonly type: TV
   readonly graphics: C
   readonly break?: number
