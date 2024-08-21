@@ -12,16 +12,23 @@ import {
   asInteger,
   ParserValues
 } from '../../common/utilities/parsers'
-import { ELEM } from '../../common/spells/elements'
 
-type PlayerPropertyFields = 'type' | 'code' | 'name' | 'desc' | 'value'
+import { PF } from '../../common/player/flags'
+import { OF } from '../../common/objects/flags'
+
+type PlayerPropertyFields = 'type' | 'code' | 'bindui' | 'name' | 'desc'
+  | 'value'
 
 export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPropertyJSON> {
+  static readonly fileName = 'player_property'
+  static readonly registry = PlayerPropertyRegistry
+
   constructor() {
     super()
 
-    this.register('code', this.handleCode.bind(this))
     this.register('name', this.keyToString('name'))
+    this.register('code', this.handleCode.bind(this))
+    this.register('bindui', this.keyToString('bindui'))
     this.register('type', this.handleType.bind(this))
     this.register('desc', this.keyToString('description'))
     this.register('value', this.handleValue.bind(this))
@@ -29,16 +36,20 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
 
   _finalize(obj: PlayerPropertyJSON) {
     const playerProperty = PlayerProperty.fromJSON(obj)
-    PlayerPropertyRegistry.add(playerProperty.code, playerProperty)
+    PlayerPropertyRegistry.add(playerProperty.id, playerProperty)
   }
 
+  // can't be pkey since codes overlap
   handleCode(value: ParserValues) {
-    const current = this.newCurrent()
-    current.code = asEnum(value, ELEM)
+    const current = this.current
+    if (current.type === 'player') current.code = asEnum(value, PF)
+    else if (current.type === 'object') current.code = asEnum(value, OF)
+    else if (current.type === 'element') current.code = undefined
   }
 
+  // Record header
   handleType(value: ParserValues) {
-    const current = this.current
+    const current = this.newCurrent()
     current.type = asArrayMember(value, PLAYER_PROPERTY_TYPES)
   }
 

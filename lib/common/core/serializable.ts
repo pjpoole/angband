@@ -6,13 +6,14 @@ interface Serializable {
 }
 
 type Deserializable = {
-  schema: ZodObject<any>
+  schema: { parse: (args: any) => any }
 }
 
 type Buildable<T> = (new (...args: any[]) => T) & Deserializable
 
 export class SerializableBase implements Serializable {
-  static schema: ZodObject<any>
+  // THIS IS NOT UNUSED DESPITE SYNTAX HIGHLIGHTING
+  static _id = 0
 
   readonly id: number
 
