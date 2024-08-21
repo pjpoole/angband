@@ -21,6 +21,12 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     return this.data.get(key)
   }
 
+  getById(id: number): T | undefined {
+    for (const el of this.data.values()) {
+      if (el.id === id) return el
+    }
+  }
+
   getOrThrow(key: any): T {
     const result = this.data.get(key)
     if (result) return result

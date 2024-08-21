@@ -17,8 +17,22 @@ export type SerializableClass<T> = {
 
 export class SerializableBase implements Serializable {
   static schema: ZodObject<any>
+  static _id: number = 0
 
-  constructor(params: any) {}
+  readonly id: number
+
+  constructor(params: any) {
+    // auto-incrementing ids aren't properly the domain of serializables
+    const that = this
+
+    type HasId = {
+      constructor: HasId
+      _id: number
+    } & typeof that;
+
+    this.id = (this as HasId).constructor._id
+    ;(this as HasId).constructor._id++
+  }
 
   toJSON(): JsonObject {
     throw new Error('not implemented')

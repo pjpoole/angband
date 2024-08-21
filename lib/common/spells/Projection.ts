@@ -13,6 +13,7 @@ import { PROJ } from './projections'
 export const ProjectionSchema = z.object({
   // TODO: can be ELEM or PROJ... figure out how to handle the union
   //       non-obvious because, as enums, they will have overlapping values
+  //       Probably handle is using ID field
   code: z.union([z_enumValueParser(ELEM), z_enumValueParser(PROJ)]),
   name: z.string(),
   type: z.string(),
