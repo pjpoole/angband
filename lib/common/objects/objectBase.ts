@@ -56,6 +56,7 @@ export class ObjectBase extends SerializableBase {
 
   readonly name?: string
   readonly type: TV
+  readonly typeName: keyof typeof TV_NAMES
   readonly graphics: C
   readonly break?: number
   readonly flags: Set<ObjectBaseFlag>
@@ -65,6 +66,9 @@ export class ObjectBase extends SerializableBase {
 
     this.name = params.name
     this.type = params.type
+    // Primary key
+    // this lookup _will_ work, because we've already validated type
+    this.typeName = objectValueToKey(this.type, TV_NAMES) as keyof typeof TV_NAMES
     this.graphics = params.graphics
     this.break = params.break
     this.flags = new Set(params.flags)

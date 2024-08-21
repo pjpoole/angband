@@ -34,8 +34,7 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
   _finalize(obj: ObjectBaseJSON) {
     const objectBase = ObjectBase.fromJSON(obj)
     // TODO: Check on how ObjectBases are referenced from elsewhere
-    // currently indexed on tval; see TV
-    ObjectBaseRegistry.add(objectBase.type, objectBase)
+    ObjectBaseRegistry.add(objectBase.typeName, objectBase)
   }
 
   // Weird custom code

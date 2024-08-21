@@ -1,7 +1,8 @@
 import { z } from 'zod'
-import { NativeEnum } from './enum'
+import { enumValueToKey, NativeEnum } from './enum'
 import { stringToDice } from './dice'
 import { EX } from '../spells/expressions'
+import { EF } from '../spells/effects'
 
 /*
  * Converts a plain object's keys into ZodEnum with type safety and
@@ -61,10 +62,24 @@ export function combatToJson(combat: CombatParams): CombatJSON {
   }
 }
 
+export const z_effect = z.object({
+  effect: z_enumValueParser(EF)
+})
+
+export type zEffectJSON = z.input<typeof z_effect>
+export type zEffectParams = z.output<typeof z_effect>
+
+export function effectToJson(effect: zEffectParams): zEffectJSON {
+  return {
+    effect: enumValueToKey(effect.effect, EF)
+  }
+}
+
 export const z_expression = z.object({
   variable: z.string(),
   type: z_enumValueParser(EX), // TODO: Where does this come from? validate
   expression: z.string(), // basically a function of the previous two
 })
 
+export type zExpressionJSON = z.input<typeof z_expression>
 export type zExpressionParams = z.output<typeof z_expression>
