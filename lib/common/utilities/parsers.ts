@@ -16,9 +16,10 @@ export function asArrayMember<T>(value: unknown, ary: readonly T[]): T {
 }
 
 export function asInteger(value: ParserValues): number {
+  const stripped = value.trim()
   const number = parseInt(value)
 
-  if (value !== String(number)) {
+  if (stripped !== String(number)) {
     throw new Error(PARSE_ERROR_INVALID_NUMBER)
   }
 

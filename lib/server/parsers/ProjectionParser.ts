@@ -4,7 +4,7 @@ import {
   maybeAsEnum,
   ParserValues
 } from '../../common/utilities/parsers'
-import { Projection, ProjectionJSON, ProjectionRegistry } from '../../common/spells/Projection'
+import { Projection, ProjectionJSON } from '../../common/spells/Projection'
 import { ELEM } from '../../common/spells/elements'
 import { MSG } from '../../common/game/messages'
 import { PROJ } from '../../common/spells/projections'
@@ -14,6 +14,8 @@ type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'
   | 'damage-cap' | 'msgt' | 'obvious' | 'wake' | 'color'
 
 export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
+  static readonly fileName = 'projection'
+
   constructor() {
     super()
 
@@ -35,8 +37,7 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
   }
 
   _finalize(obj: ProjectionJSON) {
-    const projection = Projection.fromJSON(obj)
-    ProjectionRegistry.add(projection.code, projection)
+    Projection.fromJSON(obj).register()
   }
 
   handleCode(value: ParserValues) {

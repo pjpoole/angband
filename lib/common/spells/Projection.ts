@@ -4,51 +4,75 @@ import { SerializableBase } from '../core/serializable'
 import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 
 import { C } from '../utilities/colors'
-import { JsonObject } from '../utilities/json'
 import { ELEM } from './elements'
 import { MSG } from '../game/messages'
 import { Dice } from '../utilities/dice'
 import { PROJ } from './projections'
+import { enumValueToKey } from '../utilities/enum'
 
-export const ProjectionSchema = z.object({
-  // TODO: can be ELEM or PROJ... figure out how to handle the union
-  //       non-obvious because, as enums, they will have overlapping values
-  //       Probably handle is using ID field
-  code: z.union([z_enumValueParser(ELEM), z_enumValueParser(PROJ)]),
-  name: z.string(),
+export const PROJECTION_TYPES = ['element', 'environs', 'monster'] as const
+
+export type ProjectionTypes = typeof PROJECTION_TYPES[number]
+
+const ProjectionSchemaBase = z.object({
   type: z.string(),
   description: z.string(),
-  playerDescription: z.string(),
+  playerDescription: z.string().optional(),
   blindDescription: z.string(),
-  lashDescription: z.string(),
-  numerator: z.number(),
-  denominator: z_diceExpression(),
-  divisor: z.number(),
-  damageCap: z.number(),
-  messageType: z_enumValueParser(MSG),
+  lashDescription: z.string().optional(),
+  numerator: z.number().optional(),
+  denominator: z_diceExpression().optional(),
+  divisor: z.number().optional(),
+  damageCap: z.number().optional(),
+  // TODO: find out how messageType is backfilled in code
+  messageType: z_enumValueParser(MSG).optional(),
   obvious: z.boolean(),
-  wake: z.boolean(),
+  wake: z.boolean().optional(),
   color: z.nativeEnum(C)
 })
+
+/*
+ * Elements and non-elements are more sharply divided than this; in particular:
+ * - numerator
+ * - denominator
+ * - divisor
+ * - damageCap
+ *
+ * only exist on elements
+ */
+export const ProjectionSchema = z.discriminatedUnion('type', [
+  ProjectionSchemaBase.merge(z.object({
+    type: z.literal('element'),
+    name: z.string(),
+    code: z_enumValueParser(ELEM)
+  })),
+  ProjectionSchemaBase.merge(z.object({
+    type: z.enum(['environs', 'monster'] as const),
+    name: z.undefined(),
+    code: z_enumValueParser(PROJ),
+  }))
+])
 
 export type ProjectionJSON = z.input<typeof ProjectionSchema>
 export type ProjectionParams = z.output<typeof ProjectionSchema>
 
 export class Projection extends SerializableBase {
+  static readonly schema = ProjectionSchema
+
   readonly code: ELEM | PROJ
-  readonly name: string
-  readonly type: string
+  readonly name?: string
+  readonly type: ProjectionTypes
   readonly description: string
-  readonly playerDescription: string
+  readonly playerDescription?: string
   readonly blindDescription: string
-  readonly lashDescription: string
-  readonly numerator: number
-  readonly denominator: Dice
-  readonly divisor: number
-  readonly damageCap: number
-  readonly messageType: MSG
+  readonly lashDescription?: string
+  readonly numerator?: number
+  readonly denominator?: Dice
+  readonly divisor?: number
+  readonly damageCap?: number
+  readonly messageType?: MSG
   readonly obvious: boolean
-  readonly wake: boolean
+  readonly wake?: boolean
   readonly color: C
 
   constructor(params: ProjectionParams) {
@@ -71,30 +95,44 @@ export class Projection extends SerializableBase {
     this.color = params.color
   }
 
-  static fromJSON(parsed: ProjectionJSON): Projection {
-    const params = ProjectionSchema.parse(parsed)
-
-    return new Projection(params)
+  register() {
+    ProjectionRegistry.add(this.id, this)
   }
 
-  toJSON(): JsonObject {
-    return {
-      code: ELEM[this.code],
-      name: this.name,
-      type: this.type,
+  toJSON(): ProjectionJSON {
+    const projectionBase = {
       description: this.description,
       playerDescription: this.playerDescription,
       blindDescription: this.blindDescription,
       lashDescription: this.lashDescription,
       numerator: this.numerator,
-      denominator: this.denominator.toString(),
+      denominator: this.denominator?.toString(),
       divisor: this.divisor,
       damageCap: this.damageCap,
-      messageType: MSG[this.messageType],
+      messageType: enumValueToKey(this.messageType, MSG),
       obvious: this.obvious,
       wake: this.wake,
-      color: C[this.color]
+      color: this.color,
     }
+
+    const type = this.type
+
+    if (type === 'element') {
+      return {
+        type,
+        name: this.name as string,
+        code: enumValueToKey(this.code, ELEM) as keyof typeof ELEM,
+        ...projectionBase,
+      }
+    } else {
+      return {
+        type,
+        name: undefined,
+        code: enumValueToKey(this.code, PROJ) as keyof typeof PROJ,
+        ...projectionBase,
+      }
+    }
+
   }
 }
 
