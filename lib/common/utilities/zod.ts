@@ -83,3 +83,11 @@ export const z_expression = z.object({
 
 export type zExpressionJSON = z.input<typeof z_expression>
 export type zExpressionParams = z.output<typeof z_expression>
+
+export function expressionToJson(expression: zExpressionParams): zExpressionJSON {
+  return {
+    variable: expression.variable,
+    type: enumValueToKey(expression.type, EX),
+    expression: expression.expression,
+  }
+}
