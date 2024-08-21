@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { MON_MESSAGES, MSG } from '../game/messages'
 import { SerializableBase } from '../core/serializable'
 import { enumValueToKeyOrThrow } from '../utilities/enum'
@@ -90,3 +91,5 @@ export class Blow extends SerializableBase {
     }
   }
 }
+
+export const BlowRegistry = new NameRegistry(Blow)

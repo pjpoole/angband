@@ -2,14 +2,13 @@ import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 import { setDifference, setUnion } from '../utilities/set'
-import { BlowRegistry, MonsterBaseRegistry } from '../game/registries'
 
 import { C } from '../utilities/colors'
 import { Dice } from '../utilities/dice'
 
-import { Blow, BLOW_EF } from './blows'
+import { Blow, BLOW_EF, BlowRegistry } from './blows'
 import { RF } from './flags'
-import { MonsterBase } from './monsterBase'
+import { MonsterBase, MonsterBaseRegistry } from './monsterBase'
 import { RSF } from './spells'
 
 const messageObject = z.array(z.object({

@@ -1,6 +1,5 @@
 import { Parser } from './Parser'
-import { ObjectBase, ObjectBaseJSON } from '../../common/objects/objectBase'
-import { ObjectBaseRegistry } from '../../common/game/registries'
+import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
 import {
   asFlags,
   asInteger,

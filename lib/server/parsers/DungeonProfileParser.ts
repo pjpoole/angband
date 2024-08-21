@@ -1,9 +1,9 @@
 import {
   DungeonProfile,
-  DungeonProfileJSON
+  DungeonProfileJSON,
+  DungeonProfileRegistry
 } from '../../common/world/dungeonProfiles'
 import { isValidRoomName } from '../../common/world/room'
-import { DungeonProfileRegistry } from '../../common/game/registries'
 import {
   asBoolean,
   asInteger,

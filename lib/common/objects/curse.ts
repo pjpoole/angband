@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 import {
   CombatParams,
@@ -22,8 +23,7 @@ import {
   isHatesElem,
   isIgnoreElem,
 } from '../spells/elements'
-import { ObjectBase } from './objectBase'
-import { ObjectBaseRegistry } from '../game/registries'
+import { ObjectBase, ObjectBaseRegistry } from './objectBase'
 import { enumValueSetToArray } from '../utilities/enum'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
@@ -125,3 +125,5 @@ export class Curse extends SerializableBase {
     }
   }
 }
+
+export const CurseRegistry = new NameRegistry(Curse)

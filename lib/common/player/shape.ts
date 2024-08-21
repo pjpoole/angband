@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 import {
   CombatParams,
@@ -11,10 +12,10 @@ import {
   z_skill,
 } from '../utilities/zod'
 
-import { OF } from '../objects/flags'
-import { PF } from './flags'
 import { Dice } from '../utilities/dice'
 import { enumValueSetToArray } from '../utilities/enum'
+import { OF } from '../objects/flags'
+import { PF } from './flags'
 import { SkillData } from './skill'
 
 export const ShapeSchema = z.object({
@@ -99,3 +100,5 @@ export class Shape extends SerializableBase {
     }
   }
 }
+
+export const ShapeRegistry = new NameRegistry(Shape)

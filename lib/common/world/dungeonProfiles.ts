@@ -1,5 +1,7 @@
 import { z } from 'zod'
+import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
 import { isValidRoomName } from './room'
 import { enumValueToKey } from '../utilities/enum'
 import { z_enumValueParser } from '../utilities/zod'
@@ -132,3 +134,5 @@ export class DungeonProfile extends SerializableBase {
     }
   }
 }
+
+export const DungeonProfileRegistry = new IdRegistry(DungeonProfile)

@@ -2,6 +2,7 @@ import {
   FEAT,
   Feature,
   FeatureJSON,
+  FeatureRegistry,
   TF
 } from '../../common/world/features'
 import { Parser } from './Parser'
@@ -9,7 +10,6 @@ import { arrayUnion } from '../../common/utilities/array'
 import { allAsEnum, asEnum, ParserValues } from '../../common/utilities/parsers'
 import { colorStringToAttribute } from '../../common/utilities/colors'
 import { RF } from '../../common/monsters/flags'
-import { FeatureRegistry } from '../../common/game/registries'
 
 type FeatureFields = 'code' | 'name' | 'graphics' | 'mimic'
   | 'priority' | 'flags' | 'digging' | 'desc' | 'walk-msg' | 'run-msg'

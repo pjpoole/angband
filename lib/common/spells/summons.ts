@@ -1,12 +1,12 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 import { enumValueToKey } from '../utilities/enum'
 import { z_enumValueParser } from '../utilities/zod'
 
-import { MonsterBaseRegistry, SummonRegistry } from '../game/registries'
 import { MSG } from '../game/messages'
 import { RF } from '../monsters/flags'
-import { MonsterBase } from '../monsters/monsterBase'
+import { MonsterBase, MonsterBaseRegistry } from '../monsters/monsterBase'
 
 export const SummonSchema = z.object({
   name: z.string(), // pkey
@@ -66,3 +66,5 @@ export class Summon extends SerializableBase {
     }
   }
 }
+
+export const SummonRegistry = new NameRegistry(Summon)

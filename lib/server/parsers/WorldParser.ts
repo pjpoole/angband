@@ -4,8 +4,7 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsers'
-import { LevelRegistry } from '../../common/game/registries'
-import { Level, LevelJSON } from '../../common/world/level'
+import { Level, LevelJSON, LevelRegistry } from '../../common/world/level'
 
 type WorldFields = 'level'
 

@@ -4,8 +4,7 @@ import {
   maybeAsEnum,
   ParserValues
 } from '../../common/utilities/parsers'
-import { Projection, ProjectionJSON } from '../../common/spells/Projection'
-import { ProjectionRegistry } from '../../common/game/registries'
+import { Projection, ProjectionJSON, ProjectionRegistry } from '../../common/spells/Projection'
 import { ELEM } from '../../common/spells/elements'
 import { MSG } from '../../common/game/messages'
 import { PROJ } from '../../common/spells/projections'

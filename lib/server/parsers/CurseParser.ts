@@ -1,6 +1,5 @@
 import { Parser } from './Parser'
-import { Curse, CurseFlag, CurseJSON } from '../../common/objects/curse'
-import { CurseRegistry } from '../../common/game/registries'
+import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'
 import { parseCombat, parseEffects, parseExpression } from './helpers'
 import {
   allAsEnum,

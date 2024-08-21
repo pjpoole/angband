@@ -1,12 +1,12 @@
 import { z } from 'zod'
-
+import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 
-import { ELEM } from './elements'
-import { MSG } from '../game/messages'
 import { C } from '../utilities/colors'
 import { JsonObject } from '../utilities/json'
-import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
+import { ELEM } from './elements'
+import { MSG } from '../game/messages'
 import { Dice } from '../utilities/dice'
 import { PROJ } from './projections'
 
@@ -34,7 +34,7 @@ export const ProjectionSchema = z.object({
 export type ProjectionJSON = z.input<typeof ProjectionSchema>
 export type ProjectionParams = z.output<typeof ProjectionSchema>
 
-export class Projection implements SerializableBase {
+export class Projection extends SerializableBase {
   readonly code: ELEM | PROJ
   readonly name: string
   readonly type: string
@@ -52,6 +52,8 @@ export class Projection implements SerializableBase {
   readonly color: C
 
   constructor(params: ProjectionParams) {
+    super(params)
+
     this.code = params.code
     this.name = params.name
     this.type = params.type
@@ -69,7 +71,7 @@ export class Projection implements SerializableBase {
     this.color = params.color
   }
 
-  static fromJSON(parsed: JsonObject): Projection {
+  static fromJSON(parsed: ProjectionJSON): Projection {
     const params = ProjectionSchema.parse(parsed)
 
     return new Projection(params)
@@ -95,3 +97,5 @@ export class Projection implements SerializableBase {
     }
   }
 }
+
+export const ProjectionRegistry = new IdRegistry(Projection)

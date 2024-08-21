@@ -1,10 +1,11 @@
 import { Parser } from './Parser'
 import {
   PLAYER_PROPERTY_TYPES,
-  PlayerPropertyParams,
+  PlayerProperty,
+  PlayerPropertyJSON,
+  PlayerPropertyRegistry,
   RESIST_VALUES
 } from '../../common/player/properties'
-import { PlayerPropertyRegistry } from '../../common/game/registries'
 import {
   asArrayMember,
   asEnum,
@@ -15,7 +16,7 @@ import { ELEM } from '../../common/spells/elements'
 
 type PlayerPropertyFields = 'type' | 'code' | 'name' | 'desc' | 'value'
 
-export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPropertyParams> {
+export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPropertyJSON> {
   constructor() {
     super()
 
@@ -26,8 +27,9 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
     this.register('value', this.handleValue.bind(this))
   }
 
-  _finalize(obj: PlayerPropertyParams) {
-    PlayerPropertyRegistry.build(obj.name, obj)
+  _finalize(obj: PlayerPropertyJSON) {
+    const playerProperty = PlayerProperty.fromJSON(obj)
+    PlayerPropertyRegistry.add(playerProperty.code, playerProperty)
   }
 
   handleCode(value: ParserValues) {

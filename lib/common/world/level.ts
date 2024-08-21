@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
 export const LevelSchema = z.object({
@@ -37,3 +38,5 @@ export class Level extends SerializableBase {
     }
   }
 }
+
+export const LevelRegistry = new IdRegistry(Level)

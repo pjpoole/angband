@@ -1,25 +1,23 @@
-import { NameRegistry, IdRegistry } from '../core/Registry'
+import { BlowRegistry } from '../monsters/blows'
+import { CurseRegistry } from '../objects/curse'
+import { DungeonProfileRegistry } from '../world/dungeonProfiles'
+import { FeatureRegistry } from '../world/features'
+import { LevelRegistry } from '../world/level'
+import { MonsterBaseRegistry } from '../monsters/monsterBase'
+import { ObjectBaseRegistry } from '../objects/objectBase'
+import { ProjectionRegistry } from '../spells/Projection'
+import { ShapeRegistry } from '../player/shape'
+import { SummonRegistry } from '../spells/summons'
 
-import { Blow } from '../monsters/blows'
-import { MonsterBase } from '../monsters/monsterBase'
-import { Curse } from '../objects/curse'
-import { ObjectBase } from '../objects/objectBase'
-// import { PlayerProperty } from '../player/properties'
-import { Shape } from '../player/shape'
-import { Projection } from '../spells/Projection'
-import { Summon } from '../spells/summons'
-import { DungeonProfile } from '../world/dungeonProfiles'
-import { Feature } from '../world/features'
-import { Level } from '../world/level'
-
-export const BlowRegistry = new NameRegistry(Blow)
-export const CurseRegistry = new NameRegistry(Curse)
-export const DungeonProfileRegistry = new IdRegistry(DungeonProfile)
-export const FeatureRegistry = new IdRegistry(Feature)
-export const LevelRegistry = new IdRegistry(Level)
-export const MonsterBaseRegistry = new NameRegistry(MonsterBase)
-export const ObjectBaseRegistry = new NameRegistry(ObjectBase)
-// export const PlayerPropertyRegistry = new IdRegistry(PlayerProperty)
-export const ProjectionRegistry = new IdRegistry(Projection)
-export const ShapeRegistry = new NameRegistry(Shape)
-export const SummonRegistry = new NameRegistry(Summon)
+export {
+  BlowRegistry,
+  CurseRegistry,
+  DungeonProfileRegistry,
+  FeatureRegistry,
+  LevelRegistry,
+  MonsterBaseRegistry,
+  ObjectBaseRegistry,
+  ProjectionRegistry,
+  ShapeRegistry,
+  SummonRegistry,
+}

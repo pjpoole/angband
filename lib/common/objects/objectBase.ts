@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
 import { C } from '../utilities/colors'
@@ -86,3 +87,5 @@ export class ObjectBase extends SerializableBase {
     }
   }
 }
+
+export const ObjectBaseRegistry = new NameRegistry(ObjectBase)

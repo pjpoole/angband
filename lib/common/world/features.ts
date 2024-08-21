@@ -1,9 +1,10 @@
 import { z } from 'zod'
+import { IdRegistry } from '../core/Registry'
+import { SerializableBase } from '../core/serializable'
+import { z_enumValueParser } from '../utilities/zod'
 
 import { RF, RF_VALUE } from '../monsters/flags'
 import { C } from '../utilities/colors'
-import { z_enumValueParser } from '../utilities/zod'
-import { SerializableBase } from '../core/serializable'
 import { EnumValueOnly, enumValueSetToArray, enumValueToKey } from '../utilities/enum'
 
 // list-terrain.h
@@ -200,3 +201,5 @@ export class Feature extends SerializableBase {
     }
   }
 }
+
+export const FeatureRegistry = new IdRegistry(Feature)

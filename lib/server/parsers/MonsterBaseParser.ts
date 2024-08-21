@@ -1,9 +1,9 @@
-import { MonsterBaseRegistry } from '../../common/game/registries'
-import { RF } from '../../common/monsters/flags'
-import { MonsterBase, MonsterBaseJSON } from '../../common/monsters/monsterBase'
-import { arrayUnion } from '../../common/utilities/array'
 import { Parser } from './Parser'
+import { arrayUnion } from '../../common/utilities/array'
 import { allAsEnum, ParserValues } from '../../common/utilities/parsers'
+
+import { RF } from '../../common/monsters/flags'
+import { MonsterBase, MonsterBaseJSON, MonsterBaseRegistry } from '../../common/monsters/monsterBase'
 
 type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 

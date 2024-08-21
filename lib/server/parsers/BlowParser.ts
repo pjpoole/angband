@@ -1,8 +1,8 @@
-import { Blow, BlowJSON } from '../../common/monsters/blows'
-import { MSG } from '../../common/game/messages'
-import { BlowRegistry } from '../../common/game/registries'
 import { Parser } from './Parser'
 import { asEnum, ParserValues } from '../../common/utilities/parsers'
+
+import { MSG } from '../../common/game/messages'
+import { Blow, BlowJSON, BlowRegistry } from '../../common/monsters/blows'
 
 type BlowFields = 'name' | 'cut' | 'stun' | 'miss' | 'phys' | 'msg' | 'act'
   | 'desc'

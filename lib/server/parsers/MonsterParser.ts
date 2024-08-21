@@ -1,9 +1,9 @@
 import { Parser } from './Parser'
-import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
+import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 
-import { MonsterBaseRegistry } from '../../common/game/registries'
 import { MonsterJSON } from '../../common/monsters/monster'
+import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
 import { RF } from '../../common/monsters/flags'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
