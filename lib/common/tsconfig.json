@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "outDir": "../../dist/common",
     "resolveJsonModule": true,
