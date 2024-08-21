@@ -42,7 +42,7 @@ export class MonsterBase extends SerializableBase {
     MonsterBaseRegistry.add(this.name, this)
   }
 
-  toJSON(): JsonObject {
+  toJSON(): MonsterBaseJSON {
     return {
       name: this.name,
       glyph: this.glyph,
