@@ -70,7 +70,7 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
       this.finalizeCurrent()
     }
 
-    this._current = (defaults ?? {}) as T
+    this._current = Object.assign({}, defaults) as T
     return this._current
   }
 
