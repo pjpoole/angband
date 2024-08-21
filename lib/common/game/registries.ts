@@ -5,6 +5,7 @@ import { MonsterBase } from '../monsters/monsterBase'
 import { Curse } from '../objects/curse'
 import { ObjectBase } from '../objects/objectBase'
 // import { PlayerProperty } from '../player/properties'
+import { Shape } from '../player/shape'
 import { Projection } from '../spells/Projection'
 import { Summon } from '../spells/summons'
 import { DungeonProfile } from '../world/dungeonProfiles'
@@ -20,4 +21,5 @@ export const MonsterBaseRegistry = new NameRegistry(MonsterBase)
 export const ObjectBaseRegistry = new NameRegistry(ObjectBase)
 // export const PlayerPropertyRegistry = new IdRegistry(PlayerProperty)
 export const ProjectionRegistry = new IdRegistry(Projection)
+export const ShapeRegistry = new NameRegistry(Shape)
 export const SummonRegistry = new NameRegistry(Summon)

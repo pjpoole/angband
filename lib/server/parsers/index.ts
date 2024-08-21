@@ -4,6 +4,7 @@ import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
+import { ShapeParser } from './ShapeParser'
 import { SummonParser } from './SummonParser'
 import { WorldParser } from './WorldParser'
 
@@ -14,15 +15,16 @@ export {
   FeatureParser,
   MonsterBaseParser,
   ObjectBaseParser,
+  ShapeParser,
   SummonParser,
   WorldParser,
 }
 
-
 // TODO: More accurate type information
-// this is just good enough to get loading to work
+//       this is just good enough to get loading to work
 export const PARSERS: any[] = [
   BlowParser,
+  ShapeParser,
   DungeonProfileParser,
   ObjectBaseParser,
   // CurseParser,
