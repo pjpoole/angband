@@ -102,7 +102,7 @@ export class DungeonProfile extends SerializableBase {
   readonly minLevel?: number
   readonly tunnel?: Tunnel
   readonly streamer?: Streamer
-  readonly allowedRooms: Room[]
+  readonly allowedRooms?: Room[]
 
   constructor(params: DungeonProfileParams) {
     super(params)
@@ -116,7 +116,7 @@ export class DungeonProfile extends SerializableBase {
     this.minLevel = params.minLevel
     this.tunnel = params.tunnel
     this.streamer = params.streamer
-    this.allowedRooms = params.allowedRooms ?? []
+    this.allowedRooms = params.allowedRooms
   }
 
   register() {

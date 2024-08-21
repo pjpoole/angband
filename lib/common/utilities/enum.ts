@@ -27,7 +27,9 @@ export function enumValueToKeyOrThrow<T extends NativeEnum>(value: number | unde
   throw new Error('key not found in enum')
 }
 
-export function enumValueSetToArray<T extends NativeEnum>(set: Set<T[keyof T]>, enumObject: T): Array<keyof T> {
+export function enumValueSetToArray<T extends NativeEnum>(set: Set<T[keyof T]>, enumObject: T): Array<keyof T> | undefined {
+  if (set.size === 0) return
+
   const results: Array<keyof T> = []
 
   const objectEntries = Object.entries(enumObject).filter(valueIsNumeric)
