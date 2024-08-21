@@ -25,6 +25,7 @@ import {
 } from '../spells/elements'
 import { ObjectBase, ObjectBaseRegistry } from './objectBase'
 import { enumValueSetToArray } from '../utilities/enum'
+import { setToJson } from '../utilities/set'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 
@@ -117,12 +118,12 @@ export class Curse extends SerializableBase {
       name: this.name,
       types: this.types.map(objectBase => objectBase.typeName),
       weight: this.weight,
-      combat: this.combat ? combatToJson(this.combat) : undefined,
-      effect: (this.effect ?? []).map(effectToJson),
+      combat: combatToJson(this.combat),
+      effect: this.effect == null ? undefined : this.effect.map(effectToJson),
       dice: this.dice?.toString(),
-      expression: this.expression ? expressionToJson(this.expression) : undefined,
+      expression: expressionToJson(this.expression),
       time: this.time?.toString(),
-      flags: Array.from(this.flags),
+      flags: setToJson(this.flags),
       values: this.values,
       message: this.message,
       description: this.description,

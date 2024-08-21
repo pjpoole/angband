@@ -3,7 +3,9 @@ import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 import {
   CombatParams,
-  combatToJson, effectToJson, expressionToJson,
+  combatToJson,
+  effectToJson,
+  expressionToJson,
   z_combat,
   z_diceExpression,
   z_effect,
@@ -85,7 +87,7 @@ export class Shape extends SerializableBase {
       return {
         effect: effectToJson(shapeEffect.effect),
         dice: shapeEffect.dice?.toString(),
-        expression: shapeEffect.expression ? expressionToJson(shapeEffect.expression) : undefined,
+        expression: expressionToJson(shapeEffect.expression),
       }
     })
   }
@@ -93,7 +95,7 @@ export class Shape extends SerializableBase {
   toJSON(): ShapeJSON {
     return {
       name: this.name,
-      combat: this.combat ? combatToJson(this.combat) : undefined,
+      combat: combatToJson(this.combat),
       skill: this.skill,
       objectFlags: enumValueSetToArray(this.objectFlags, OF),
       playerFlags: enumValueSetToArray(this.playerFlags, PF),

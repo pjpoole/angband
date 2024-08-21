@@ -12,6 +12,7 @@ import {
   IGNORE_ELEM,
   isHatesElem, isIgnoreElem
 } from '../spells/elements'
+import { setToJson } from '../utilities/set'
 
 type ObjectBaseFlag = keyof typeof KF | keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 
@@ -88,7 +89,7 @@ export class ObjectBase extends SerializableBase {
       type,
       graphics: this.graphics,
       break: this.break,
-      flags: Array.from(this.flags),
+      flags: setToJson(this.flags),
     }
   }
 }

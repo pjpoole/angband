@@ -54,8 +54,8 @@ export const z_combat = z.object({
 export type CombatJSON = z.input<typeof z_combat>
 export type CombatParams = z.output<typeof z_combat>
 
-export function combatToJson(combat: CombatParams): CombatJSON {
-  return {
+export function combatToJson(combat?: CombatParams): CombatJSON | undefined {
+  return combat == null ? undefined : {
     toHit: combat.toHit.toString(),
     toDamage: combat.toDamage.toString(),
     toAC: combat.toAC.toString(),
@@ -104,8 +104,8 @@ export const z_expression = z.object({
 export type zExpressionJSON = z.input<typeof z_expression>
 export type zExpressionParams = z.output<typeof z_expression>
 
-export function expressionToJson(expression: zExpressionParams): zExpressionJSON {
-  return {
+export function expressionToJson(expression?: zExpressionParams): zExpressionJSON | undefined {
+  return expression == null ? undefined : {
     variable: expression.variable,
     type: enumValueToKey(expression.type, EX),
     expression: expression.expression,
