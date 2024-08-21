@@ -1,16 +1,20 @@
 import {
   asEnum,
+  asInteger,
   asTokens,
   ParserValues,
 } from '../../common/utilities/parsers'
+import {
+  isValidSubtype
+} from '../../common/utilities/parseGameObjects'
 import {
   CombatJSON,
   zEffectJSON,
   zExpressionJSON,
 } from '../../common/utilities/zod'
-import { EF } from '../../common/spells/effects'
+
+import { EF, EffectJSON } from '../../common/spells/effects'
 import { EX } from '../../common/spells/expressions'
-import { asEffect } from '../../common/utilities/parseGameObjects'
 
 export function parseCombat(values: ParserValues): CombatJSON {
   const [toHit, toDamage, toAC] = asTokens(values, 3)
@@ -42,7 +46,27 @@ export function parseEffects(values: ParserValues, current: zEffectJSON[] = []):
 }
 
 export function parseEffect(values: ParserValues): zEffectJSON {
-  return asEffect(values)
+  const [rawEffect, rawSubType, rawRadius, rawOther] = values.split(':')
+
+  if (rawEffect == null) throw new Error('empty effect string')
+  const effect = asEnum(rawEffect, EF)
+
+  const result: EffectJSON = { effect }
+
+  if (rawSubType != null) {
+    const effectValue: EF = EF[effect]
+
+    if (!isValidSubtype(effectValue, rawSubType)) {
+      throw new Error('invalid subtype data')
+    }
+
+    result.subType = rawSubType // unbranded, because the type is just nonsense
+  }
+
+  if (rawRadius != null) result.radius = asInteger(rawRadius)
+  if (rawOther != null) result.other = asInteger(rawOther)
+
+  return result
 }
 
 export function parseExpression(values: ParserValues): zExpressionJSON {

@@ -1,8 +1,8 @@
-import { asEnum, asInteger, maybeAsEnum, ParserValues } from './parsers'
+import { maybeAsEnum } from './parsers'
 import { ShapeRegistry, SummonRegistry } from '../game/registries'
 
 import { STAT } from '../player/stats'
-import { EF, EffectJSON } from '../spells/effects'
+import { EF } from '../spells/effects'
 import { MON_TMD, TMD } from '../spells/effectsTimed'
 import { ELEM } from '../spells/elements'
 import { ENCH } from '../spells/enchantments'
@@ -18,35 +18,11 @@ import { GLYPH } from '../world/trap'
  *   opaque boxes and trust lookup functions. Make sure the same code is reused
  *   as much as possible.
  */
-export function asEffect(values: ParserValues): EffectJSON {
-  const [rawEffect, rawSubType, rawRadius, rawOther] = values.split(':')
-
-  if (rawEffect == null) throw new Error('empty effect string')
-  const effect = asEnum(rawEffect, EF)
-
-  const result: EffectJSON = { effect }
-
-  if (rawSubType != null) {
-    const effectValue: EF = EF[effect]
-
-    if (!isValidSubtype(effectValue, rawSubType)) {
-      throw new Error('invalid subtype data')
-    }
-
-    result.subType = rawSubType // unbranded, because the type is just nonsense
-  }
-
-  if (rawRadius != null) result.radius = asInteger(rawRadius)
-  if (rawOther != null) result.other = asInteger(rawOther)
-
-  return result
-}
-
-function isValidSubtype(effect: EF, token: string): boolean {
+export function isValidSubtype(effect: EF, token: string): boolean {
   return getEffectSubtype(effect, token) !== null
 }
 
-function getEffectSubtype(effect: EF, token: string):
+export function getEffectSubtype(effect: EF, token: string):
   | keyof typeof PROJ
   | keyof typeof ELEM
   | keyof typeof TMD
