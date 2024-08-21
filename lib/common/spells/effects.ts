@@ -1160,3 +1160,12 @@ export const EF_DATA: EffectData[] = [
     menuName: ''
   }
 ]
+
+// Would probably also work as a union of objects, but this is just as good
+// (because some keys only make sense in the presence of others)
+export interface EffectJSON {
+  effect: keyof typeof EF,
+  subType?: string,
+  radius?: number,
+  other?: number,
+}
