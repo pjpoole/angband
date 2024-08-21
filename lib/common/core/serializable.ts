@@ -5,19 +5,14 @@ interface Serializable {
   toJSON(): JsonObject
 }
 
-interface Deserializable<T> {
+type Deserializable = {
   schema: ZodObject<any>
-  fromJSON(data: JsonObject): T
 }
 
-// TODO: get this safety elsewhere
-export type SerializableClass<T> = {
-  new (...args: any[]): T & Serializable
-} & Deserializable<T>
+type Buildable<T> = (new (...args: any[]) => T) & Deserializable
 
 export class SerializableBase implements Serializable {
   static schema: ZodObject<any>
-  static _id: number = 0
 
   readonly id: number
 
@@ -38,7 +33,7 @@ export class SerializableBase implements Serializable {
     throw new Error('not implemented')
   }
 
-  static fromJSON(data: JsonObject): any {
+  static fromJSON<T extends SerializableBase>(this: Buildable<T>, data: JsonObject): T {
     const params = this.schema.parse(data)
 
     return new this(params)
