@@ -4,6 +4,7 @@ import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
+import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
 import { ProjectionParser } from './ProjectionParser'
 import { ShapeParser } from './ShapeParser'
@@ -17,6 +18,7 @@ export {
   FeatureParser,
   MonsterBaseParser,
   ObjectBaseParser,
+  PitParser,
   PlayerPropertyParser,
   ProjectionParser,
   ShapeParser,
@@ -33,9 +35,11 @@ export const PARSERS: any[] = [
   PlayerPropertyParser,
   DungeonProfileParser,
   ObjectBaseParser,
-  // CurseParser,
   MonsterBaseParser,
+  // Monster parser must come first
+  PitParser,
   SummonParser,
+  CurseParser,
   WorldParser,
   FeatureParser,
 ]
