@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { NativeEnum } from './enum'
 import { stringToDice } from './dice'
+import { EX } from '../spells/expressions'
 
 /*
  * Converts a plain object's keys into ZodEnum with type safety and
@@ -50,3 +51,11 @@ export const z_combat = z.object({
 })
 
 export type Combat = z.output<typeof z_combat>
+
+export const z_expression = z.object({
+  variable: z.string(),
+  type: z_enumValueParser(EX), // TODO: Where does this come from? validate
+  expression: z.string(), // basically a function of the previous two
+})
+
+export type zExpression = z.output<typeof z_expression>

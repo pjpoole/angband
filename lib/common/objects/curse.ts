@@ -4,13 +4,14 @@ import {
   Combat,
   z_combat,
   z_diceExpression,
-  z_enumValueParser
+  z_enumValueParser,
+  z_expression,
+  zExpression
 } from '../utilities/zod'
 
 import type { Dice } from '../utilities/dice'
 import { EF } from '../spells/effects'
 import { OF } from './flags'
-import { EX } from '../spells/expressions'
 import {
   HATES_ELEM,
   IGNORE_ELEM,
@@ -21,12 +22,6 @@ import { ObjectBase } from './objectBase'
 import { ObjectBaseRegistry } from '../game/registries'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
-
-interface CurseExpression {
-  variable: string
-  type: EX
-  expression: string
-}
 
 export const CurseSchema = z.object({
   name: z.string(),
@@ -45,11 +40,7 @@ export const CurseSchema = z.object({
   effect: z.array(z_enumValueParser(EF)).optional(), // TODO: the second param is an argument of the first
   dice: z_diceExpression().optional(),
   // Shows up in shape, activation, class, monster_spell, object, trap
-  expression: z.object({
-    variable: z.string(),
-    type: z_enumValueParser(EX), // TODO: Where does this come from? validate
-    expression: z.string(), // basically a function of the previous two
-  }).optional(), // TODO
+  expression: z_expression.optional(), // TODO
   time: z_diceExpression().optional(),
   flags: z.array(z.string().transform((str, ctx): CurseFlag => {
     if (Object.keys(OF).includes(str)) {
@@ -82,7 +73,7 @@ export class Curse extends SerializableBase {
   readonly combat?: Combat
   readonly effect?: EF[]
   readonly dice?: Dice
-  readonly expression?: CurseExpression
+  readonly expression?: zExpression
   readonly time?: Dice
   readonly flags?: Set<CurseFlag>
   readonly values?: string[]
