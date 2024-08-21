@@ -22,8 +22,7 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
   }
 
   _finalize(obj: MonsterBaseJSON): void {
-    const monsterBase = MonsterBase.fromJSON(obj)
-    MonsterBaseRegistry.add(obj.name, monsterBase)
+    MonsterBase.fromJSON(obj).register()
   }
 
   handleGlyph(value: ParserValues) {

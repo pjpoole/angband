@@ -35,8 +35,7 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
   }
 
   _finalize(obj: PlayerPropertyJSON) {
-    const playerProperty = PlayerProperty.fromJSON(obj)
-    PlayerPropertyRegistry.add(playerProperty.id, playerProperty)
+    PlayerProperty.fromJSON(obj).register()
   }
 
   // can't be pkey since codes overlap

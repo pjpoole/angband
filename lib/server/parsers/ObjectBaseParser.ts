@@ -31,9 +31,7 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
   }
 
   _finalize(obj: ObjectBaseJSON) {
-    const objectBase = ObjectBase.fromJSON(obj)
-    // TODO: Check on how ObjectBases are referenced from elsewhere
-    ObjectBaseRegistry.add(objectBase.typeName, objectBase)
+    ObjectBase.fromJSON(obj).register()
   }
 
   // Weird custom code

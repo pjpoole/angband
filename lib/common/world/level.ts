@@ -29,6 +29,10 @@ export class Level extends SerializableBase {
     this.down = params.down
   }
 
+  register() {
+    LevelRegistry.add(this.depth, this)
+  }
+
   toJSON(): LevelJSON {
     return {
       depth: this.depth,

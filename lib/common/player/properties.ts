@@ -64,6 +64,10 @@ export class PlayerProperty extends SerializableBase {
     this.value = params.value
   }
 
+  register() {
+    PlayerPropertyRegistry.add(this.id, this)
+  }
+
   toJSON(): PlayerPropertyJSON {
     const propertyBase = {
       bindui: this.bindui,

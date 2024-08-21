@@ -29,8 +29,7 @@ export class SummonParser extends Parser<SummonFields, SummonJSON> {
   }
 
   _finalize(obj: SummonJSON) {
-    const summon = Summon.fromJSON(obj)
-    SummonRegistry.add(summon.name, summon)
+    Summon.fromJSON(obj).register()
   }
 
   handleMessageType(values: ParserValues) {

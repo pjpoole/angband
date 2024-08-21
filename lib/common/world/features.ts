@@ -179,6 +179,10 @@ export class Feature extends SerializableBase {
     this.resistFlag = params.resistFlag
   }
 
+  register() {
+    FeatureRegistry.add(this.code, this)
+  }
+
   toJSON(): FeatureJSON {
     return {
       code: enumValueToKey(this.code, FEAT),

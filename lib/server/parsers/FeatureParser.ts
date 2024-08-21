@@ -42,8 +42,7 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
   }
 
   _finalize(obj: FeatureJSON) {
-    const feature = Feature.fromJSON(obj)
-    FeatureRegistry.add(obj.code, feature)
+    Feature.fromJSON(obj).register()
   }
 
   handleCode(values: ParserValues) {

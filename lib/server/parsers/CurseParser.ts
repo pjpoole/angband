@@ -41,8 +41,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
   }
 
   _finalize(obj: CurseJSON) {
-    const curse = Curse.fromJSON(obj)
-    CurseRegistry.add(curse.name, curse)
+    Curse.fromJSON(obj).register()
   }
 
   handleType(values: ParserValues) {

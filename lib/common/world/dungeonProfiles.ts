@@ -119,6 +119,10 @@ export class DungeonProfile extends SerializableBase {
     this.allowedRooms = params.allowedRooms ?? []
   }
 
+  register() {
+    DungeonProfileRegistry.add(this.name, this)
+  }
+
   toJSON(): DungeonProfileJSON {
     return {
       name: enumValueToKey(this.name, DUN),

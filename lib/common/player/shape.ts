@@ -74,6 +74,10 @@ export class Shape extends SerializableBase {
     this.blow = params.blow
   }
 
+  register() {
+    ShapeRegistry.add(this.name, this)
+  }
+
   private shapeEffectsToJson(): ShapeEffectsJSON[] | undefined {
     if (this.effects == null) return
 

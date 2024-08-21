@@ -72,6 +72,8 @@ export type CurseJSON = z.input<typeof CurseSchema>
 export type CurseParams = z.output<typeof CurseSchema>
 
 export class Curse extends SerializableBase {
+  static readonly schema = CurseSchema
+
   readonly name: string
   readonly types: ObjectBase[] // TODO: Set?
   readonly weight?: number
@@ -104,6 +106,10 @@ export class Curse extends SerializableBase {
     this.description = params.description
     this.conflicts = params.conflicts
     this.conflictFlags = new Set(params.conflictFlags)
+  }
+
+  register() {
+    CurseRegistry.add(this.name, this)
   }
 
   toJSON(): CurseJSON {

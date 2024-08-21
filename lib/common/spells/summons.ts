@@ -54,6 +54,10 @@ export class Summon extends SerializableBase {
     this.description = params.description
   }
 
+  register() {
+    SummonRegistry.add(this.name, this)
+  }
+
   toJSON(): SummonJSON {
     return {
       name: this.name,

@@ -19,8 +19,7 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
   }
 
   _finalize(obj: LevelJSON) {
-    const level = Level.fromJSON(obj)
-    LevelRegistry.add(level.depth, level)
+    Level.fromJSON(obj).register()
   }
 
   handleLevel(value: ParserValues) {

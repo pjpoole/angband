@@ -2,7 +2,7 @@ import { Parser } from './Parser'
 import { arrayUnion } from '../../common/utilities/array'
 import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 
-import { MonsterJSON } from '../../common/monsters/monster'
+import { Monster, MonsterJSON } from '../../common/monsters/monster'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
 import { RF } from '../../common/monsters/flags'
 
@@ -52,9 +52,8 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
     this.register('color-cycle', this.handleColorCycle.bind(this))
   }
 
-  // TODO
   _finalize(obj: MonsterJSON) {
-
+    Monster.fromJSON(obj).register()
   }
 
   handleBase(value: ParserValues) {

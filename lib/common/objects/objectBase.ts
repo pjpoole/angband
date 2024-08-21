@@ -75,6 +75,11 @@ export class ObjectBase extends SerializableBase {
     this.flags = new Set(params.flags)
   }
 
+  register() {
+    // TODO: Check on how ObjectBases are referenced from elsewhere
+    ObjectBaseRegistry.add(this.typeName, this)
+  }
+
   toJSON(): ObjectBaseJSON {
     const type = objectValueToKey(this.type, TV_NAMES)
     if (type == null) throw new Error('invalid type for object base')

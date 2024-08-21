@@ -25,8 +25,7 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
   }
 
   _finalize(obj: BlowJSON) {
-    const blow = Blow.fromJSON(obj)
-    BlowRegistry.add(blow.name, blow)
+    Blow.fromJSON(obj).register()
   }
 
   handleActions(values: ParserValues) {

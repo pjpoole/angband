@@ -47,8 +47,7 @@ export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
   }
 
   _finalize(obj: ShapeJSON) {
-    const shape = Shape.fromJSON(obj)
-    ShapeRegistry.add(shape.name, shape)
+    Shape.fromJSON(obj).register()
   }
 
   handleSkill(key: ShapeFields & SkillFields, values: ParserValues) {

@@ -78,6 +78,10 @@ export class Blow extends SerializableBase {
     this.description = params.description
   }
 
+  register() {
+    BlowRegistry.add(this.name, this)
+  }
+
   toJSON(): BlowJSON {
     return {
       name: this.name,

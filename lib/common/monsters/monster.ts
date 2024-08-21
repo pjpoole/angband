@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
 import { setDifference, setUnion } from '../utilities/set'
@@ -210,4 +211,9 @@ export class Monster extends SerializableBase {
     this.friendsBase = params.friendsBase ?? []
   }
 
+  register() {
+    MonsterRegistry.add(this.name, this)
+  }
 }
+
+export const MonsterRegistry = new NameRegistry(Monster)

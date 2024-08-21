@@ -32,8 +32,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
   }
 
   _finalize(obj: DungeonProfileJSON) {
-    const dungeonProfile = DungeonProfile.fromJSON(obj)
-    DungeonProfileRegistry.add(dungeonProfile.name, dungeonProfile)
+    DungeonProfile.fromJSON(obj).register()
   }
 
   handleParams(values: ParserValues) {

@@ -38,10 +38,8 @@ export class MonsterBase extends SerializableBase {
     this.description = params.description
   }
 
-  static fromJSON(parsed: JsonObject): MonsterBase {
-    const params = MonsterBaseSchema.parse(parsed)
-
-    return new MonsterBase(params)
+  register() {
+    MonsterBaseRegistry.add(this.name, this)
   }
 
   toJSON(): JsonObject {
