@@ -50,7 +50,16 @@ export const z_combat = z.object({
   toAC: z_diceExpression(),
 })
 
-export type Combat = z.output<typeof z_combat>
+export type CombatJSON = z.input<typeof z_combat>
+export type CombatParams = z.output<typeof z_combat>
+
+export function combatToJson(combat: CombatParams): CombatJSON {
+  return {
+    toHit: combat.toHit.toString(),
+    toDamage: combat.toDamage.toString(),
+    toAC: combat.toAC.toString(),
+  }
+}
 
 export const z_expression = z.object({
   variable: z.string(),
@@ -58,4 +67,4 @@ export const z_expression = z.object({
   expression: z.string(), // basically a function of the previous two
 })
 
-export type zExpression = z.output<typeof z_expression>
+export type zExpressionParams = z.output<typeof z_expression>

@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 import {
-  Combat,
+  CombatParams,
   z_combat,
   z_diceExpression,
   z_enumValueParser,
   z_expression,
-  zExpression
+  zExpressionParams
 } from '../utilities/zod'
 
 import type { Dice } from '../utilities/dice'
@@ -70,10 +70,10 @@ export class Curse extends SerializableBase {
   readonly name: string
   readonly types: ObjectBase[]
   readonly weight?: number
-  readonly combat?: Combat
+  readonly combat?: CombatParams
   readonly effect?: EF[]
   readonly dice?: Dice
-  readonly expression?: zExpression
+  readonly expression?: zExpressionParams
   readonly time?: Dice
   readonly flags?: Set<CurseFlag>
   readonly values?: string[]
