@@ -1,12 +1,10 @@
 import { Parser } from './Parser'
 import { Curse, CurseFlag, CurseJSON } from '../../common/objects/curse'
 import { CurseRegistry } from '../../common/game/registries'
-import { parseCombat, parseEffect } from './helpers'
+import { parseCombat, parseEffects, parseExpression } from './helpers'
 import {
   allAsEnum,
-  asEnum,
   asFlags,
-  asTokens,
   maybeAsEnum,
   ParserValues,
 } from '../../common/utilities/parsers'
@@ -14,7 +12,6 @@ import { arrayUnion } from '../../common/utilities/array'
 
 import { OF } from '../../common/objects/flags'
 import { TV_NAMES } from '../../common/objects/tval'
-import { EX } from '../../common/spells/expressions'
 import { isHatesElem, isIgnoreElem } from '../../common/spells/elements'
 
 type CurseFields = 'name' | 'type' | 'weight' | 'combat' | 'effect' | 'dice'
@@ -62,13 +59,12 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   handleEffect(values: ParserValues) {
     const current = this.current
-    current.effect = parseEffect(values, current.effect)
+    current.effect = parseEffects(values, current.effect)
   }
 
   handleExpression(values: ParserValues) {
     const current = this.current
-    const [variable, type, expression] = asTokens(values, 3)
-    current.expression = { variable, type: asEnum(type, EX), expression }
+    current.expression = parseExpression(values)
   }
 
   handleFlags(values: ParserValues) {
