@@ -42,3 +42,11 @@ export function z_diceExpression() {
     }
   })
 }
+
+export const z_combat = z.object({
+  toHit: z_diceExpression(),
+  toDamage: z_diceExpression(),
+  toAC: z_diceExpression(),
+})
+
+export type Combat = z.output<typeof z_combat>

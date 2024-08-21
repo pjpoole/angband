@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
 import {
+  Combat,
+  z_combat,
   z_diceExpression,
   z_enumValueParser
 } from '../utilities/zod'
@@ -39,11 +41,7 @@ export const CurseSchema = z.object({
     return z.NEVER
   })),
   weight: z.number().optional(), // never used
-  combat: z.object({
-    toHit: z.number(),
-    toDamage: z.number(),
-    toAC: z.number(),
-  }).optional(),
+  combat: z_combat.optional(),
   effect: z.array(z_enumValueParser(EF)).optional(), // TODO: the second param is an argument of the first
   dice: z_diceExpression().optional(),
   // Shows up in shape, activation, class, monster_spell, object, trap
@@ -74,12 +72,6 @@ export const CurseSchema = z.object({
   conflictFlags: z.array(z_enumValueParser(OF)).optional(),
 })
 
-interface CurseCombat {
-  toHit: number
-  toDamage: number
-  toAC: number
-}
-
 export type CurseJSON = z.input<typeof CurseSchema>
 export type CurseParams = z.output<typeof CurseSchema>
 
@@ -87,7 +79,7 @@ export class Curse extends SerializableBase {
   readonly name: string
   readonly types: ObjectBase[]
   readonly weight?: number
-  readonly combat?: CurseCombat
+  readonly combat?: Combat
   readonly effect?: EF[]
   readonly dice?: Dice
   readonly expression?: CurseExpression
