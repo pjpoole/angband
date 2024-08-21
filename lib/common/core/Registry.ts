@@ -43,6 +43,7 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     this.data.set(key, obj)
   }
 
+  // TODO: make this determine its type from its contained class
   toJSON(): JsonArray {
     const result = []
 

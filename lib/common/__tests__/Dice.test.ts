@@ -42,6 +42,7 @@ describe('stringToDice()', () => {
   })
 })
 
+// TODO: CLEARLY invalid values
 describe('Dice', () => {
   describe('new()', () => {
     test('basic parameters', () => {

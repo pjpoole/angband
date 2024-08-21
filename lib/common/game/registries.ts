@@ -1,3 +1,4 @@
+// bucket file
 import { BlowRegistry } from '../monsters/blows'
 import { CurseRegistry } from '../objects/curse'
 import { DungeonProfileRegistry } from '../world/dungeonProfiles'
