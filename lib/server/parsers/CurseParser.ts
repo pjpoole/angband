@@ -4,9 +4,9 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 import { parseCombat } from '../../common/utilities/parsing/combat'
+import { parseEffects } from '../../common/utilities/parsing/effect'
 import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import {
-  parseEffects,
   parseExpression,
   valueStringsToJson
 } from './helpers'
