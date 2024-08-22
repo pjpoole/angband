@@ -10,8 +10,9 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
+import { CurseFlag } from '../../common/utilities/zod/flags'
 
-import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'
+import { Curse, CurseJSON, CurseRegistry } from '../../common/objects/curse'
 
 import { OF } from '../../common/objects/flags'
 import { TV_NAMES } from '../../common/objects/tval'

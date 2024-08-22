@@ -14,51 +14,19 @@ import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effect, zEffectParams } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_expression, zExpressionParams } from '../utilities/zod/expression'
+import { CurseFlag, z_curseFlag } from '../utilities/zod/flags'
+import { z_objectBase } from '../utilities/zod/objectBase'
 import { z_value } from '../utilities/zod/values'
 
 import type { Dice } from '../utilities/dice'
 import { ValueParams } from '../utilities/values'
 
 import { OF } from './flags'
-import {
-  HATES_ELEM,
-  IGNORE_ELEM,
-  isHatesElem,
-  isIgnoreElem,
-} from '../spells/elements'
-import { ObjectBase, ObjectBaseRegistry } from './objectBase'
-
-export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
-
-const objectFinder = z.string().transform((str, ctx) => {
-  const objectBase = ObjectBaseRegistry.get(str)
-  if (objectBase != null) return objectBase
-
-  ctx.addIssue({
-    code: z.ZodIssueCode.custom,
-    message: 'invalid object base type'
-  })
-  return z.NEVER
-})
-
-const flagFinder = z.string().transform((str, ctx): CurseFlag => {
-  if (Object.keys(OF).includes(str)) {
-    return str as keyof typeof OF
-  } else {
-    if (isHatesElem(str)) return str
-    else if (isIgnoreElem(str)) return str
-  }
-
-  ctx.addIssue({
-    code: z.ZodIssueCode.custom,
-    message: 'invalid flag type'
-  })
-  return z.NEVER
-})
+import { ObjectBase } from './objectBase'
 
 export const CurseSchema = z.object({
   name: z.string(),
-  types: z.array(objectFinder),
+  types: z.array(z_objectBase),
   weight: z.number().optional(), // never used
   combat: z_combat.optional(),
   effect: z.array(z_effect).optional(),
@@ -66,7 +34,7 @@ export const CurseSchema = z.object({
   // Shows up in shape, activation, class, monster_spell, object, trap
   expression: z_expression.optional(), // TODO
   time: z_diceExpression().optional(),
-  flags: z.array(flagFinder).optional(),
+  flags: z.array(z_curseFlag).optional(),
   values: z.array(z_value).optional(),
   message: z.string().optional(),
   description: z.string(),
