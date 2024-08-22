@@ -12,22 +12,11 @@ interface ValueData {
   value: number
 }
 
-function extractValueData(str: string): ValueData {
-  const regex = /^(?<stat>[A-Z_]+)\[(?<val>[^\]]+)\]/
-  const matchData = regex.exec(str)
-  if (matchData == null || matchData.groups == null) throw new Error(
-    'invalid value')
-
-  const { stat, val } = matchData.groups
-
-  return { stat, value: asInteger(val) }
+export function parseValuesString(values: ParserValues): ValueJson[] {
+  return asFlags(values).map(parseValueString)
 }
 
-export function valueStringsToJson(values: ParserValues): ValueJson[] {
-  return asFlags(values).map(valueStringToJson)
-}
-
-function valueStringToJson(str: string): ValueJson {
+function parseValueString(str: string): ValueJson {
   const { stat, value } = extractValueData(str)
   const maybeStat = maybeAsEnum(stat, STAT)
 
@@ -55,4 +44,15 @@ function valueStringToJson(str: string): ValueJson {
   }
 
   throw new Error('invalid value type')
+}
+
+function extractValueData(str: string): ValueData {
+  const regex = /^(?<stat>[A-Z_]+)\[(?<val>[^\]]+)\]/
+  const matchData = regex.exec(str)
+  if (matchData == null || matchData.groups == null) throw new Error(
+    'invalid value')
+
+  const { stat, val } = matchData.groups
+
+  return { stat, value: asInteger(val) }
 }
