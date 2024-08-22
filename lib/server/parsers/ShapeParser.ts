@@ -1,6 +1,5 @@
 import { Parser } from './Parser'
 import {
-  asFlags,
   asInteger,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
@@ -8,6 +7,8 @@ import { parseCombat } from '../../common/utilities/parsing/combat'
 import { parseEffect } from '../../common/utilities/parsing/effect'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { parseExpression } from '../../common/utilities/parsing/expression'
+import { parseValuesString } from '../../common/utilities/parsing/values'
+
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
@@ -81,9 +82,8 @@ export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
 
   handleValues(values: ParserValues) {
     const current = this.current
-    current.values = arrayUnion(current.values ?? [], asFlags(values))
+    current.values = arrayUnion(current.values ?? [], parseValuesString(values))
   }
-
 
   handleEffect(values: ParserValues) {
     const current = this.current

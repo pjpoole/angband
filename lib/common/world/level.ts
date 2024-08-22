@@ -25,6 +25,7 @@ export class Level extends SerializableBase {
 
     this.depth = params.depth
     this.name = params.name
+    // TODO: validate that up and down exist
     this.up = params.up
     this.down = params.down
   }

@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
-import { MON_MESSAGES, MSG } from '../game/messages'
 import { SerializableBase } from '../core/serializable'
 import { enumValueToKeyOrThrow } from '../utilities/serializing/enum'
+
+import { MON_MESSAGES, MSG } from '../game/messages'
 
 // mon-blows.c, effect_handlers
 // Blow effects

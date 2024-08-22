@@ -13,20 +13,22 @@ import { z_effect } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_expression } from '../utilities/zod/expression'
 import { z_skill } from '../utilities/zod/skill'
+import { z_value } from '../utilities/zod/values'
 
 import { Dice } from '../utilities/dice'
 import { OF } from '../objects/flags'
 import { PF } from './flags'
 import { SkillData } from './skill'
+import { ValueParams } from '../utilities/values'
+import { valueParamsToJson } from '../utilities/serializing/values'
 
 export const ShapeSchema = z.object({
   name: z.string(),
-  // c-p from curse.ts
   combat: z_combat.optional(),
   skill: z_skill.optional(),
   objectFlags: z.array(z_enumValueParser(OF)).optional(),
   playerFlags: z.array(z_enumValueParser(PF)).optional(),
-  values: z.array(z.string()).optional(), // TODO: STAT | OBJ_MOD special parser
+  values: z.array(z_value).optional(),
   // NB. Shapes load effects, so they have to load after most subeffects load,
   //     but shapes add subeffects, so they have to load prior to things that
   //     depend on shapes
@@ -55,7 +57,7 @@ export class Shape extends SerializableBase {
   readonly skill?: SkillData
   readonly objectFlags: Set<OF>
   readonly playerFlags: Set<PF>
-  readonly values?: string[]
+  readonly values?: ValueParams[]
   readonly effects?: ShapeEffects[]
   readonly dice?: Dice[]
   readonly effectMessage?: string
@@ -98,7 +100,7 @@ export class Shape extends SerializableBase {
       skill: this.skill,
       objectFlags: enumValueSetToArray(this.objectFlags, OF),
       playerFlags: enumValueSetToArray(this.playerFlags, PF),
-      values: this.values,
+      values: valueParamsToJson(this.values),
       effects: this.shapeEffectsToJson(),
       effectMessage: this.effectMessage,
       blow: this.blow,

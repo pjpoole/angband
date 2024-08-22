@@ -5,25 +5,17 @@ import { SerializableBase } from '../core/serializable'
 import { enumValueToKey } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_monsterBase } from '../utilities/zod/monsterBase'
 
 import { MSG } from '../game/messages'
 import { RF } from '../monsters/flags'
-import { MonsterBase, MonsterBaseRegistry } from '../monsters/monsterBase'
+import { MonsterBase } from '../monsters/monsterBase'
 
 export const SummonSchema = z.object({
   name: z.string(), // pkey
   messageType: z_enumValueParser(MSG),
   uniques: z.boolean(),
-  base: z.string().transform((str, ctx) => {
-    const monsterBase = MonsterBaseRegistry.get(str)
-    if (monsterBase != null) return monsterBase
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'invalid monster base type'
-    })
-    return z.NEVER
-  }).optional(),
+  base: z_monsterBase.optional(),
   raceFlag: z_enumValueParser(RF).optional(), // TODO: maybe restrict to types? e.g. ANIMAL, DEMON, ...
   fallback: z.string().optional(),
   description: z.string(),

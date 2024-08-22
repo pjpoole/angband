@@ -4,51 +4,19 @@ import { SerializableBase } from '../core/serializable'
 
 import { setToJson } from '../utilities/serializing/set'
 
+import { ObjectBaseFlag, z_objectBaseFlag } from '../utilities/zod/flags'
+import { z_tVal } from '../utilities/zod/tVal'
+
 import { C } from '../utilities/colors'
 import { objectValueToKey } from '../utilities/object'
-import { TV, TV_NAMES } from './tval'
-import { KF } from './kindFlags'
-import { OF } from './flags'
-import {
-  HATES_ELEM,
-  IGNORE_ELEM,
-  isHatesElem, isIgnoreElem
-} from '../spells/elements'
-
-type ObjectBaseFlag = keyof typeof KF | keyof typeof OF | HATES_ELEM | IGNORE_ELEM
+import { type TV, TV_NAMES } from './tval'
 
 export const ObjectBaseSchema = z.object({
   name: z.string().optional(),
-  type: z.string().transform((str, ctx): TV => {
-    // FIXME: Is there a more elegant way to accomplish this?
-    const tval = TV_NAMES[str]
-    if (tval) return tval
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'invalid TV name'
-    })
-    return z.NEVER
-  }),
+  type: z_tVal,
   graphics: z.nativeEnum(C),
   break: z.number().optional(),
-  // Union of: KF, OF, and ELEM with 'HATES_' or 'IGNORE_'
-  flags: z.array(z.string().transform((str, ctx): ObjectBaseFlag => {
-    if (Object.keys(KF).includes(str)) {
-      return str as keyof typeof KF
-    } else if (Object.keys(OF).includes(str)) {
-      return str as keyof typeof OF
-    } else {
-      if (isHatesElem(str)) return str
-      else if (isIgnoreElem(str)) return str
-    }
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'invalid flag type'
-    })
-    return z.NEVER
-  })).optional(),
+  flags: z.array(z_objectBaseFlag).optional(),
 })
 
 export type ObjectBaseJSON = z.input<typeof ObjectBaseSchema>
