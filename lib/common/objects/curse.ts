@@ -15,7 +15,10 @@ import {
   zExpressionParams,
 } from '../utilities/zod'
 
+import { enumValueSetToArray } from '../utilities/enum'
 import type { Dice } from '../utilities/dice'
+import { setToJson } from '../utilities/set'
+
 import { OF } from './flags'
 import {
   HATES_ELEM,
@@ -24,23 +27,58 @@ import {
   isIgnoreElem,
 } from '../spells/elements'
 import { ObjectBase, ObjectBaseRegistry } from './objectBase'
-import { enumValueSetToArray } from '../utilities/enum'
-import { setToJson } from '../utilities/set'
+import {
+  ValueJson,
+  ValueParams, valueParamsToJson,
+  valueToParams
+} from '../../server/parsers/helpers'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 
-export const CurseSchema = z.object({
-  name: z.string(),
-  types: z.array(z.string().transform((str, ctx) => {
-    const objectBase = ObjectBaseRegistry.get(str)
-    if (objectBase != null) return objectBase
-
+const valueFinder = z.object({
+  stat: z.string(),
+  value: z.number(),
+}).transform((val, ctx) => {
+  try {
+    return valueToParams(val as ValueJson)
+  } catch (e) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: 'invalid object base type'
+      message: 'invalid value'
     })
     return z.NEVER
-  })),
+  }
+})
+
+const objectFinder = z.string().transform((str, ctx) => {
+  const objectBase = ObjectBaseRegistry.get(str)
+  if (objectBase != null) return objectBase
+
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: 'invalid object base type'
+  })
+  return z.NEVER
+})
+
+const flagFinder = z.string().transform((str, ctx): CurseFlag => {
+  if (Object.keys(OF).includes(str)) {
+    return str as keyof typeof OF
+  } else {
+    if (isHatesElem(str)) return str
+    else if (isIgnoreElem(str)) return str
+  }
+
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: 'invalid flag type'
+  })
+  return z.NEVER
+})
+
+export const CurseSchema = z.object({
+  name: z.string(),
+  types: z.array(objectFinder),
   weight: z.number().optional(), // never used
   combat: z_combat.optional(),
   effect: z.array(z_effect).optional(),
@@ -48,21 +86,8 @@ export const CurseSchema = z.object({
   // Shows up in shape, activation, class, monster_spell, object, trap
   expression: z_expression.optional(), // TODO
   time: z_diceExpression().optional(),
-  flags: z.array(z.string().transform((str, ctx): CurseFlag => {
-    if (Object.keys(OF).includes(str)) {
-      return str as keyof typeof OF
-    } else {
-      if (isHatesElem(str)) return str
-      else if (isIgnoreElem(str)) return str
-    }
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'invalid flag type'
-    })
-    return z.NEVER
-  })).optional(),
-  values: z.array(z.string()).optional(), // TODO: STAT | OBJ_MOD special parser
+  flags: z.array(flagFinder).optional(),
+  values: z.array(valueFinder).optional(),
   message: z.string().optional(),
   description: z.string(),
   conflicts: z.array(z.string()).optional(), // TODO
@@ -84,7 +109,7 @@ export class Curse extends SerializableBase {
   readonly expression?: zExpressionParams
   readonly time?: Dice
   readonly flags: Set<CurseFlag>
-  readonly values?: string[] // TODO: Set?
+  readonly values?: ValueParams[] // TODO: Set?
   readonly message?: string
   readonly description: string
   readonly conflicts?: string[]
@@ -124,7 +149,7 @@ export class Curse extends SerializableBase {
       expression: expressionToJson(this.expression),
       time: this.time?.toString(),
       flags: setToJson(this.flags),
-      values: this.values,
+      values: valueParamsToJson(this.values),
       message: this.message,
       description: this.description,
       conflicts: this.conflicts,

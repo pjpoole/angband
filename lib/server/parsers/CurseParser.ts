@@ -1,6 +1,11 @@
 import { Parser } from './Parser'
 import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'
-import { parseCombat, parseEffects, parseExpression } from './helpers'
+import {
+  parseCombat,
+  parseEffects,
+  parseExpression,
+  valueStringsToJson
+} from './helpers'
 import {
   allAsEnum,
   asFlags,
@@ -90,7 +95,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   handleValues(values: ParserValues) {
     const current = this.current
-    current.values = arrayUnion(current.values ?? [], asFlags(values))
+    current.values = arrayUnion(current.values ?? [], valueStringsToJson(values))
   }
 
   handleConflicts(values: ParserValues) {
