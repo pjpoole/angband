@@ -66,6 +66,7 @@ export class PitParser extends Parser<PitFields, PitJSON> {
 
   handleMonstersBanned(values: ParserValues) {
     return
+    // TODO: turn back on when monsters are populated
     const current = this.current
     if (!MonsterRegistry.has(values)) {
       throw new Error('monster not found', { cause: { key: values } })
