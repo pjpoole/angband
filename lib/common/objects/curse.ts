@@ -4,16 +4,13 @@ import { SerializableBase } from '../core/serializable'
 
 import { combatToJson } from '../utilities/serializing/combat'
 import { effectToJson } from '../utilities/serializing/effect'
+import { expressionToJson } from '../utilities/serializing/expression'
 
-import {
-  expressionToJson,
-  z_expression,
-  zExpressionParams,
-} from '../utilities/zod'
 import { CombatParams, z_combat } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effect, zEffectParams } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_expression, zExpressionParams } from '../utilities/zod/expression'
 
 import { enumValueSetToArray } from '../utilities/enum'
 import type { Dice } from '../utilities/dice'
