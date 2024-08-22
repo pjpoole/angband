@@ -1,16 +1,13 @@
 import {
   asFlags,
   asInteger,
-  asTokens,
   ParserValues,
 } from '../../common/utilities/parsing/primitives'
-import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
+import { maybeAsEnum } from '../../common/utilities/parsing/enums'
 
 import { enumValueToKeyOrThrow } from '../../common/utilities/serializing/enum'
-import { zExpressionJSON } from '../../common/utilities/zod/expression'
 
 import { STAT } from '../../common/player/stats'
-import { EX } from '../../common/spells/expressions'
 import { OBJ_MOD } from '../../common/objects/modifiers'
 import {
   ELEM,
@@ -18,11 +15,6 @@ import {
   RESISTS_ELEM,
   toResistsValue,
 } from '../../common/spells/elements'
-
-export function parseExpression(values: ParserValues): zExpressionJSON {
-  const [variable, type, expression] = asTokens(values, 3)
-  return { variable, type: asEnum(type, EX), expression }
-}
 
 export interface StatJson {
   stat: keyof typeof STAT

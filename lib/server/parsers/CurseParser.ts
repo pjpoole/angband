@@ -6,8 +6,8 @@ import {
 import { parseCombat } from '../../common/utilities/parsing/combat'
 import { parseEffects } from '../../common/utilities/parsing/effect'
 import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
+import { parseExpression } from '../../common/utilities/parsing/expression'
 import {
-  parseExpression,
   valueStringsToJson
 } from './helpers'
 import { arrayUnion } from '../../common/utilities/array'

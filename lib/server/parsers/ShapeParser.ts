@@ -7,7 +7,7 @@ import {
 import { parseCombat } from '../../common/utilities/parsing/combat'
 import { parseEffect } from '../../common/utilities/parsing/effect'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
-import { parseExpression } from './helpers'
+import { parseExpression } from '../../common/utilities/parsing/expression'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
