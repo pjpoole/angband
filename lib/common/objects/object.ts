@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
-import { z_diceExpression } from '../utilities/zod'
+import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumFromObject } from '../utilities/zod/enums'
 
 import { C } from '../utilities/colors'

@@ -1,25 +1,9 @@
 import { z } from 'zod'
 import { enumValueToKey } from './enum'
-import { stringToDice } from './dice'
 import { EX } from '../spells/expressions'
 import { EF } from '../spells/effects'
 import { z_enumValueParser } from './zod/enums'
-
-export function z_diceExpression() {
-  return z.string().transform((str: string, ctx: z.RefinementCtx) => {
-    try {
-      return stringToDice(str)
-    } catch (e) {
-      // TODO: what's the expression?
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'invalid dice expression'
-      })
-
-      return z.NEVER
-    }
-  })
-}
+import { z_diceExpression } from './zod/dice'
 
 export const z_combat = z.object({
   toHit: z_diceExpression(),

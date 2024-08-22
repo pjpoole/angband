@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
-import { z_diceExpression } from '../utilities/zod'
+import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { C } from '../utilities/colors'

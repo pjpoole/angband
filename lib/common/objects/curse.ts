@@ -7,12 +7,12 @@ import {
   effectToJson,
   expressionToJson,
   z_combat,
-  z_diceExpression,
   z_effect,
   z_expression,
   zEffectParams,
   zExpressionParams,
 } from '../utilities/zod'
+import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { enumValueSetToArray } from '../utilities/enum'
