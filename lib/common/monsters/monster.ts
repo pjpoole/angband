@@ -1,29 +1,68 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
+import { z_blow } from '../utilities/zod/blow'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
-import { setDifference, setUnion } from '../utilities/set'
+import { z_monsterBase } from '../utilities/zod/monsterBase'
 
 import { C } from '../utilities/colors'
-import { Dice } from '../utilities/dice'
+import { setDifference, setUnion } from '../utilities/set'
 
-import { Blow, BLOW_EF, BlowRegistry } from './blows'
+import { BLOW_EF } from './blows'
 import { RF } from './flags'
-import { MonsterBase, MonsterBaseRegistry } from './monsterBase'
+import { MonsterBase } from './monsterBase'
 import { RSF } from './spells'
 
-const messageObject = z.array(z.object({
+const messageObject = z.object({
   spell: z_enumValueParser(RSF),
   message: z.string()
-})).optional()
+})
+
+const dropObject = z.object({
+  type: z.string(), // TODO: validate against object types
+  name: z.string(), // TODO: validate
+  chance: z.number(),
+  min: z.number(),
+  max: z.number(),
+}).refine(
+  (drop) => drop.min <= drop.max,
+  { message: 'improper values for drop min/max'}
+)
+
+const dropBase = z.object({
+  type: z.string(), // TODO: validate
+  chance: z.number(),
+  min: z.number(),
+  max: z.number(),
+})
+
+const mimic = z.object({
+  type: z.string(), // TODO: validate
+  item: z.string(), // TODO: validate
+})
 
 const friendRoles = ['servant', 'bodyguard'] as const
+const friendBase = z.object({
+  chance: z.number(),
+  count: z_diceExpression(),
+  baseType: z.string(), // TODO: validate,
+  role: z.enum(friendRoles).optional(),
+})
+
+const friend = z.object({
+  chance: z.number(),
+  count: z_diceExpression(),
+  type: z.string(), // TODO: self-validate; introspects monster data. Also
+                    //       note that 'same' is valid value and refers to this
+  role: z.enum(friendRoles).optional(),
+})
 
 export const MonsterSchema = z.object({
   name: z.string(),
   plural: z.string().optional(),
-  base: z.string(),
+  base: z_monsterBase,
   glyph: z.string().length(1).optional(),
   color: z.nativeEnum(C),
   speed: z.number(),
@@ -37,16 +76,7 @@ export const MonsterSchema = z.object({
   rarity: z.number(),
   experience: z.number(),
   blows: z.array(z.object({
-    blow: z.string().transform((str, ctx) => {
-      const blow = BlowRegistry.get(str)
-      if (blow != null) return blow
-
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'invalid blow'
-      })
-      return z.NEVER
-    }),
+    blow: z_blow,
     effect: z_enumValueParser(BLOW_EF).optional(),
     damage: z_diceExpression().optional(),
   })),
@@ -56,89 +86,28 @@ export const MonsterSchema = z.object({
   spellFrequency: z.number(),
   spellPower: z.number(),
   spells: z.array(z_enumValueParser(RSF)),
-  messageVisible: messageObject,
-  messageInvisible: messageObject,
-  messageMiss: messageObject,
+  messageVisible: z.array(messageObject).optional(),
+  messageInvisible: z.array(messageObject).optional(),
+  messageMiss: z.array(messageObject).optional(),
   description: z.string(),
-  drop: z.array(z.object({
-    type: z.string(), // TODO: validate against object types
-    name: z.string(), // TODO: validate
-    chance: z.number(),
-    min: z.number(),
-    max: z.number(),
-  }).refine(
-    (drop) => drop.min <= drop.max,
-    { message: 'improper values for drop min/max'}
-  )).optional(),
-  dropBase: z.array(z.object({
-    type: z.string(), // TODO: validate
-    chance: z.number(),
-    min: z.number(),
-    max: z.number(),
-  })).optional(),
-  mimic: z.array(z.object({
-    type: z.string(), // TODO: validate
-    item: z.string(), // TODO: validate
-  })).optional(),
+  drop: z.array(dropObject).optional(),
+  dropBase: z.array(dropBase).optional(),
+  mimic: z.array(mimic).optional(),
   // friends:Chance of friend appearing:number in xdy format:name of friend
-  friends: z.array(z.object({
-    chance: z.number(),
-    count: z_diceExpression(),
-    type: z.string(), // TODO: self-validate; introspects monster data. Also
-                      //       note that 'same' is valid value and refers to this
-    role: z.enum(friendRoles).optional(),
-  })).optional(),
-  friendsBase: z.array(z.object({
-    chance: z.number(),
-    count: z_diceExpression(),
-    baseType: z.string(), // TODO: validate,
-    role: z.enum(friendRoles).optional(),
-  })).optional(),
+  friends: z.array(friend).optional(),
+  friendsBase: z.array(friendBase).optional(),
 })
 
 export type MonsterJSON = z.input<typeof MonsterSchema>
 export type MonsterParams = z.output<typeof MonsterSchema>
 
-interface MonsterBlow {
-  blow: Blow,
-  effect?: BLOW_EF,
-  damage?: Dice,
-}
-
-interface MonsterMessage {
-  spell: RSF,
-  message: string,
-}
-
-interface MonsterDropBase {
-  type: string // TODO: Object type
-  chance: number
-  min: number
-  max: number
-}
-
-interface MonsterDrop extends MonsterDropBase {
-  name: string // TODO: validate
-}
-
-interface MonsterMimic {
-  type: string // TODO: validate
-  item: string // TODO: validate
-}
-
-interface MonsterFriendBase {
-  chance: number
-  count: Dice
-  baseType: string // TODO: validate
-  role?: typeof friendRoles[number]
-}
-
-interface MonsterFriend {
-  chance: number
-  count: Dice
-  type: string // TODO: validate
-  role?: typeof friendRoles[number]
-}
+type MonsterBlow = z.output<typeof MonsterSchema.shape.blows.element>
+type MonsterMessage = z.output<typeof messageObject>
+type MonsterDrop = z.output<typeof dropObject>
+type MonsterDropBase = z.output<typeof dropBase>
+type MonsterMimic = z.output<typeof mimic>
+type MonsterFriendBase = z.output<typeof friendBase>
+type MonsterFriend = z.output<typeof friend>
 
 export class Monster extends SerializableBase {
   static schema = MonsterSchema
@@ -179,7 +148,7 @@ export class Monster extends SerializableBase {
 
     this.name = params.name
     this.plural = params.plural
-    this.base = MonsterBaseRegistry.getOrThrow(params.base)
+    this.base = params.base
     this.glyph = params.glyph || this.base.glyph
     this.color = params.color
     this.speed = params.speed

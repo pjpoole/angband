@@ -5,35 +5,15 @@ import { SerializableBase } from '../core/serializable'
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_monster } from '../utilities/zod/monster'
+import { z_monsterBase } from '../utilities/zod/monsterBase'
 
-import { Monster, MonsterRegistry } from '../monsters/monster'
+import { Monster } from '../monsters/monster'
 
 import { C } from '../utilities/colors'
 import { RF } from '../monsters/flags'
-import { MonsterBase, MonsterBaseRegistry } from '../monsters/monsterBase'
+import { MonsterBase } from '../monsters/monsterBase'
 import { RSF } from '../monsters/spells'
-
-const monsterBaseFinder = z.string().transform((str, ctx) => {
-  const monsterBase = MonsterBaseRegistry.get(str)
-  if (monsterBase != null) return monsterBase
-
-  ctx.addIssue({
-    code: z.ZodIssueCode.custom,
-    message: 'invalid monster base type'
-  })
-  return z.NEVER
-})
-
-const monsterFinder = z.string().transform((str, ctx) => {
-  const monster = MonsterRegistry.get(str)
-  if (monster != null) return monster
-
-  ctx.addIssue({
-    code: z.ZodIssueCode.custom,
-    message: 'invalid monster type'
-  })
-  return z.NEVER
-})
 
 // TODO: Spells, flags, monsters, monster bases
 export const PitSchema = z.object({
@@ -43,8 +23,8 @@ export const PitSchema = z.object({
   averageLevel: z.number(),
   objectRarity: z.number().optional(),
   colors: z.array(z.nativeEnum(C)).optional(),
-  monsterBases: z.array(monsterBaseFinder).optional(),
-  monstersBanned: z.array(monsterFinder).optional(),
+  monsterBases: z.array(z_monsterBase).optional(),
+  monstersBanned: z.array(z_monster).optional(),
   flagsRequired: z.array(z_enumValueParser(RF)).optional(),
   flagsBanned: z.array(z_enumValueParser(RF)).optional(),
   innateFrequency: z.number().optional(),
