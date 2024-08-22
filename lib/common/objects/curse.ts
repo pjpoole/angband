@@ -30,10 +30,10 @@ export const CurseSchema = z.object({
   weight: z.number().optional(), // never used
   combat: z_combat.optional(),
   effect: z.array(z_effect).optional(),
-  dice: z_diceExpression().optional(),
+  dice: z_diceExpression.optional(),
   // Shows up in shape, activation, class, monster_spell, object, trap
   expression: z_expression.optional(), // TODO
-  time: z_diceExpression().optional(),
+  time: z_diceExpression.optional(),
   flags: z.array(z_curseFlag).optional(),
   values: z.array(z_value).optional(),
   message: z.string().optional(),

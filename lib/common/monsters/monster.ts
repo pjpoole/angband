@@ -46,14 +46,14 @@ const mimic = z.object({
 const friendRoles = ['servant', 'bodyguard'] as const
 const friendBase = z.object({
   chance: z.number(),
-  count: z_diceExpression(),
+  count: z_diceExpression,
   baseType: z.string(), // TODO: validate,
   role: z.enum(friendRoles).optional(),
 })
 
 const friend = z.object({
   chance: z.number(),
-  count: z_diceExpression(),
+  count: z_diceExpression,
   type: z.string(), // TODO: self-validate; introspects monster data. Also
                     //       note that 'same' is valid value and refers to this
   role: z.enum(friendRoles).optional(),
@@ -78,7 +78,7 @@ export const MonsterSchema = z.object({
   blows: z.array(z.object({
     blow: z_blow,
     effect: z_enumValueParser(BLOW_EF).optional(),
-    damage: z_diceExpression().optional(),
+    damage: z_diceExpression.optional(),
   })),
   flags: z.array(z_enumValueParser(RF)),
   flagsOff: z.array(z_enumValueParser(RF)).optional(),

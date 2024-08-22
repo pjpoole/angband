@@ -20,13 +20,13 @@ export const ObjectSchema = z.object({
   weight: z.number(),
   cost: z.number(),
   attack: z.object({
-    baseDamage: z_diceExpression(),
+    baseDamage: z_diceExpression,
     plusToHit: z.number(),
     plusToDamage: z.number(),
   }),
   armor: z.object({
     baseAC: z.number(),
-    plusToAC: z.number(),
+    plusToAC: z_diceExpression,
   }),
   allocation: z.object({
     commonness:

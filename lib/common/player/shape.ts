@@ -34,7 +34,7 @@ export const ShapeSchema = z.object({
   //     depend on shapes
   effects: z.array(z.object({
     effect: z_effect,
-    dice: z_diceExpression().optional(),
+    dice: z_diceExpression.optional(),
     expression: z_expression.optional(),
   })).optional(),
   effectMessage: z.string().optional(),

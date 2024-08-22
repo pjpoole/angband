@@ -25,7 +25,7 @@ const ProjectionSchemaBase = z.object({
   blindDescription: z.string(),
   lashDescription: z.string().optional(),
   numerator: z.number().optional(),
-  denominator: z_diceExpression().optional(),
+  denominator: z_diceExpression.optional(),
   divisor: z.number().optional(),
   damageCap: z.number().optional(),
   // TODO: find out how messageType is backfilled in code
