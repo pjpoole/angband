@@ -5,14 +5,14 @@ import {
   ParserValues,
 } from '../../common/utilities/parsing/primitives'
 import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
+import { isValidSubtype } from '../../common/utilities/parseGameObjects'
 import {
-  isValidSubtype
-} from '../../common/utilities/parseGameObjects'
-import {
-  CombatJSON,
   zEffectJSON,
   zExpressionJSON,
 } from '../../common/utilities/zod'
+import { CombatJSON } from '../../common/utilities/zod/combat'
+
+import { enumValueToKeyOrThrow } from '../../common/utilities/enum'
 
 import { STAT } from '../../common/player/stats'
 import { EF, EffectJSON } from '../../common/spells/effects'
@@ -24,7 +24,6 @@ import {
   RESISTS_ELEM,
   toResistsValue,
 } from '../../common/spells/elements'
-import { enumValueToKeyOrThrow } from '../../common/utilities/enum'
 
 export function parseCombat(values: ParserValues): CombatJSON {
   const [toHit, toDamage, toAC] = asTokens(values, 3)

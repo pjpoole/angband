@@ -3,24 +3,6 @@ import { enumValueToKey } from './enum'
 import { EX } from '../spells/expressions'
 import { EF } from '../spells/effects'
 import { z_enumValueParser } from './zod/enums'
-import { z_diceExpression } from './zod/dice'
-
-export const z_combat = z.object({
-  toHit: z_diceExpression(),
-  toDamage: z_diceExpression(),
-  toAC: z_diceExpression(),
-})
-
-export type CombatJSON = z.input<typeof z_combat>
-export type CombatParams = z.output<typeof z_combat>
-
-export function combatToJson(combat?: CombatParams): CombatJSON | undefined {
-  return combat == null ? undefined : {
-    toHit: combat.toHit.toString(),
-    toDamage: combat.toDamage.toString(),
-    toAC: combat.toAC.toString(),
-  }
-}
 
 export const z_skill = z.object({
   device: z.number().optional(),

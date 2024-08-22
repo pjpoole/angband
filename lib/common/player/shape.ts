@@ -1,16 +1,15 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+import { combatToJson } from '../utilities/serializing/combat'
 import {
-  CombatParams,
-  combatToJson,
   effectToJson,
   expressionToJson,
-  z_combat,
   z_effect,
   z_expression,
   z_skill,
 } from '../utilities/zod'
+import { CombatParams, z_combat } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
