@@ -4,7 +4,7 @@ import {
   asInteger,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { asEnum } from '../../common/utilities/parsers'
+import { asEnum } from '../../common/utilities/parsing/enums'
 
 import {
   PLAYER_PROPERTY_TYPES,

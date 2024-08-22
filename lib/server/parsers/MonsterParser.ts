@@ -3,7 +3,7 @@ import {
   asInteger,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { allAsEnum } from '../../common/utilities/parsers'
+import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Monster, MonsterJSON } from '../../common/monsters/monster'

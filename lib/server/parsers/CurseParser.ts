@@ -3,7 +3,7 @@ import {
   asFlags,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsers'
+import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import {
   parseCombat,
   parseEffects,

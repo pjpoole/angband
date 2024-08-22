@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
-import { asEnum } from '../../common/utilities/parsers'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
+import { asEnum } from '../../common/utilities/parsing/enums'
 
 import { MSG } from '../../common/game/messages'
 import { Blow, BlowJSON, BlowRegistry } from '../../common/monsters/blows'

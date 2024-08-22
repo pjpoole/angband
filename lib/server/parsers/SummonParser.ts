@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
-import { asEnum } from '../../common/utilities/parsers'
+import { asEnum } from '../../common/utilities/parsing/enums'
 
 import { Summon, SummonJSON, SummonRegistry } from '../../common/spells/summons'
 

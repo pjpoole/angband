@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
-import { asEnum, maybeAsEnum } from '../../common/utilities/parsers'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
+import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 
 import {
   Projection,

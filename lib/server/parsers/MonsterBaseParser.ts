@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
-import { allAsEnum } from '../../common/utilities/parsers'
+import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { RF } from '../../common/monsters/flags'

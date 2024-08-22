@@ -4,7 +4,7 @@ import {
   asTokens,
   ParserValues,
 } from '../../common/utilities/parsing/primitives'
-import { asEnum, maybeAsEnum } from '../../common/utilities/parsers'
+import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import {
   isValidSubtype
 } from '../../common/utilities/parseGameObjects'

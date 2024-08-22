@@ -1,4 +1,4 @@
-import { maybeAsEnum } from './parsers'
+import { maybeAsEnum } from './parsing/enums'
 import { ShapeRegistry, SummonRegistry } from '../game/registries'
 
 import { STAT } from '../player/stats'

@@ -1,6 +1,6 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
-import { allAsEnum, asEnum } from '../../common/utilities/parsers'
+import { allAsEnum, asEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 import { colorStringToAttribute } from '../../common/utilities/colors'
 

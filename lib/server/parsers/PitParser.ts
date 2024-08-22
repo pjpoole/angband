@@ -3,7 +3,7 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { allAsEnum } from '../../common/utilities/parsers'
+import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 import { colorStringToAttribute } from '../../common/utilities/colors'
 
