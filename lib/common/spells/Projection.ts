@@ -1,12 +1,14 @@
 import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
+import { enumValueToKey } from '../utilities/serializing/enum'
+
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { C } from '../utilities/colors'
 import { Dice } from '../utilities/dice'
-import { enumValueToKey } from '../utilities/enum'
 
 import { ELEM } from './elements'
 import { MSG } from '../game/messages'

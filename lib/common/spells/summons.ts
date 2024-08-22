@@ -1,7 +1,9 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
-import { enumValueToKey } from '../utilities/enum'
+
+import { enumValueToKey } from '../utilities/serializing/enum'
+
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { MSG } from '../game/messages'

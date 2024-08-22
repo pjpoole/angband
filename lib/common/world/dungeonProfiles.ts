@@ -1,9 +1,11 @@
 import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
+import { enumValueToKey } from '../utilities/serializing/enum'
+
 import { z_enumValueParser } from '../utilities/zod/enums'
 
-import { enumValueToKey } from '../utilities/enum'
 import { isValidRoomName } from './room'
 
 

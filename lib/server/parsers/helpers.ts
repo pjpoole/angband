@@ -6,11 +6,12 @@ import {
 } from '../../common/utilities/parsing/primitives'
 import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import { isValidSubtype } from '../../common/utilities/parseGameObjects'
+
+import { enumValueToKeyOrThrow } from '../../common/utilities/serializing/enum'
+
 import { CombatJSON } from '../../common/utilities/zod/combat'
 import { zEffectJSON } from '../../common/utilities/zod/effect'
 import { zExpressionJSON } from '../../common/utilities/zod/expression'
-
-import { enumValueToKeyOrThrow } from '../../common/utilities/enum'
 
 import { STAT } from '../../common/player/stats'
 import { EF, EffectJSON } from '../../common/spells/effects'

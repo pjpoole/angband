@@ -1,4 +1,3 @@
-import { enumToKeyArray, EnumValueOnly } from '../utilities/enum'
 import { getPrefixAndSuffix } from '../utilities/string'
 
 // list-elements.h
@@ -56,8 +55,3 @@ export function toResistsValue(str: RESISTS_ELEM): ELEM {
   if (prefix !== 'RES_' || element == null) throw new Error('invalid resist')
   return element
 }
-
-// export function
-
-export type ELEM_VALUES = EnumValueOnly<ELEM>
-export const ELEM_KEYS = enumToKeyArray(ELEM)

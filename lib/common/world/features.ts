@@ -1,8 +1,11 @@
 import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
+import { enumValueSetToArray, enumValueToKey } from '../utilities/serializing/enum'
+
 import { z_enumValueParser } from '../utilities/zod/enums'
-import { EnumValueOnly, enumValueSetToArray, enumValueToKey } from '../utilities/enum'
+import { EnumValueOnly } from '../utilities/enum'
 
 import { RF, RF_VALUE } from '../monsters/flags'
 import { C } from '../utilities/colors'

@@ -1,5 +1,5 @@
 import { zExpressionJSON, zExpressionParams } from '../zod/expression'
-import { enumValueToKey } from '../enum'
+import { enumValueToKey } from './enum'
 import { EX } from '../../spells/expressions'
 
 export function expressionToJson(expression?: zExpressionParams): zExpressionJSON | undefined {

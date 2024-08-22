@@ -1,8 +1,10 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
+
+import { enumValueSetToArray } from '../utilities/serializing/enum'
+
 import { z_enumValueParser } from '../utilities/zod/enums'
-import { enumValueSetToArray } from '../utilities/enum'
 
 import { Monster, MonsterRegistry } from '../monsters/monster'
 
