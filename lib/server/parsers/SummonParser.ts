@@ -1,13 +1,12 @@
 import { Parser } from './Parser'
-import { asEnum, ParserValues } from '../../common/utilities/parsers'
-import {
-  MonsterBaseRegistry,
-  SummonRegistry
-} from '../../common/game/registries'
-import { Summon, SummonJSON } from '../../common/spells/summons'
+import { ParserValues } from '../../common/utilities/parsing/primitives'
+import { asEnum } from '../../common/utilities/parsers'
 
-import { RF } from '../../common/monsters/flags'
+import { Summon, SummonJSON, SummonRegistry } from '../../common/spells/summons'
+
 import { MSG } from '../../common/game/messages'
+import { RF } from '../../common/monsters/flags'
+import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
 
 type SummonFields = 'name' | 'msgt' | 'uniques' | 'base' | 'race-flag'
   | 'fallback' | 'desc'

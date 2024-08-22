@@ -1,18 +1,18 @@
 import { Parser } from './Parser'
-import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'
+import {
+  asFlags,
+  ParserValues
+} from '../../common/utilities/parsing/primitives'
+import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsers'
 import {
   parseCombat,
   parseEffects,
   parseExpression,
   valueStringsToJson
 } from './helpers'
-import {
-  allAsEnum,
-  asFlags,
-  maybeAsEnum,
-  ParserValues,
-} from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
+
+import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'
 
 import { OF } from '../../common/objects/flags'
 import { TV_NAMES } from '../../common/objects/tval'

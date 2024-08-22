@@ -1,14 +1,14 @@
 import { Parser } from './Parser'
-import { Shape, ShapeEffectsJSON, ShapeJSON } from '../../common/player/shape'
-import { ShapeRegistry } from '../../common/game/registries'
 import {
-  allAsEnum,
-  asFlags, asInteger,
+  asFlags,
+  asInteger,
   ParserValues
-} from '../../common/utilities/parsers'
-
+} from '../../common/utilities/parsing/primitives'
+import { allAsEnum } from '../../common/utilities/parsers'
 import { parseCombat, parseEffect, parseExpression } from './helpers'
 import { arrayUnion } from '../../common/utilities/array'
+
+import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
 
 import { OF } from '../../common/objects/flags'
 import { PF } from '../../common/player/flags'

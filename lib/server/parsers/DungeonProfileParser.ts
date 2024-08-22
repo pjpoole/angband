@@ -1,16 +1,17 @@
+import { Parser } from './Parser'
+import {
+  asBoolean,
+  asInteger,
+  asTokens,
+  ParserValues
+} from '../../common/utilities/parsing/primitives'
+
 import {
   DungeonProfile,
   DungeonProfileJSON,
   DungeonProfileRegistry
 } from '../../common/world/dungeonProfiles'
 import { isValidRoomName } from '../../common/world/room'
-import {
-  asBoolean,
-  asInteger,
-  asTokens,
-  ParserValues
-} from '../../common/utilities/parsers'
-import { Parser } from './Parser'
 
 type DungeonProfileFields = 'name' | 'params' | 'tunnel' | 'streamer' | 'alloc'
   | 'min-level' | 'room'

@@ -1,11 +1,10 @@
 import {
-  asEnum,
   asFlags,
   asInteger,
   asTokens,
-  maybeAsEnum,
   ParserValues,
-} from '../../common/utilities/parsers'
+} from '../../common/utilities/parsing/primitives'
+import { asEnum, maybeAsEnum } from '../../common/utilities/parsers'
 import {
   isValidSubtype
 } from '../../common/utilities/parseGameObjects'

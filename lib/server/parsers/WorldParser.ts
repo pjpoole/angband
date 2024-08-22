@@ -3,7 +3,8 @@ import {
   asInteger,
   asTokens,
   ParserValues
-} from '../../common/utilities/parsers'
+} from '../../common/utilities/parsing/primitives'
+
 import { Level, LevelJSON, LevelRegistry } from '../../common/world/level'
 
 type WorldFields = 'level'

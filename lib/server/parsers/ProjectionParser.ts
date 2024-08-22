@@ -1,16 +1,15 @@
 import { Parser } from './Parser'
-import {
-  asEnum,
-  maybeAsEnum,
-  ParserValues
-} from '../../common/utilities/parsers'
+import { asEnum, maybeAsEnum } from '../../common/utilities/parsers'
+import { ParserValues } from '../../common/utilities/parsing/primitives'
+
 import {
   Projection,
   ProjectionJSON,
   ProjectionRegistry,
 } from '../../common/spells/Projection'
-import { ELEM } from '../../common/spells/elements'
+
 import { MSG } from '../../common/game/messages'
+import { ELEM } from '../../common/spells/elements'
 import { PROJ } from '../../common/spells/projections'
 
 type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'

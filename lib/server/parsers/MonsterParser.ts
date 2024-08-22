@@ -1,6 +1,10 @@
 import { Parser } from './Parser'
+import {
+  asInteger,
+  ParserValues
+} from '../../common/utilities/parsing/primitives'
+import { allAsEnum } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
-import { allAsEnum, asInteger, ParserValues } from '../../common/utilities/parsers'
 
 import { Monster, MonsterJSON } from '../../common/monsters/monster'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'

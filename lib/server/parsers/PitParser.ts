@@ -1,12 +1,13 @@
 import { Parser } from './Parser'
-import { Pit, PitJSON, PitRegistry } from '../../common/world/pit'
-import { arrayUnion } from '../../common/utilities/array'
-import { colorStringToAttribute } from '../../common/utilities/colors'
 import {
-  allAsEnum,
   asTokens,
   ParserValues
-} from '../../common/utilities/parsers'
+} from '../../common/utilities/parsing/primitives'
+import { allAsEnum } from '../../common/utilities/parsers'
+import { arrayUnion } from '../../common/utilities/array'
+import { colorStringToAttribute } from '../../common/utilities/colors'
+
+import { Pit, PitJSON, PitRegistry } from '../../common/world/pit'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'

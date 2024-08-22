@@ -1,11 +1,12 @@
 import { Parser } from './Parser'
-import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
 import {
   asFlags,
   asInteger,
   asTokens,
   ParserValues
-} from '../../common/utilities/parsers'
+} from '../../common/utilities/parsing/primitives'
+
+import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
 import { arrayUnion } from '../../common/utilities/array'
 import { TV_NAMES } from '../../common/objects/tval'
 

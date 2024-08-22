@@ -1,6 +1,7 @@
 import { Parser } from './Parser'
+import { ParserValues } from '../../common/utilities/parsing/primitives'
+import { allAsEnum } from '../../common/utilities/parsers'
 import { arrayUnion } from '../../common/utilities/array'
-import { allAsEnum, ParserValues } from '../../common/utilities/parsers'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBase, MonsterBaseJSON, MonsterBaseRegistry } from '../../common/monsters/monsterBase'

@@ -1,17 +1,18 @@
 import { Parser } from './Parser'
 import {
+  asArrayMember,
+  asInteger,
+  ParserValues
+} from '../../common/utilities/parsing/primitives'
+import { asEnum } from '../../common/utilities/parsers'
+
+import {
   PLAYER_PROPERTY_TYPES,
   PlayerProperty,
   PlayerPropertyJSON,
   PlayerPropertyRegistry,
   RESIST_VALUES
 } from '../../common/player/properties'
-import {
-  asArrayMember,
-  asEnum,
-  asInteger,
-  ParserValues
-} from '../../common/utilities/parsers'
 
 import { PF } from '../../common/player/flags'
 import { OF } from '../../common/objects/flags'

@@ -1,3 +1,9 @@
+import { Parser } from './Parser'
+import { ParserValues } from '../../common/utilities/parsing/primitives'
+import { allAsEnum, asEnum } from '../../common/utilities/parsers'
+import { arrayUnion } from '../../common/utilities/array'
+import { colorStringToAttribute } from '../../common/utilities/colors'
+
 import {
   FEAT,
   Feature,
@@ -5,10 +11,7 @@ import {
   FeatureRegistry,
   TF
 } from '../../common/world/features'
-import { Parser } from './Parser'
-import { arrayUnion } from '../../common/utilities/array'
-import { allAsEnum, asEnum, ParserValues } from '../../common/utilities/parsers'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+
 import { RF } from '../../common/monsters/flags'
 
 type FeatureFields = 'code' | 'name' | 'graphics' | 'mimic'

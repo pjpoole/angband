@@ -1,4 +1,4 @@
-import { asInteger, ParserValues } from '../../common/utilities/parsers'
+import { asInteger, ParserValues } from '../../common/utilities/parsing/primitives'
 import { C, colorStringToAttribute } from '../../common/utilities/colors'
 import {
   PARSE_ERROR_INVALID_PERCENTILE,

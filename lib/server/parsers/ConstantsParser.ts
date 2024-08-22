@@ -1,14 +1,15 @@
-import { Constants, ConstantsJSON } from '../../common/core/constants'
-
 import { Parser } from './Parser'
 import {
   asInteger,
   asTokens,
   ParserValues
-} from '../../common/utilities/parsers'
-import { kebabToPascal } from '../../common/utilities/string'
+} from '../../common/utilities/parsing/primitives'
 import { JsonObject } from '../../common/utilities/json'
+import { kebabToPascal } from '../../common/utilities/string'
+
 import { writeGameData } from '../loading/writing'
+
+import { Constants, ConstantsJSON } from '../../common/core/constants'
 
 type ConstantsFields = 'level-max' | 'mon-gen' | 'mon-play' | 'dun-gen'
   | 'world' | 'carry-cap' | 'store' | 'obj-make' | 'player' | 'melee-critical'
