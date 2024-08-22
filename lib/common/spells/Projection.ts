@@ -1,14 +1,16 @@
 import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
-import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
+import { z_diceExpression } from '../utilities/zod'
+import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { C } from '../utilities/colors'
+import { Dice } from '../utilities/dice'
+import { enumValueToKey } from '../utilities/enum'
+
 import { ELEM } from './elements'
 import { MSG } from '../game/messages'
-import { Dice } from '../utilities/dice'
 import { PROJ } from './projections'
-import { enumValueToKey } from '../utilities/enum'
 
 export const PROJECTION_TYPES = ['element', 'environs', 'monster'] as const
 

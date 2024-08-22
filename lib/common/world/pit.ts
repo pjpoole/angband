@@ -1,14 +1,15 @@
 import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
-import { z_enumValueParser } from '../utilities/zod'
+import { z_enumValueParser } from '../utilities/zod/enums'
+import { enumValueSetToArray } from '../utilities/enum'
+
+import { Monster, MonsterRegistry } from '../monsters/monster'
 
 import { C } from '../utilities/colors'
 import { RF } from '../monsters/flags'
 import { MonsterBase, MonsterBaseRegistry } from '../monsters/monsterBase'
 import { RSF } from '../monsters/spells'
-import { NameRegistry } from '../core/Registry'
-import { enumValueSetToArray } from '../utilities/enum'
-import { Monster, MonsterRegistry } from '../monsters/monster'
 
 const monsterBaseFinder = z.string().transform((str, ctx) => {
   const monsterBase = MonsterBaseRegistry.get(str)

@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
-import { z_diceExpression, z_enumValueParser } from '../utilities/zod'
+import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_diceExpression } from '../utilities/zod'
 import { setDifference, setUnion } from '../utilities/set'
 
 import { C } from '../utilities/colors'

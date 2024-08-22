@@ -9,10 +9,10 @@ import {
   z_combat,
   z_diceExpression,
   z_effect,
-  z_enumValueParser,
   z_expression,
   z_skill,
 } from '../utilities/zod'
+import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { Dice } from '../utilities/dice'
 import { enumValueSetToArray } from '../utilities/enum'

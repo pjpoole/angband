@@ -1,10 +1,11 @@
 import { z } from 'zod'
 import { SerializableBase } from '../core/serializable'
+import { z_diceExpression } from '../utilities/zod'
+import { z_enumFromObject } from '../utilities/zod/enums'
 
 import { C } from '../utilities/colors'
 import { KF } from './kindFlags'
 import { OF } from './flags'
-import { z_diceExpression, z_enumFromObject } from '../utilities/zod'
 
 type ObjectFlag =
   | keyof typeof KF

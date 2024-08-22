@@ -2,9 +2,8 @@ import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
-import { JsonObject } from '../utilities/json'
+import { z_enumValueParser } from '../utilities/zod/enums'
 import { enumValueSetToArray } from '../utilities/enum'
-import { z_enumValueParser } from '../utilities/zod'
 
 import { RF } from './flags'
 
