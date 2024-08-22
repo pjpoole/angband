@@ -8,6 +8,7 @@ import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
 import { ProjectionParser } from './ProjectionParser'
 import { ShapeParser } from './ShapeParser'
+import { SlayParser } from './SlayParser'
 import { SummonParser } from './SummonParser'
 import { WorldParser } from './WorldParser'
 
@@ -22,6 +23,7 @@ export {
   PlayerPropertyParser,
   ProjectionParser,
   ShapeParser,
+  SlayParser,
   SummonParser,
   WorldParser,
 }
@@ -30,6 +32,7 @@ export {
 //       this is just good enough to get loading to work
 export const PARSERS: any[] = [
   BlowParser,
+  SlayParser,
   ProjectionParser,
   ShapeParser,
   PlayerPropertyParser,
