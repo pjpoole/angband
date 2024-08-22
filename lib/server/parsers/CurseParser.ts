@@ -7,9 +7,8 @@ import { parseCombat } from '../../common/utilities/parsing/combat'
 import { parseEffects } from '../../common/utilities/parsing/effect'
 import { allAsEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import { parseExpression } from '../../common/utilities/parsing/expression'
-import {
-  valueStringsToJson
-} from './helpers'
+import { valueStringsToJson } from '../../common/utilities/parsing/values'
+
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Curse, CurseFlag, CurseJSON, CurseRegistry } from '../../common/objects/curse'

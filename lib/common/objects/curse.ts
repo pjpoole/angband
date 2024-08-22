@@ -6,6 +6,7 @@ import { combatToJson } from '../utilities/serializing/combat'
 import { effectToJson } from '../utilities/serializing/effect'
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { expressionToJson } from '../utilities/serializing/expression'
+import { valueParamsToJson } from '../utilities/serializing/values'
 
 import { CombatParams, z_combat } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
@@ -15,6 +16,7 @@ import { z_expression, zExpressionParams } from '../utilities/zod/expression'
 
 import type { Dice } from '../utilities/dice'
 import { setToJson } from '../utilities/set'
+import { ValueParams } from '../utilities/values'
 
 import { OF } from './flags'
 import {
@@ -24,29 +26,10 @@ import {
   isIgnoreElem,
 } from '../spells/elements'
 import { ObjectBase, ObjectBaseRegistry } from './objectBase'
-import {
-  ValueJson,
-  ValueParams,
-  valueParamsToJson,
-  valueToParams,
-} from '../../server/parsers/helpers'
+
+import { z_value } from '../utilities/zod/values'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
-
-const valueFinder = z.object({
-  stat: z.string(),
-  value: z.number(),
-}).transform((val, ctx) => {
-  try {
-    return valueToParams(val as ValueJson)
-  } catch (e) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'invalid value'
-    })
-    return z.NEVER
-  }
-})
 
 const objectFinder = z.string().transform((str, ctx) => {
   const objectBase = ObjectBaseRegistry.get(str)
@@ -85,7 +68,7 @@ export const CurseSchema = z.object({
   expression: z_expression.optional(), // TODO
   time: z_diceExpression().optional(),
   flags: z.array(flagFinder).optional(),
-  values: z.array(valueFinder).optional(),
+  values: z.array(z_value).optional(),
   message: z.string().optional(),
   description: z.string(),
   conflicts: z.array(z.string()).optional(), // TODO
