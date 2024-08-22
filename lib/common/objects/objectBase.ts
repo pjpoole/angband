@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
+import { setToJson } from '../utilities/serializing/set'
+
 import { C } from '../utilities/colors'
 import { objectValueToKey } from '../utilities/object'
 import { TV, TV_NAMES } from './tval'
@@ -12,7 +14,6 @@ import {
   IGNORE_ELEM,
   isHatesElem, isIgnoreElem
 } from '../spells/elements'
-import { setToJson } from '../utilities/set'
 
 type ObjectBaseFlag = keyof typeof KF | keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 

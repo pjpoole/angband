@@ -6,6 +6,7 @@ import { combatToJson } from '../utilities/serializing/combat'
 import { effectToJson } from '../utilities/serializing/effect'
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { expressionToJson } from '../utilities/serializing/expression'
+import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
 import { CombatParams, z_combat } from '../utilities/zod/combat'
@@ -13,9 +14,9 @@ import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effect, zEffectParams } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_expression, zExpressionParams } from '../utilities/zod/expression'
+import { z_value } from '../utilities/zod/values'
 
 import type { Dice } from '../utilities/dice'
-import { setToJson } from '../utilities/set'
 import { ValueParams } from '../utilities/values'
 
 import { OF } from './flags'
@@ -26,8 +27,6 @@ import {
   isIgnoreElem,
 } from '../spells/elements'
 import { ObjectBase, ObjectBaseRegistry } from './objectBase'
-
-import { z_value } from '../utilities/zod/values'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
 
