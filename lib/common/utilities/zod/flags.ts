@@ -47,3 +47,20 @@ export const z_objectBaseFlag = z.string().transform((str, ctx): ObjectBaseFlag 
   })
   return z.NEVER
 })
+
+// Union of KF and OF
+export type ObjectFlag = keyof typeof KF | keyof typeof OF
+
+export const z_objectFlag = z.string().transform((str, ctx): ObjectFlag => {
+  if (Object.keys(KF).includes(str)) {
+    return str as keyof typeof KF
+  } else if (Object.keys(OF).includes(str)) {
+    return str as keyof typeof OF
+  }
+
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: 'invalid flag type'
+  })
+  return z.NEVER
+})
