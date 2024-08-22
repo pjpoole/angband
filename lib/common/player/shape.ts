@@ -6,6 +6,8 @@ import { combatToJson } from '../utilities/serializing/combat'
 import { effectToJson } from '../utilities/serializing/effect'
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { expressionToJson } from '../utilities/serializing/expression'
+import { ifExists } from '../utilities/serializing/helpers'
+import { valueParamsToJson } from '../utilities/serializing/values'
 
 import { CombatParams, z_combat } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
@@ -20,7 +22,6 @@ import { OF } from '../objects/flags'
 import { PF } from './flags'
 import { SkillData } from './skill'
 import { ValueParams } from '../utilities/values'
-import { valueParamsToJson } from '../utilities/serializing/values'
 
 export const ShapeSchema = z.object({
   name: z.string(),
@@ -81,14 +82,12 @@ export class Shape extends SerializableBase {
     ShapeRegistry.add(this.name, this)
   }
 
-  private shapeEffectsToJson(): ShapeEffectsJSON[] | undefined {
-    if (this.effects == null) return
-
-    return this.effects.map(shapeEffect => {
+  private shapeEffectsToJson(effects: ShapeEffects[]): ShapeEffectsJSON[] {
+    return effects.map(shapeEffect => {
       return {
         effect: effectToJson(shapeEffect.effect),
         dice: shapeEffect.dice?.toString(),
-        expression: expressionToJson(shapeEffect.expression),
+        expression: ifExists(shapeEffect.expression, expressionToJson),
       }
     })
   }
@@ -96,12 +95,12 @@ export class Shape extends SerializableBase {
   toJSON(): ShapeJSON {
     return {
       name: this.name,
-      combat: combatToJson(this.combat),
+      combat: ifExists(this.combat, combatToJson),
       skill: this.skill,
       objectFlags: enumValueSetToArray(this.objectFlags, OF),
       playerFlags: enumValueSetToArray(this.playerFlags, PF),
-      values: valueParamsToJson(this.values),
-      effects: this.shapeEffectsToJson(),
+      values: ifExists(this.values, valueParamsToJson),
+      effects: ifExists(this.effects, this.shapeEffectsToJson),
       effectMessage: this.effectMessage,
       blow: this.blow,
     }

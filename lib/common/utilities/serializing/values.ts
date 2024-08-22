@@ -5,8 +5,8 @@ import { OBJ_MOD } from '../../objects/modifiers'
 import { STAT } from '../../player/stats'
 import { ELEM, RESISTS_ELEM } from '../../spells/elements'
 
-export function valueParamsToJson(valueParams?: ValueParams[]): ValueJson[] | undefined {
-  return valueParams == null ? undefined : valueParams.map(valueParamToJson)
+export function valueParamsToJson(valueParams: ValueParams[]): ValueJson[] {
+  return valueParams.map(valueParamToJson)
 }
 
 function valueParamToJson(valueParam: ValueParams): ValueJson {

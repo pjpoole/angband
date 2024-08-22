@@ -6,6 +6,7 @@ import { combatToJson } from '../utilities/serializing/combat'
 import { effectToJson } from '../utilities/serializing/effect'
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { expressionToJson } from '../utilities/serializing/expression'
+import { ifExists } from '../utilities/serializing/helpers'
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
@@ -91,13 +92,13 @@ export class Curse extends SerializableBase {
       name: this.name,
       types: this.types.map(objectBase => objectBase.typeName),
       weight: this.weight,
-      combat: combatToJson(this.combat),
+      combat: ifExists(this.combat, combatToJson),
       effect: this.effect == null ? undefined : this.effect.map(effectToJson),
       dice: this.dice?.toString(),
-      expression: expressionToJson(this.expression),
+      expression: ifExists(this.expression, expressionToJson),
       time: this.time?.toString(),
       flags: setToJson(this.flags),
-      values: valueParamsToJson(this.values),
+      values: ifExists(this.values, valueParamsToJson),
       message: this.message,
       description: this.description,
       conflicts: this.conflicts,
