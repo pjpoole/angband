@@ -7,10 +7,10 @@ import {
 import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import { isValidSubtype } from '../../common/utilities/parseGameObjects'
 import {
-  zEffectJSON,
   zExpressionJSON,
 } from '../../common/utilities/zod'
 import { CombatJSON } from '../../common/utilities/zod/combat'
+import { zEffectJSON } from '../../common/utilities/zod/effect'
 
 import { enumValueToKeyOrThrow } from '../../common/utilities/enum'
 
