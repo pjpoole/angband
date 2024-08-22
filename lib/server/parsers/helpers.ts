@@ -8,8 +8,6 @@ import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
 import { isValidSubtype } from '../../common/utilities/parseGameObjects'
 
 import { enumValueToKeyOrThrow } from '../../common/utilities/serializing/enum'
-
-import { CombatJSON } from '../../common/utilities/zod/combat'
 import { zEffectJSON } from '../../common/utilities/zod/effect'
 import { zExpressionJSON } from '../../common/utilities/zod/expression'
 
@@ -23,11 +21,6 @@ import {
   RESISTS_ELEM,
   toResistsValue,
 } from '../../common/spells/elements'
-
-export function parseCombat(values: ParserValues): CombatJSON {
-  const [toHit, toDamage, toAC] = asTokens(values, 3)
-  return { toHit, toDamage, toAC }
-}
 
 function effectsAreEqual(eff1: zEffectJSON, eff2: zEffectJSON): boolean {
   return (

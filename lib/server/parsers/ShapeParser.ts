@@ -4,8 +4,9 @@ import {
   asInteger,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
+import { parseCombat } from '../../common/utilities/parsing/combat'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
-import { parseCombat, parseEffect, parseExpression } from './helpers'
+import { parseEffect, parseExpression } from './helpers'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
