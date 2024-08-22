@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { z_diceExpression } from './dice'
 
 import { maybeAsEnum } from '../parsing/enums'
 
@@ -10,16 +11,21 @@ import {
   ObjectModifierParams,
   ResistParams,
   StatParams,
-  ValueJson,
   ValueParams
 } from '../values'
+import { Dice } from '../dice'
+
+interface IntermediateValue {
+  stat: string,
+  value: Dice,
+}
 
 export const z_value = z.object({
   stat: z.string(),
-  value: z.number(),
+  value: z_diceExpression,
 }).transform((val, ctx) => {
   try {
-    return valueToParams(val as ValueJson)
+    return valueToParams(val)
   } catch (e) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -29,11 +35,11 @@ export const z_value = z.object({
   }
 })
 
-export function valuesToParams(values: ValueJson[]): ValueParams[] {
+function valuesToParams(values: IntermediateValue[]): ValueParams[] {
   return values.map(value => valueToParams(value))
 }
 
-export function valueToParams(json: ValueJson): ValueParams {
+function valueToParams(json: IntermediateValue): ValueParams {
   const { stat, value } = json
 
   const maybeStat = maybeAsEnum(stat, STAT)

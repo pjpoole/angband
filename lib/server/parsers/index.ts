@@ -3,6 +3,7 @@ import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
+import { ObjectParser } from './ObjectParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
 import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
@@ -18,6 +19,7 @@ export {
   DungeonProfileParser,
   FeatureParser,
   MonsterBaseParser,
+  ObjectParser,
   ObjectBaseParser,
   PitParser,
   PlayerPropertyParser,
@@ -45,4 +47,5 @@ export const PARSERS: any[] = [
   CurseParser,
   WorldParser,
   FeatureParser,
+  ObjectParser,
 ]

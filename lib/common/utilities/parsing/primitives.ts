@@ -49,5 +49,5 @@ export function asTokens(
 }
 
 export function asFlags(str: string): string[] {
-  return str.split('|').map(el => el.trim())
+  return str.split('|').map(el => el.trim()).filter(el => el.length > 0)
 }

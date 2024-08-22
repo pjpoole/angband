@@ -9,7 +9,7 @@ import { ObjectModifierJson, ResistJson, StatJson, ValueJson } from '../values'
 
 interface ValueData {
   stat: string
-  value: number
+  value: string
 }
 
 export function parseValuesString(values: ParserValues): ValueJson[] {
@@ -54,5 +54,5 @@ function extractValueData(str: string): ValueData {
 
   const { stat, val } = matchData.groups
 
-  return { stat, value: asInteger(val) }
+  return { stat, value: val }
 }

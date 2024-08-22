@@ -10,7 +10,8 @@ export function valueParamsToJson(valueParams: ValueParams[]): ValueJson[] {
 }
 
 function valueParamToJson(valueParam: ValueParams): ValueJson {
-  const { type, stat, value } = valueParam
+  const { type, stat, value: dice } = valueParam
+  const value = dice.toString()
   switch (type) {
     case 'stat':
       return { stat: enumValueToKeyOrThrow(stat, STAT), value }
@@ -19,7 +20,7 @@ function valueParamToJson(valueParam: ValueParams): ValueJson {
     case 'resist':
       return {
         stat: `RES_${enumValueToKeyOrThrow(stat, ELEM)}` as RESISTS_ELEM,
-        value
+        value,
       }
     default:
       throw new Error('invalid value params')

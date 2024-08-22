@@ -37,8 +37,8 @@ const armor = z.object({
 
 const attack = z.object({
   baseDamage: z_diceExpression,
-  plusToHit: z.number(),
-  plusToDamage: z.number(),
+  plusToHit: z_diceExpression,
+  plusToDamage: z_diceExpression,
 })
 
 const curse = z.object({
@@ -81,6 +81,7 @@ export const AngbandObjectSchema = z.object({
   message: z.string().optional(),
   messageVisible: z.string().optional(),
   effects: z.array(effect).optional(),
+  time: z_diceExpression.optional(),
   pval: z.number().optional(),
   description: z.string().optional(),
 })
@@ -94,10 +95,13 @@ type ObjectArmor = z.output<typeof armor>
 type ObjectAttackJson = z.input<typeof attack>
 type ObjectAttack = z.output<typeof attack>
 type ObjectCurse = z.output<typeof curse>
+export type ObjectEffectJson = z.input<typeof effect>
 type ObjectEffect = z.output<typeof effect>
 type ObjectPile = z.output<typeof pile>
 
 export class AngbandObject extends SerializableBase {
+  static readonly schema = AngbandObjectSchema
+
   readonly name: string
   readonly glyph: string
   readonly color: C
@@ -118,6 +122,7 @@ export class AngbandObject extends SerializableBase {
   readonly message?: string
   readonly messageVisible?: string
   readonly effects?: ObjectEffect[]
+  readonly time?: Dice
   readonly pval?: number
   readonly description?: string
 
@@ -144,6 +149,7 @@ export class AngbandObject extends SerializableBase {
     this.message = params.message
     this.messageVisible = params.messageVisible
     this.effects = params.effects
+    this.time = params.time
     this.pval = params.pval
     this.description = params.description
   }
@@ -165,8 +171,8 @@ export class AngbandObject extends SerializableBase {
       attack: ifExists(this.attack, (attack) => {
         return {
           baseDamage: attack.baseDamage.toString(),
-          plusToHit: attack.plusToHit,
-          plusToDamage: attack.plusToDamage,
+          plusToHit: attack.plusToHit.toString(),
+          plusToDamage: attack.plusToDamage.toString(),
         } as ObjectAttackJson
       }),
       armor: ifExists(this.armor, (armor) => {
@@ -204,6 +210,7 @@ export class AngbandObject extends SerializableBase {
           expression: ifExists(el.expression, expressionToJson),
         }
       }),
+      time: this.time?.toString(),
       pval: this.pval,
       description: this.description,
     }

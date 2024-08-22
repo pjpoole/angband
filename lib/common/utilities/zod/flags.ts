@@ -49,13 +49,15 @@ export const z_objectBaseFlag = z.string().transform((str, ctx): ObjectBaseFlag 
 })
 
 // Union of KF and OF
-export type ObjectFlag = keyof typeof KF | keyof typeof OF
+export type ObjectFlag = keyof typeof KF | keyof typeof OF | IGNORE_ELEM
 
 export const z_objectFlag = z.string().transform((str, ctx): ObjectFlag => {
   if (Object.keys(KF).includes(str)) {
     return str as keyof typeof KF
   } else if (Object.keys(OF).includes(str)) {
     return str as keyof typeof OF
+  } else if (isIgnoreElem(str)) {
+    return str as IGNORE_ELEM
   }
 
   ctx.addIssue({
