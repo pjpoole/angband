@@ -16,10 +16,9 @@ export function asArrayMember<T>(value: unknown, ary: readonly T[]): T {
 }
 
 export function asInteger(value: ParserValues): number {
-  const stripped = value.trim()
   const number = parseInt(value)
 
-  if (stripped !== String(number)) {
+  if (value.trim() !== String(number)) {
     throw new Error(PARSE_ERROR_INVALID_NUMBER)
   }
 
@@ -31,37 +30,37 @@ export function asBoolean(value: ParserValues): boolean {
 }
 
 export function asEnum<T extends NativeEnum>(
-  value: string,
+  key: string,
   enumObject: T
 ): keyof T {
-  if (!Object.keys(enumObject).includes(value)) {
+  if (!Object.keys(enumObject).includes(key)) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return value as keyof T
+  return key as keyof T
 }
 
 export function maybeAsEnum<T extends NativeEnum>(
-  value: string,
+  key: string,
   enumObject: T
 ): keyof T | undefined {
-  if (!Object.keys(enumObject).includes(value)) return undefined
-  return value as keyof T
+  if (!Object.keys(enumObject).includes(key)) return undefined
+  return key as keyof T
 }
 
 export function allAsEnum<T extends NativeEnum>(
-  str: string,
+  keyString: string,
   enumObject: T
 ): Array<keyof T> {
-  const values = str.split('|').map(el => el.trim())
+  const keys = keyString.split('|').map(el => el.trim())
 
   // handle auto-generated reverse mapping
-  const enumValues = new Set(Object.keys(enumObject).filter(val => typeof val === 'string'))
-  if (!values.every(value => enumValues.has(value))) {
+  const enumKeys = new Set(Object.keys(enumObject).filter(val => typeof val === 'string'))
+  if (!keys.every(key => enumKeys.has(key))) {
     throw new Error(PARSE_ERROR_INVALID_FLAG)
   }
 
-  return values as Array<keyof T>
+  return keys as Array<keyof T>
 }
 
 export function asTokens(str: string, count: number): string[]

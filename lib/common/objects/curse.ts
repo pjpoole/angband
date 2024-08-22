@@ -29,8 +29,9 @@ import {
 import { ObjectBase, ObjectBaseRegistry } from './objectBase'
 import {
   ValueJson,
-  ValueParams, valueParamsToJson,
-  valueToParams
+  ValueParams,
+  valueParamsToJson,
+  valueToParams,
 } from '../../server/parsers/helpers'
 
 export type CurseFlag = keyof typeof OF | HATES_ELEM | IGNORE_ELEM
