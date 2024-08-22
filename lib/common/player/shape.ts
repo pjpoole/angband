@@ -7,11 +7,11 @@ import {
   expressionToJson,
   z_effect,
   z_expression,
-  z_skill,
 } from '../utilities/zod'
 import { CombatParams, z_combat } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_skill } from '../utilities/zod/skill'
 
 import { Dice } from '../utilities/dice'
 import { enumValueSetToArray } from '../utilities/enum'
