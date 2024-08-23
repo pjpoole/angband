@@ -10,6 +10,7 @@ import { z_tVal } from '../utilities/zod/tVal'
 import { objectValueToKey } from '../utilities/object'
 import { TV, TV_NAMES } from '../objects/tval'
 
+// list-room-flags.h
 export enum ROOMF {
   FEW_ENTRANCES
 }
@@ -19,6 +20,18 @@ export const RoomFlagsDescriptions: Record<ROOMF, string> = {
 }
 
 const ROOM_TEMPLATE_REGEX = /[ .%#^+123456x()89[]/
+
+function checkRoomCharacters(room: string[][]) {
+  for (const row of room) {
+    for (const char of row) {
+      if (char.length !== 1 || !ROOM_TEMPLATE_REGEX.test(char)) {
+        console.log(char)
+        return false
+      }
+    }
+  }
+  return true
+}
 
 export const RoomTemplateSchema = z.object({
   name: z.string(),
@@ -31,32 +44,8 @@ export const RoomTemplateSchema = z.object({
   flags: z.array(z_enumValueParser(ROOMF)).optional(),
   room: z.array(z.string().transform((str) => {
     return str.split('')
-  })).refine(
-    (room) => {
-      for (const row of room) {
-        for (const char of row) {
-          if (char.length !== 1 || !ROOM_TEMPLATE_REGEX.test(char)) {
-            console.log(char)
-            return false
-          }
-        }
-      }
-      return true
-    },
-    { message: 'invalid room character' }
-  )
-}).refine(
-  roomTemplate => {
-    // This isn't working because of issues with the source data
-    // TODO: Check C room template parsing and figure out how it deals with
-    //       dimensions being off
-    return true /* (
-      roomTemplate.room.length === roomTemplate.rows &&
-      roomTemplate.room.every(row => row.length === roomTemplate.columns)
-    ) */
-  },
-  { message: 'invalid room dimensions' }
-)
+  })).refine(checkRoomCharacters, { message: 'invalid room character' })
+})
 
 export type RoomTemplateJSON = z.input<typeof RoomTemplateSchema>
 export type RoomTemplateParams = z.output<typeof RoomTemplateSchema>

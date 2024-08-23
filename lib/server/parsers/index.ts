@@ -17,6 +17,7 @@ import { RoomTemplateParser } from './RoomTemplateParser'
 import { ShapeParser } from './ShapeParser'
 import { SlayParser } from './SlayParser'
 import { SummonParser } from './SummonParser'
+import { VaultParser } from './VaultParser'
 import { WorldParser } from './WorldParser'
 
 export {
@@ -39,6 +40,7 @@ export {
   ShapeParser,
   SlayParser,
   SummonParser,
+  VaultParser,
   WorldParser,
 }
 
@@ -58,6 +60,7 @@ export const PARSERS: any[] = [
   ObjectBaseParser,
   MonsterBaseParser,
   // Monster parser must come first
+  VaultParser,
   PitParser,
   SummonParser,
   MonsterSpellParser,
