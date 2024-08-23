@@ -2,14 +2,16 @@ import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
-import { colorCodeToString } from '../utilities/colors'
 import { enumValueToKey } from '../utilities/serializing/enum'
 import { effectObjectsToJson } from '../utilities/serializing/effect'
-import { ifExists } from '../utilities/serializing/helpers'
+import { spellLoreToJson } from '../utilities/serializing/lore'
 
-import { z_color } from '../utilities/zod/color'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
+import {
+  z_spellLore,
+  zSpellLoreParams
+} from '../utilities/zod/lore'
 
 import { MSG } from '../game/messages'
 
@@ -223,24 +225,12 @@ export const monsterSpells = {
   [RSF.S_UNIQUE]: RST.SUMMON,
 }
 
-const loreObject = z.object({
-  powerCutoff: z.number().optional(),
-  lore: z.string(),
-  colorBase: z_color,
-  colorResist: z_color.optional(),
-  colorImmune: z_color.optional(),
-  messageSave: z.string(),
-  messageVisible: z.string(),
-  messageInvisible: z.string(),
-  messageMiss: z.string(),
-})
-
 export const MonsterSpellSchema = z.object({
   name: z.string(),
   messageType: z_enumValueParser(MSG).optional(),
   hit: z.number().min(0).max(100),
   effects: z.array(z_effectObject),
-  lore: z.array(loreObject),
+  lore: z.array(z_spellLore),
 }).refine(
   (obj) => {
     let previous: number | undefined = undefined
@@ -262,9 +252,6 @@ export const MonsterSpellSchema = z.object({
 export type MonsterSpellJSON = z.input<typeof MonsterSpellSchema>
 export type MonsterSpellParams = z.output<typeof MonsterSpellSchema>
 
-export type LoreObjectJson = z.input<typeof loreObject>
-type LoreObjectParams = z.output<typeof loreObject>
-
 export class MonsterSpell extends SerializableBase {
   static readonly schema = MonsterSpellSchema
 
@@ -272,7 +259,7 @@ export class MonsterSpell extends SerializableBase {
   readonly messageType?: MSG
   readonly hit: number
   readonly effects: zEffectObjectParams[]
-  readonly lore: LoreObjectParams[]
+  readonly lore: zSpellLoreParams[]
 
   constructor(params: MonsterSpellParams) {
     super(params)
@@ -288,29 +275,13 @@ export class MonsterSpell extends SerializableBase {
     MonsterSpellRegistry.add(this.name, this)
   }
 
-  private serializeLore(): LoreObjectJson[] {
-    return this.lore.map(lore => {
-      return {
-        powerCutoff: lore.powerCutoff,
-        lore: lore.lore,
-        colorBase: colorCodeToString(lore.colorBase),
-        colorResist: ifExists(lore.colorResist, colorCodeToString),
-        colorImmune: ifExists(lore.colorImmune, colorCodeToString),
-        messageSave: lore.messageSave,
-        messageVisible: lore.messageVisible,
-        messageInvisible: lore.messageInvisible,
-        messageMiss: lore.messageMiss,
-      }
-    })
-  }
-
   toJSON(): MonsterSpellJSON {
     return {
       name: this.name,
       messageType: enumValueToKey(this.messageType, MSG),
       hit: this.hit,
       effects: effectObjectsToJson(this.effects),
-      lore: this.serializeLore(),
+      lore: this.lore.map(spellLoreToJson),
     }
   }
 }

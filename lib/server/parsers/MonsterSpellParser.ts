@@ -11,20 +11,19 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { normalizeColorString } from '../../common/utilities/colors'
 
-import {
-  LoreObjectJson,
-  MonsterSpell,
-  MonsterSpellJSON,
-} from '../../common/monsters/spells'
+import { MonsterSpell, MonsterSpellJSON } from '../../common/monsters/spells'
 
 import { MSG } from '../../common/game/messages'
+import {
+  zLoreColorFields,
+  zSpellLoreJSON
+} from '../../common/utilities/zod/lore'
 
 type MonsterSpellFields = 'name' | 'msgt' | 'hit' | 'effect' | 'effect-yx'
   | 'dice' | 'expr' | 'power-cutoff' | 'lore' | 'lore-color-base'
   | 'lore-color-resist' | 'lore-color-immune' | 'message-save' | 'message-vis'
   | 'message-invis' | 'message-miss'
 
-type LoreColorFields = 'colorBase' | 'colorResist' | 'colorImmune'
 type LoreMessageFields = 'messageSave' | 'messageVisible' | 'messageInvisible'
   | 'messageMiss'
 
@@ -98,7 +97,7 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
     lore.lore += values
   }
 
-  handleLoreColor(key: LoreColorFields, values: ParserValues) {
+  handleLoreColor(key: zLoreColorFields, values: ParserValues) {
     const lore = this.getCurrentLore()
     lore[key] = normalizeColorString(values)
   }
@@ -141,7 +140,7 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
     return effects[effects.length - 1]
   }
 
-  private createNewLore(): LoreObjectJson {
+  private createNewLore(): zSpellLoreJSON {
     // prepopulate, and only start a new one when we hit power-cutoff
     this.current.lore ??= []
     this.current.lore.push({
@@ -150,12 +149,12 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
       messageVisible: '',
       messageInvisible: '',
       messageMiss: '',
-    } as LoreObjectJson)
+    } as zSpellLoreJSON)
 
     return this.getCurrentLore()
   }
 
-  private getCurrentLore(): LoreObjectJson {
+  private getCurrentLore(): zSpellLoreJSON {
     const lore = this.current.lore
     if (lore == null || lore.length === 0) {
       throw new Error('no current lore')
