@@ -25,7 +25,6 @@ export class Level extends SerializableBase {
 
     this.depth = params.depth
     this.name = params.name
-    // TODO: validate that up and down exist
     this.up = params.up
     this.down = params.down
   }
@@ -44,4 +43,27 @@ export class Level extends SerializableBase {
   }
 }
 
-export const LevelRegistry = new IdRegistry(Level)
+class LevelNameRegistry extends IdRegistry<Level, LevelParams> {
+  override finalize() {
+    const findByName = (name: string) => {
+      for (const level of this.data.values()) {
+        if (level.name === name) return true
+      }
+      return false
+    }
+
+    for (const level of this.data.values()) {
+      const { up, down } = level
+      if ((up && !findByName(up)) || (down && !findByName(down))) {
+        throw new Error(
+          'level not found',
+          { cause: { up: up, down: down } }
+        )
+      }
+    }
+
+    super.finalize()
+  }
+}
+
+export const LevelRegistry = new LevelNameRegistry(Level)
