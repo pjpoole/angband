@@ -8,9 +8,18 @@ import { SerializableBase } from './serializable'
 // I suspect that in time I'll find this assumption violated
 export class Registry<T extends SerializableBase, U extends GameObject, V extends string | number> {
   readonly data: Map<V, T> = new Map()
+  private _sealed: boolean = false
 
   constructor(protected readonly ctor: new (params: U) => T) {
     this.ctor = ctor
+  }
+
+  finalize(): void {}
+
+  seal(): boolean {
+    const notYetSealed = !this._sealed
+    this._sealed = true
+    return notYetSealed
   }
 
   has(key: unknown): boolean {
@@ -40,6 +49,9 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
   }
 
   add(key: V, obj: T): void {
+    if (this._sealed) {
+      throw new Error('attempt to register new value after registry sealed')
+    }
     this.data.set(key, obj)
   }
 

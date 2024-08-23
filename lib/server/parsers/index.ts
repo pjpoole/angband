@@ -22,6 +22,34 @@ import { SummonParser } from './SummonParser'
 import { VaultParser } from './VaultParser'
 import { WorldParser } from './WorldParser'
 
+import { Registry } from '../../common/core/Registry'
+
+import {
+  ActivationRegistry,
+  AngbandObjectRegistry,
+  ArtifactRegistry,
+  BlowRegistry,
+  BrandRegistry,
+  CurseRegistry,
+  DungeonProfileRegistry,
+  EgoItemRegistry,
+  FeatureRegistry,
+  LevelRegistry,
+  MonsterBaseRegistry,
+  MonsterSpellRegistry,
+  NamesRegistry,
+  ObjectBaseRegistry,
+  PainRegistry,
+  PitRegistry,
+  PlayerPropertyRegistry,
+  ProjectionRegistry,
+  RoomTemplateRegistry,
+  ShapeRegistry,
+  SlayRegistry,
+  SummonRegistry,
+  VaultRegistry,
+} from '../../common/game/registries'
+
 export {
   ActivationParser,
   ArtifactParser,
@@ -50,29 +78,28 @@ export {
 
 // TODO: More accurate type information
 //       this is just good enough to get loading to work
-export const PARSERS: any[] = [
-  NameParser,
-  RoomTemplateParser,
-  PainParser,
-  BlowParser,
-  BrandParser,
-  SlayParser,
-  ActivationParser,
-  ProjectionParser,
-  ShapeParser,
-  PlayerPropertyParser,
-  DungeonProfileParser,
-  ObjectBaseParser,
-  MonsterBaseParser,
-  // Monster parser must come first
-  VaultParser,
-  PitParser,
-  SummonParser,
-  MonsterSpellParser,
-  CurseParser,
-  WorldParser,
-  FeatureParser,
-  ObjectParser,
-  ArtifactParser,
-  EgoItemParser,
+export const PARSERS: [any, Registry<any, any, any>][] = [
+  [NameParser, NamesRegistry],
+  [RoomTemplateParser, RoomTemplateRegistry],
+  [PainParser, PainRegistry],
+  [BlowParser, BlowRegistry],
+  [BrandParser, BrandRegistry],
+  [SlayParser, SlayRegistry],
+  [ActivationParser, ActivationRegistry],
+  [ProjectionParser, ProjectionRegistry],
+  [ShapeParser, ShapeRegistry],
+  [PlayerPropertyParser, PlayerPropertyRegistry],
+  [DungeonProfileParser, DungeonProfileRegistry],
+  [ObjectBaseParser, ObjectBaseRegistry],
+  [MonsterBaseParser, MonsterBaseRegistry],
+  [VaultParser, VaultRegistry],
+  [PitParser, PitRegistry],
+  [SummonParser, SummonRegistry],
+  [MonsterSpellParser, MonsterSpellRegistry],
+  [CurseParser, CurseRegistry],
+  [WorldParser, LevelRegistry],
+  [FeatureParser, FeatureRegistry],
+  [ObjectParser, AngbandObjectRegistry],
+  [ArtifactParser, ArtifactRegistry],
+  [EgoItemParser, EgoItemRegistry],
 ]
