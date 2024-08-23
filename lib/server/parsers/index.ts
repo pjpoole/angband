@@ -7,6 +7,7 @@ import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { MonsterSpellParser } from './MonsterSpellParser'
+import { NameParser } from './NameParser'
 import { ObjectParser } from './ObjectParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
 import { PainParser } from './PainParser'
@@ -30,6 +31,7 @@ export {
   FeatureParser,
   MonsterBaseParser,
   MonsterSpellParser,
+  NameParser,
   ObjectParser,
   ObjectBaseParser,
   PainParser,
@@ -47,6 +49,7 @@ export {
 // TODO: More accurate type information
 //       this is just good enough to get loading to work
 export const PARSERS: any[] = [
+  NameParser,
   RoomTemplateParser,
   PainParser,
   BlowParser,
