@@ -12,6 +12,7 @@ import {
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
+import { z_color } from '../utilities/zod/color'
 import { z_objectCurse, zObjectCurseParams } from '../utilities/zod/curse'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
@@ -28,7 +29,7 @@ import { z_slay } from '../utilities/zod/slay'
 import { z_tVal } from '../utilities/zod/tVal'
 import { z_value } from '../utilities/zod/values'
 
-import { C } from '../utilities/colors'
+import { C, colorCodeToString } from '../utilities/colors'
 import { Dice } from '../utilities/dice'
 import { objectValueToKey } from '../utilities/object'
 import { ValueParams } from '../utilities/values'
@@ -43,7 +44,7 @@ const pile = z.object({
 export const AngbandObjectSchema = z.object({
   name: z.string(),
   glyph: z.string().length(1),
-  color: z.nativeEnum(C),
+  color: z_color,
   type: z_tVal,
   level: z.number().optional(),
   weight: z.number().optional(),
@@ -135,7 +136,7 @@ export class AngbandObject extends SerializableBase {
     return {
       name: this.name,
       glyph: this.glyph,
-      color: this.color,
+      color: colorCodeToString(this.color),
       type: objectValueToKey(this.type, TV_NAMES)!,
       level: this.level,
       weight: this.weight,

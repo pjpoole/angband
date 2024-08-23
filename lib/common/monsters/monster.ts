@@ -3,6 +3,7 @@ import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
 import { z_blow } from '../utilities/zod/blow'
+import { z_color } from '../utilities/zod/color'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_monsterBase } from '../utilities/zod/monsterBase'
@@ -64,7 +65,7 @@ export const MonsterSchema = z.object({
   plural: z.string().optional(),
   base: z_monsterBase,
   glyph: z.string().length(1).optional(),
-  color: z.nativeEnum(C),
+  color: z_color,
   speed: z.number(),
   averageHp: z.number(),
   light: z.number(),

@@ -1,5 +1,8 @@
 import { asInteger, ParserValues } from '../../common/utilities/parsing/primitives'
-import { C, colorStringToAttribute } from '../../common/utilities/colors'
+import {
+  C,
+  normalizeColorString
+} from '../../common/utilities/colors'
 import {
   PARSE_ERROR_INVALID_PERCENTILE,
   PARSE_ERROR_MISSING_HANDLER,
@@ -156,7 +159,7 @@ export abstract class Parser<S extends string, T> extends ParserBase<S, T> {
   keyToColor(key: KeyOfType<T, C>): ParserFunction {
     return (value: ParserValues): void => {
       const current = this.current
-      const c = colorStringToAttribute(value)
+      const c = normalizeColorString(value)
       current[key] = c as T[typeof key]
     }
   }

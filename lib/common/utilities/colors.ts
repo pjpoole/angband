@@ -1,5 +1,7 @@
 import { stricmp } from './string'
 
+// NB. Always iterate colorTable just for consistency
+
 // This function, contrasted with asEnum, returns a number, not a string
 export function colorStringToAttribute(name: string): C {
   if (name === '' || name === ' ') return C.DARK
@@ -18,6 +20,24 @@ export function colorStringToAttribute(name: string): C {
 
   // default to white on miss
   return C.WHITE
+}
+
+export function isColorString(name: string): name is ColorName | ColorId {
+  for (const row of colorTable) {
+    if (row.id === name || row.name === name) return true
+  }
+  return false
+}
+
+// For serialization
+export function colorCodeToString(colorCode: C): ColorId {
+  return colorTable[colorCode].id
+}
+
+// For parsing
+export function normalizeColorString(name: string): ColorName {
+  const idx = colorStringToAttribute(name)
+  return colorTable[idx].name
 }
 
 export enum C {
@@ -104,39 +124,74 @@ export const angbandColorTable = [
  * "Metallic" color translation
  * "Miscellaneous" - see misc_to_attr
  */
+
+type ColorTableRow = [C, C, C, C, C, C, C, C, C]
+
 export interface ColorTableObject {
-  id: string // char
-  name: string
-  values: [C, C, C, C, C, C, C, C, C]
+  id: ColorId
+  name: ColorName
+  values: ColorTableRow
 }
 
-export const colorTable: ColorTableObject[] = [
-  {id: 'd', name: 'Dark', values: [C.DARK, C.DARK, C.DARK, C.DARK, C.L_DARK, C.DARK, C.L_DARK, C.L_DARK, C.DARK] },
-  {id: 'w', name: 'White', values: [C.WHITE, C.WHITE, C.WHITE, C.WHITE, C.YELLOW, C.L_WHITE, C.L_BLUE, C.YELLOW, C.WHITE] },
-  {id: 's', name: 'Slate', values: [C.SLATE, C.WHITE, C.SLATE, C.SLATE, C.L_WHITE, C.L_DARK, C.L_WHITE, C.L_WHITE, C.SLATE] },
-  {id: 'o', name: 'Orange', values: [C.ORANGE, C.WHITE, C.ORANGE, C.L_WHITE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.ORANGE] },
-  {id: 'r', name: 'Red', values: [C.RED, C.WHITE, C.RED, C.SLATE, C.L_RED, C.SLATE, C.L_RED, C.L_RED, C.RED] },
-  {id: 'g', name: 'Green', values: [C.GREEN, C.WHITE, C.GREEN, C.SLATE, C.L_GREEN, C.SLATE, C.L_GREEN, C.L_GREEN, C.GREEN] },
-  {id: 'b', name: 'Blue', values: [C.BLUE, C.WHITE, C.BLUE, C.SLATE, C.L_BLUE, C.SLATE, C.L_BLUE, C.L_BLUE, C.BLUE] },
-  {id: 'u', name: 'Umber', values: [C.UMBER, C.WHITE, C.UMBER, C.L_DARK, C.L_UMBER, C.L_DARK, C.L_UMBER, C.L_UMBER, C.UMBER] },
-  {id: 'D', name: 'Light Dark', values: [C.L_DARK, C.WHITE, C.L_DARK, C.L_DARK, C.SLATE, C.L_DARK, C.SLATE, C.SLATE, C.L_DARK] },
-  {id: 'W', name: 'Light Slate', values: [C.L_WHITE, C.WHITE, C.L_WHITE, C.L_WHITE, C.WHITE, C.SLATE, C.WHITE, C.WHITE, C.SLATE] },
-  {id: 'P', name: 'Light Purple', values: [C.L_PURPLE, C.WHITE, C.L_PURPLE, C.SLATE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.L_PURPLE] },
-  {id: 'y', name: 'Yellow', values: [C.YELLOW, C.WHITE, C.YELLOW, C.L_WHITE, C.L_YELLOW, C.L_WHITE, C.WHITE, C.WHITE, C.YELLOW] },
-  {id: 'R', name: 'Light Red', values: [C.L_RED, C.WHITE, C.L_RED, C.L_WHITE, C.YELLOW, C.RED, C.YELLOW, C.YELLOW, C.L_RED] },
-  {id: 'G', name: 'Light Green', values: [C.L_GREEN, C.WHITE, C.L_GREEN, C.L_WHITE, C.YELLOW, C.GREEN, C.YELLOW, C.YELLOW, C.L_GREEN] },
-  {id: 'B', name: 'Light Blue', values: [C.L_BLUE, C.WHITE, C.L_BLUE, C.L_WHITE, C.YELLOW, C.BLUE, C.YELLOW, C.YELLOW, C.L_BLUE] },
-  {id: 'U', name: 'Light Umber', values: [C.L_UMBER, C.WHITE, C.L_UMBER, C.L_WHITE, C.YELLOW, C.UMBER, C.YELLOW, C.YELLOW, C.L_UMBER] },
-  {id: 'p', name: 'Purple', values: [C.PURPLE, C.WHITE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.L_PURPLE, C.L_PURPLE] },
-  {id: 'v', name: 'Violet', values: [C.VIOLET, C.WHITE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.L_PURPLE, C.L_PURPLE] },
-  {id: 't', name: 'Teal', values: [C.TEAL, C.WHITE, C.BLUE, C.SLATE, C.L_TEAL, C.SLATE, C.L_TEAL, C.L_TEAL, C.L_BLUE] },
-  {id: 'm', name: 'Mud', values: [C.MUD, C.WHITE, C.GREEN, C.SLATE, C.MUSTARD, C.SLATE, C.MUSTARD, C.MUSTARD, C.UMBER] },
-  {id: 'Y', name: 'Light Yellow', values: [C.L_YELLOW, C.WHITE, C.YELLOW, C.WHITE, C.WHITE, C.YELLOW, C.WHITE, C.WHITE, C.L_YELLOW] },
-  {id: 'i', name: 'Magenta-Pink', values: [C.MAGENTA, C.WHITE, C.L_RED, C.SLATE, C.L_PINK, C.RED, C.L_PINK, C.L_PINK, C.L_PURPLE] },
-  {id: 'T', name: 'Light Teal', values: [C.L_TEAL, C.WHITE, C.L_BLUE, C.L_WHITE, C.YELLOW, C.TEAL, C.YELLOW, C.YELLOW, C.L_BLUE] },
-  {id: 'V', name: 'Light Violet', values: [C.L_VIOLET, C.WHITE, C.L_PURPLE, C.L_WHITE, C.YELLOW, C.VIOLET, C.YELLOW, C.YELLOW, C.L_PURPLE] },
-  {id: 'I', name: 'Light Pink', values: [C.L_PINK, C.WHITE, C.L_RED, C.L_WHITE, C.YELLOW, C.MAGENTA, C.YELLOW, C.YELLOW, C.L_PURPLE] },
-  {id: 'M', name: 'Mustard', values: [C.MUSTARD, C.WHITE, C.YELLOW, C.SLATE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.YELLOW] },
-  {id: 'z', name: 'Blue Slate', values: [C.BLUE_SLATE, C.WHITE, C.L_WHITE, C.SLATE, C.DEEP_L_BLUE, C.SLATE, C.DEEP_L_BLUE, C.DEEP_L_BLUE, C.L_WHITE] },
-  {id: 'Z', name: 'Deep Light Blue', values: [C.DEEP_L_BLUE, C.WHITE, C.L_BLUE, C.L_WHITE, C.L_BLUE, C.BLUE_SLATE, C.L_BLUE, C.L_BLUE, C.L_BLUE] },
+export type ColorId = typeof ColorIds[number]
+export type ColorName = typeof ColorNames[number]
+
+const ColorIds = [
+  'd', 'w', 's', 'o',
+  'r', 'g', 'b', 'u',
+  'D', 'W', 'P', 'y',
+  'R', 'G', 'B', 'U',
+  'p', 'v', 't', 'm',
+  'Y', 'i', 'T', 'V',
+  'I', 'M', 'z', 'Z'
+] as const
+
+const ColorNames = [
+  'Dark', 'White', 'Slate', 'Orange',
+  'Red', 'Green', 'Blue', 'Umber',
+  'Light Dark', 'Light Slate', 'Light Purple', 'Yellow',
+  'Light Red', 'Light Green', 'Light Blue', 'Light Umber',
+  'Purple', 'Violet', 'Teal', 'Mud',
+  'Light Yellow', 'Magenta-Pink', 'Light Teal', 'Light Violet',
+  'Light Pink', 'Mustard', 'Blue Slate', 'Deep Light Blue'
+] as const
+
+const ColorValues: ColorTableRow[]  = [
+  [C.DARK, C.DARK, C.DARK, C.DARK, C.L_DARK, C.DARK, C.L_DARK, C.L_DARK, C.DARK],
+  [C.WHITE, C.WHITE, C.WHITE, C.WHITE, C.YELLOW, C.L_WHITE, C.L_BLUE, C.YELLOW, C.WHITE],
+  [C.SLATE, C.WHITE, C.SLATE, C.SLATE, C.L_WHITE, C.L_DARK, C.L_WHITE, C.L_WHITE, C.SLATE],
+  [C.ORANGE, C.WHITE, C.ORANGE, C.L_WHITE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.ORANGE],
+  [C.RED, C.WHITE, C.RED, C.SLATE, C.L_RED, C.SLATE, C.L_RED, C.L_RED, C.RED],
+  [C.GREEN, C.WHITE, C.GREEN, C.SLATE, C.L_GREEN, C.SLATE, C.L_GREEN, C.L_GREEN, C.GREEN],
+  [C.BLUE, C.WHITE, C.BLUE, C.SLATE, C.L_BLUE, C.SLATE, C.L_BLUE, C.L_BLUE, C.BLUE],
+  [C.UMBER, C.WHITE, C.UMBER, C.L_DARK, C.L_UMBER, C.L_DARK, C.L_UMBER, C.L_UMBER, C.UMBER],
+  [C.L_DARK, C.WHITE, C.L_DARK, C.L_DARK, C.SLATE, C.L_DARK, C.SLATE, C.SLATE, C.L_DARK],
+  [C.L_WHITE, C.WHITE, C.L_WHITE, C.L_WHITE, C.WHITE, C.SLATE, C.WHITE, C.WHITE, C.SLATE],
+  [C.L_PURPLE, C.WHITE, C.L_PURPLE, C.SLATE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.L_PURPLE],
+  [C.YELLOW, C.WHITE, C.YELLOW, C.L_WHITE, C.L_YELLOW, C.L_WHITE, C.WHITE, C.WHITE, C.YELLOW],
+  [C.L_RED, C.WHITE, C.L_RED, C.L_WHITE, C.YELLOW, C.RED, C.YELLOW, C.YELLOW, C.L_RED],
+  [C.L_GREEN, C.WHITE, C.L_GREEN, C.L_WHITE, C.YELLOW, C.GREEN, C.YELLOW, C.YELLOW, C.L_GREEN],
+  [C.L_BLUE, C.WHITE, C.L_BLUE, C.L_WHITE, C.YELLOW, C.BLUE, C.YELLOW, C.YELLOW, C.L_BLUE],
+  [C.L_UMBER, C.WHITE, C.L_UMBER, C.L_WHITE, C.YELLOW, C.UMBER, C.YELLOW, C.YELLOW, C.L_UMBER],
+  [C.PURPLE, C.WHITE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.L_PURPLE, C.L_PURPLE],
+  [C.VIOLET, C.WHITE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.SLATE, C.L_PURPLE, C.L_PURPLE, C.L_PURPLE],
+  [C.TEAL, C.WHITE, C.BLUE, C.SLATE, C.L_TEAL, C.SLATE, C.L_TEAL, C.L_TEAL, C.L_BLUE],
+  [C.MUD, C.WHITE, C.GREEN, C.SLATE, C.MUSTARD, C.SLATE, C.MUSTARD, C.MUSTARD, C.UMBER],
+  [C.L_YELLOW, C.WHITE, C.YELLOW, C.WHITE, C.WHITE, C.YELLOW, C.WHITE, C.WHITE, C.L_YELLOW],
+  [C.MAGENTA, C.WHITE, C.L_RED, C.SLATE, C.L_PINK, C.RED, C.L_PINK, C.L_PINK, C.L_PURPLE],
+  [C.L_TEAL, C.WHITE, C.L_BLUE, C.L_WHITE, C.YELLOW, C.TEAL, C.YELLOW, C.YELLOW, C.L_BLUE],
+  [C.L_VIOLET, C.WHITE, C.L_PURPLE, C.L_WHITE, C.YELLOW, C.VIOLET, C.YELLOW, C.YELLOW, C.L_PURPLE],
+  [C.L_PINK, C.WHITE, C.L_RED, C.L_WHITE, C.YELLOW, C.MAGENTA, C.YELLOW, C.YELLOW, C.L_PURPLE],
+  [C.MUSTARD, C.WHITE, C.YELLOW, C.SLATE, C.YELLOW, C.SLATE, C.YELLOW, C.YELLOW, C.YELLOW],
+  [C.BLUE_SLATE, C.WHITE, C.L_WHITE, C.SLATE, C.DEEP_L_BLUE, C.SLATE, C.DEEP_L_BLUE, C.DEEP_L_BLUE, C.L_WHITE],
+  [C.DEEP_L_BLUE, C.WHITE, C.L_BLUE, C.L_WHITE, C.L_BLUE, C.BLUE_SLATE, C.L_BLUE, C.L_BLUE, C.L_BLUE],
 ]
+
+// Build at runtime to improve typing elsewhere
+const colorTable = ColorIds.map((id, idx) => {
+  return {
+    id,
+    name: ColorNames[idx],
+    values: ColorValues[idx],
+  }
+})

@@ -11,7 +11,7 @@ import { parseValuesString } from '../../common/utilities/parsing/values'
 import { zObjectActivationJson } from '../../common/utilities/zod/activation'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 import { arrayUnion } from '../../common/utilities/array'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { normalizeColorString } from '../../common/utilities/colors'
 
 import { Artifact, ArtifactJSON, ArtifactRegistry } from '../../common/objects/artifact'
 
@@ -75,7 +75,7 @@ export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
     // glyph is always one character
     current.glyph = values.charAt(0)
     // color can be a color id or a color name
-    current.color = colorStringToAttribute(values.substring(2))
+    current.color = normalizeColorString(values.substring(2))
   }
 
   handleAttack(values: ParserValues) {

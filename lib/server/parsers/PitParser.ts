@@ -5,7 +5,7 @@ import {
 } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { normalizeColorString } from '../../common/utilities/colors'
 
 import { Pit, PitJSON, PitRegistry } from '../../common/world/pit'
 
@@ -52,7 +52,7 @@ export class PitParser extends Parser<PitFields, PitJSON> {
 
   handleColor(values: ParserValues) {
     const current = this.current
-    current.colors = arrayUnion(current.colors ?? [], [colorStringToAttribute(values)])
+    current.colors = arrayUnion(current.colors ?? [], [normalizeColorString(values)])
   }
 
   handleMonsterBases(values: ParserValues) {

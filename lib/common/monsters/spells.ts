@@ -2,13 +2,15 @@ import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
+import { colorCodeToString } from '../utilities/colors'
 import { enumValueToKey } from '../utilities/serializing/enum'
 import { effectObjectsToJson } from '../utilities/serializing/effect'
+import { ifExists } from '../utilities/serializing/helpers'
 
+import { z_color } from '../utilities/zod/color'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
 
-import { C } from '../utilities/colors'
 import { MSG } from '../game/messages'
 
 // mon-spell.h, mon_spell_type
@@ -224,9 +226,9 @@ export const monsterSpells = {
 const loreObject = z.object({
   powerCutoff: z.number().optional(),
   lore: z.string(),
-  colorBase: z.nativeEnum(C),
-  colorResist: z.nativeEnum(C).optional(),
-  colorImmune: z.nativeEnum(C).optional(),
+  colorBase: z_color,
+  colorResist: z_color.optional(),
+  colorImmune: z_color.optional(),
   messageSave: z.string(),
   messageVisible: z.string(),
   messageInvisible: z.string(),
@@ -286,13 +288,29 @@ export class MonsterSpell extends SerializableBase {
     MonsterSpellRegistry.add(this.name, this)
   }
 
+  private serializeLore(): LoreObjectJson[] {
+    return this.lore.map(lore => {
+      return {
+        powerCutoff: lore.powerCutoff,
+        lore: lore.lore,
+        colorBase: colorCodeToString(lore.colorBase),
+        colorResist: ifExists(lore.colorResist, colorCodeToString),
+        colorImmune: ifExists(lore.colorImmune, colorCodeToString),
+        messageSave: lore.messageSave,
+        messageVisible: lore.messageVisible,
+        messageInvisible: lore.messageInvisible,
+        messageMiss: lore.messageMiss,
+      }
+    })
+  }
+
   toJSON(): MonsterSpellJSON {
     return {
       name: this.name,
       messageType: enumValueToKey(this.messageType, MSG),
       hit: this.hit,
       effects: effectObjectsToJson(this.effects),
-      lore: this.lore,
+      lore: this.serializeLore(),
     }
   }
 }

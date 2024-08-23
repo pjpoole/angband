@@ -18,6 +18,7 @@ import {
   zObjectActivationParams
 } from '../utilities/zod/activation'
 import { z_brand } from '../utilities/zod/brand'
+import { z_color } from '../utilities/zod/color'
 import { z_objectCurse, zObjectCurseParams } from '../utilities/zod/curse'
 import { ObjectFlag, z_objectFlag } from '../utilities/zod/flags'
 import {
@@ -33,7 +34,7 @@ import {
 import { z_slay } from '../utilities/zod/slay'
 import { z_value } from '../utilities/zod/values'
 
-import { C } from '../utilities/colors'
+import { C, colorCodeToString } from '../utilities/colors'
 import { ValueParams } from '../utilities/values'
 import { Brand } from './brand'
 import { Slay } from './slay'
@@ -42,7 +43,7 @@ export const ArtifactSchema = z.object({
   name: z.string(),
   item: z_item,
   glyph: z.string().length(1).optional(), // derives from base type, then
-  color: z.nativeEnum(C).optional(),
+  color: z_color.optional(),
   level: z.number(),
   weight: z.number(),
   cost: z.number(),
@@ -113,7 +114,7 @@ export class Artifact extends SerializableBase {
       name: this.name,
       item: itemToJson(this.item),
       glyph: this.glyph,
-      color: this.color,
+      color: ifExists(this.color, colorCodeToString),
       level: this.level,
       weight: this.weight,
       cost: this.cost,

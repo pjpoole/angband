@@ -4,13 +4,14 @@ import { SerializableBase } from '../core/serializable'
 
 import { enumValueSetToArray } from '../utilities/serializing/enum'
 
+import { z_color } from '../utilities/zod/color'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_monster } from '../utilities/zod/monster'
 import { z_monsterBase } from '../utilities/zod/monsterBase'
 
 import { Monster } from '../monsters/monster'
 
-import { C } from '../utilities/colors'
+import { C, colorCodeToString } from '../utilities/colors'
 import { RF } from '../monsters/flags'
 import { MonsterBase } from '../monsters/monsterBase'
 import { RSF } from '../monsters/spells'
@@ -22,7 +23,7 @@ export const PitSchema = z.object({
   rarity: z.number(),
   averageLevel: z.number(),
   objectRarity: z.number().optional(),
-  colors: z.array(z.nativeEnum(C)).optional(),
+  colors: z.array(z_color).optional(),
   monsterBases: z.array(z_monsterBase).optional(),
   monstersBanned: z.array(z_monster).optional(),
   flagsRequired: z.array(z_enumValueParser(RF)).optional(),
@@ -81,7 +82,7 @@ export class Pit extends SerializableBase {
       rarity: this.rarity,
       averageLevel: this.averageLevel,
       objectRarity: this.objectRarity,
-      colors: this.colors,
+      colors: this.colors?.map(colorCodeToString),
       monsterBases: this.monsterBases.size > 0 ? Array.from(this.monsterBases).map(monsterBase => monsterBase.name) : undefined,
       monstersBanned: this.monstersBanned.size > 0 ? Array.from(this.monstersBanned).map(monsterbase => monsterbase.name) : undefined,
       flagsRequired: enumValueSetToArray(this.flagsRequired, RF),

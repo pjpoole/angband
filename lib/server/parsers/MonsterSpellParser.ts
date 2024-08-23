@@ -15,7 +15,7 @@ import {
   MonsterSpellRegistry
 } from '../../common/monsters/spells'
 
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { normalizeColorString } from '../../common/utilities/colors'
 import { asEnum } from '../../common/utilities/parsing/enums'
 import { MSG } from '../../common/game/messages'
 
@@ -101,7 +101,7 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
 
   handleLoreColor(key: LoreColorFields, values: ParserValues) {
     const lore = this.getCurrentLore()
-    lore[key] = colorStringToAttribute(values)
+    lore[key] = normalizeColorString(values)
   }
 
   handleLoreMessage(key: LoreMessageFields, values: ParserValues) {
@@ -151,7 +151,7 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
       messageVisible: '',
       messageInvisible: '',
       messageMiss: '',
-    })
+    } as LoreObjectJson)
 
     return this.getCurrentLore()
   }

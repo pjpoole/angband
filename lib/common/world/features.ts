@@ -4,11 +4,12 @@ import { SerializableBase } from '../core/serializable'
 
 import { enumValueSetToArray, enumValueToKey } from '../utilities/serializing/enum'
 
+import { z_color } from '../utilities/zod/color'
 import { z_enumValueParser } from '../utilities/zod/enums'
 import { EnumValueOnly } from '../utilities/enum'
 
 import { RF, RF_VALUE } from '../monsters/flags'
-import { C } from '../utilities/colors'
+import { C, colorCodeToString } from '../utilities/colors'
 
 // list-terrain.h
 // Terrain features
@@ -120,7 +121,7 @@ export const FeatureSchema = z.object({
   code: z_enumValueParser(FEAT),
   name: z.string(),
   glyph: z.string().length(1),
-  color: z.nativeEnum(C),
+  color: z_color,
   mimic: z_enumValueParser(FEAT).optional(),
   priority: z.number().int(),
   flags: z.array(z_enumValueParser(TF)).optional(),
@@ -191,7 +192,7 @@ export class Feature extends SerializableBase {
       code: enumValueToKey(this.code, FEAT),
       name: this.name,
       glyph: this.glyph,
-      color: this.color,
+      color: colorCodeToString(this.color),
       mimic: enumValueToKey(this.mimic, FEAT),
       priority: this.priority,
       flags: enumValueSetToArray(this.flags, TF),

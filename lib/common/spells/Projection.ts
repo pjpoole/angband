@@ -4,10 +4,11 @@ import { SerializableBase } from '../core/serializable'
 
 import { enumValueToKey } from '../utilities/serializing/enum'
 
+import { z_color } from '../utilities/zod/color'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
-import { C } from '../utilities/colors'
+import { C, colorCodeToString } from '../utilities/colors'
 import { Dice } from '../utilities/dice'
 
 import { ELEM } from './elements'
@@ -32,7 +33,7 @@ const ProjectionSchemaBase = z.object({
   messageType: z_enumValueParser(MSG).optional(),
   obvious: z.boolean(),
   wake: z.boolean().optional(),
-  color: z.nativeEnum(C)
+  color: z_color
 })
 
 /*
@@ -116,7 +117,7 @@ export class Projection extends SerializableBase {
       messageType: enumValueToKey(this.messageType, MSG),
       obvious: this.obvious,
       wake: this.wake,
-      color: this.color,
+      color: colorCodeToString(this.color),
     }
 
     const type = this.type

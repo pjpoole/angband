@@ -11,7 +11,7 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { normalizeColorString } from '../../common/utilities/colors'
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
@@ -74,7 +74,7 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
     // glyph is always one character
     current.glyph = values.charAt(0)
     // color can be a color id or a color name
-    current.color = colorStringToAttribute(values.substring(2))
+    current.color = normalizeColorString(values.substring(2))
   }
 
   handleType(values: ParserValues) {

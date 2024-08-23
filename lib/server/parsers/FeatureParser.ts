@@ -2,7 +2,7 @@ import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum, asEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
-import { colorStringToAttribute } from '../../common/utilities/colors'
+import { normalizeColorString } from '../../common/utilities/colors'
 
 import {
   FEAT,
@@ -58,7 +58,7 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
     // glyph is always one character
     current.glyph = values.charAt(0)
     // color can be a color id or a color name
-    current.color = colorStringToAttribute(values.substring(2))
+    current.color = normalizeColorString(values.substring(2))
   }
 
   handleMimic(values: ParserValues) {
