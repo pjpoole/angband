@@ -1,4 +1,5 @@
 import { ActivationParser } from './ActivationParser'
+import { ArtifactParser } from './ArtifactParser'
 import { BlowParser } from './BlowParser'
 import { BrandParser } from './BrandParser'
 import { CurseParser } from './CurseParser'
@@ -18,6 +19,7 @@ import { WorldParser } from './WorldParser'
 
 export {
   ActivationParser,
+  ArtifactParser,
   BlowParser,
   BrandParser,
   CurseParser,
@@ -57,4 +59,5 @@ export const PARSERS: any[] = [
   WorldParser,
   FeatureParser,
   ObjectParser,
+  ArtifactParser,
 ]
