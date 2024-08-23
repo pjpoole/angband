@@ -6,7 +6,9 @@ import { SerializableBase } from './serializable'
 // values, not keys, everywhere
 //
 // I suspect that in time I'll find this assumption violated
-export class Registry<T extends SerializableBase, U extends GameObject, V extends string | number> {
+export class Registry<
+  T extends SerializableBase, U extends GameObject, V extends string | number
+> implements Iterable<[V, T]> {
   readonly data: Map<V, T> = new Map()
   private _sealed: boolean = false
 
@@ -22,6 +24,10 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     const notYetSealed = !this._sealed
     this._sealed = true
     return notYetSealed
+  }
+
+  *[Symbol.iterator](): IterableIterator<[V, T]> {
+    yield* this.data
   }
 
   has(key: unknown): boolean {
