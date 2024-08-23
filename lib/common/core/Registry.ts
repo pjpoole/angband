@@ -65,11 +65,6 @@ export class Registry<
     throw new Error('value not found', { cause: { key }})
   }
 
-  build(key: V, data: U): void {
-    const obj = new this.ctor(data)
-    this.add(key, obj)
-  }
-
   add(key: V, obj: T): void {
     if (this._sealed) {
       throw new Error('attempt to register new value after registry sealed')
