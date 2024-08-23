@@ -4,6 +4,7 @@ import { BlowParser } from './BlowParser'
 import { BrandParser } from './BrandParser'
 import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
+import { EgoItemParser } from './EgoItemParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { MonsterSpellParser } from './MonsterSpellParser'
@@ -28,6 +29,7 @@ export {
   BrandParser,
   CurseParser,
   DungeonProfileParser,
+  EgoItemParser,
   FeatureParser,
   MonsterBaseParser,
   MonsterSpellParser,
@@ -72,4 +74,5 @@ export const PARSERS: any[] = [
   FeatureParser,
   ObjectParser,
   ArtifactParser,
+  EgoItemParser,
 ]
