@@ -9,6 +9,7 @@ import { DungeonProfileRegistry } from '../world/dungeonProfiles'
 import { EgoItemRegistry } from '../objects/egoItem'
 import { FeatureRegistry } from '../world/features'
 import { LevelRegistry } from '../world/level'
+import { MonsterRegistry } from '../monsters/monster'
 import { MonsterBaseRegistry } from '../monsters/monsterBase'
 import { MonsterSpellRegistry } from '../monsters/spells'
 import { NamesRegistry } from '../core/names'
@@ -34,6 +35,7 @@ export {
   EgoItemRegistry,
   FeatureRegistry,
   LevelRegistry,
+  MonsterRegistry,
   MonsterBaseRegistry,
   MonsterSpellRegistry,
   NamesRegistry,

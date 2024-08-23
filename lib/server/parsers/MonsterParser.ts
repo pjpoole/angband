@@ -1,15 +1,24 @@
 import { Parser } from './Parser'
 import {
+  asFlags,
   asInteger,
+  asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { allAsEnum } from '../../common/utilities/parsing/enums'
+import {
+  allAsEnum,
+  asEnum,
+  maybeAsEnum
+} from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 
 import { Monster, MonsterJSON } from '../../common/monsters/monster'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
+import { BLOW_EF, BlowRegistry } from '../../common/monsters/blows'
+import { RSF } from '../../common/monsters/spells'
+import { TV_NAMES } from '../../common/objects/tval'
 
 type MonsterFields = 'name' | 'plural' | 'base' | 'glyph' | 'color' | 'speed'
   | 'hit-points' | 'light' | 'hearing' | 'smell' | 'armor-class' | 'sleepiness'
@@ -52,8 +61,8 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
     this.register('message-miss', this.handleMessageMiss.bind(this))
     this.register('drop', this.handleDrop.bind(this))
     this.register('drop-base', this.handleDropBase.bind(this))
-    this.register('friends', this.handleFriends.bind(this))
-    this.register('friends-base', this.handleFriendsBase.bind(this))
+    this.register('friends', this.handleFriends.bind(this, 'friends'))
+    this.register('friends-base', this.handleFriends.bind(this, 'friendsBase'))
     this.register('mimic', this.handleMimic.bind(this))
     this.register('shape', this.handleShape.bind(this))
     this.register('color-cycle', this.handleColorCycle.bind(this))
@@ -82,15 +91,21 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
 
   handleDepth(value: ParserValues) {
     const current = this.current
-    current.level = asInteger(value)
+    current.depth = asInteger(value)
 
     // Level is default spell power
-    current.spellPower = current.level
+    current.spellPower = current.depth
   }
 
-  // TODO
   handleBlow(value: ParserValues) {
     const current = this.current
+    const [blow, effect, damage] = asTokens(value, 1, 3)
+    if (!BlowRegistry.has(blow)) {
+      throw new Error('invalid blow')
+    }
+
+    current.blows ??= []
+    current.blows.push({ blow, effect: maybeAsEnum(effect, BLOW_EF), damage })
   }
 
   handleFlags(value: ParserValues) {
@@ -100,63 +115,116 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
 
   handleFlagsOff(value: ParserValues) {
     const current = this.current
-    current.flagsOff = arrayUnion(current.flags ?? [], allAsEnum(value, RF))
+    current.flagsOff = arrayUnion(current.flagsOff ?? [], allAsEnum(value, RF))
   }
 
-  // TODO
   handleSpells(value: ParserValues) {
     const current = this.current
+    const spells = asFlags(value).map(spell => ({ spell: asEnum(spell, RSF) }))
+
+    current.spells ??= []
+    current.spells.push(...spells)
   }
 
-  // TODO
   handleMessageVisible(value: ParserValues) {
-    const current = this.current
+    const [name, message] = asTokens(value, 2)
+    const spell = this.getSpellByName(name)
+    spell.messageVisible = message
   }
 
-  // TODO
   handleMessageInvisible(value: ParserValues) {
-    const current = this.current
+    const [name, message] = asTokens(value, 2)
+    const spell = this.getSpellByName(name)
+    spell.messageInvisible = message
   }
 
-  // TODO
   handleMessageMiss(value: ParserValues) {
-    const current = this.current
+    const [name, message] = asTokens(value, 2)
+    const spell = this.getSpellByName(name)
+    spell.messageMiss = message
   }
 
-  // TODO
   handleDrop(value: ParserValues) {
     const current = this.current
+    const [tval, sval, chance, min, max] = asTokens(value, 5)
+
+    current.drop ??= []
+    current.drop.push({
+      tval,
+      sval,
+      chance: asInteger(chance),
+      min: asInteger(min),
+      max: asInteger(max),
+    })
   }
 
-  // TODO
   handleDropBase(value: ParserValues) {
     const current = this.current
+    const [tval, chance, min, max] = asTokens(value, 4)
+
+    current.dropBase ??= []
+    current.dropBase.push({
+      tval,
+      chance: asInteger(chance),
+      min: asInteger(min),
+      max: asInteger(max),
+    })
   }
 
-  // TODO
-  handleFriends(value: ParserValues) {
+  handleFriends(key: 'friends' | 'friendsBase', value: ParserValues) {
     const current = this.current
+    const [chance, count, type, role] = asTokens(value, 3, 4)
+
+    if (role != null && role !== 'servant' && role !== 'bodyguard') {
+      throw new Error('invalid friend role')
+    }
+
+    current[key] ??= []
+    current[key].push({
+      chance: asInteger(chance),
+      count,
+      type,
+      role,
+    })
   }
 
-  // TODO
-  handleFriendsBase(value: ParserValues) {
+  handleMimic(values: ParserValues) {
     const current = this.current
+    const [tval, sval] = asTokens(values, 2)
+    // // TODO: figure out how C code handles spelling variants
+    // const lookupKey = (tval.indexOf('armour'))
+    //   ? tval.replace('armour', 'armor')
+    //   : tval
+
+    if (TV_NAMES[tval] == null) throw new Error('invalid object type')
+    current.mimic ??= []
+    current.mimic.push({
+      tval,
+      sval,
+    })
   }
 
-  // TODO
-  handleMimic(value: ParserValues) {
-    const current = this.current
-  }
-
-  // TODO
   handleShape(value: ParserValues) {
     const current = this.current
+    current.shapes ??= []
+    current.shapes.push(value)
   }
 
-  // TODO
   handleColorCycle(value: ParserValues) {
     const current = this.current
+    const [type, subtype] = asTokens(value, 2)
+
+    current.colorCycle = { type, subtype }
   }
 
-  // TODO
+  private getSpellByName(name: string) {
+    const spells = this.current.spells
+    if (spells == null) throw new Error('no spells defined')
+
+    for (const spell of spells) {
+      if (spell.spell === name) return spell
+    }
+
+    throw new Error('no spell found with name')
+  }
 }

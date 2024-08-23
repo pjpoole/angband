@@ -6,6 +6,7 @@ import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
 import { EgoItemParser } from './EgoItemParser'
 import { FeatureParser } from './FeatureParser'
+import { MonsterParser } from './MonsterParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { MonsterSpellParser } from './MonsterSpellParser'
 import { NameParser } from './NameParser'
@@ -35,6 +36,7 @@ import {
   EgoItemRegistry,
   FeatureRegistry,
   LevelRegistry,
+  MonsterRegistry,
   MonsterBaseRegistry,
   MonsterSpellRegistry,
   NamesRegistry,
@@ -59,6 +61,7 @@ export {
   DungeonProfileParser,
   EgoItemParser,
   FeatureParser,
+  MonsterParser,
   MonsterBaseParser,
   MonsterSpellParser,
   NameParser,
@@ -96,6 +99,7 @@ export const PARSERS: [any, Registry<any, any, any>][] = [
   [PitParser, PitRegistry],
   [SummonParser, SummonRegistry],
   [MonsterSpellParser, MonsterSpellRegistry],
+  [MonsterParser, MonsterRegistry],
   [CurseParser, CurseRegistry],
   [WorldParser, LevelRegistry],
   [FeatureParser, FeatureRegistry],
