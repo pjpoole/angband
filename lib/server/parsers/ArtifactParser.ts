@@ -80,7 +80,7 @@ export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
   handleAttack(values: ParserValues) {
     const current = this.current
     const [baseDamage, plusToHit, plusToDamage] = asTokens(values, 3)
-    current.attack = { baseDamage, plusToHit, plusToDamage, }
+    current.attack = { baseDamage, plusToHit, plusToDamage }
   }
 
   handleArmor(values: ParserValues) {

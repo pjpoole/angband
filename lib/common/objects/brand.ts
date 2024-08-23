@@ -9,7 +9,7 @@ import { enumValueToKey } from '../utilities/serializing/enum'
 
 export const BrandSchema = z.object({
   code: z.string(),
-  name: z.string(), // TODO: lookup?
+  name: z.string(), // TODO: lookup? would be in Projections, ELEM type
   multiplier: z.number(),
   zeroMultiplier: z.number(),
   power: z.number(),

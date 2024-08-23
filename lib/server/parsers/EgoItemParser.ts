@@ -16,7 +16,7 @@ import { arrayUnion } from '../../common/utilities/array'
 import { zObjectActivationJson } from '../../common/utilities/zod/activation'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
-import { EgoItem, EgoItemJSON, } from '../../common/objects/egoItem'
+import { EgoItem, EgoItemJSON } from '../../common/objects/egoItem'
 
 import { OF } from '../../common/objects/flags'
 import { KF } from '../../common/objects/kindFlags'

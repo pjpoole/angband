@@ -2,9 +2,9 @@ import { z } from 'zod'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
-import { z_effectObject, zEffectObjectParams, } from '../utilities/zod/effect'
+import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
 
-import { effectObjectsToJson, } from '../utilities/serializing/effect'
+import { effectObjectsToJson } from '../utilities/serializing/effect'
 
 export const ActivationSchema = z.object({
   name: z.string(),

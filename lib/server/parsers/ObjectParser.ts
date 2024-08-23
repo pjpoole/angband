@@ -15,7 +15,7 @@ import { normalizeColorString } from '../../common/utilities/colors'
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
-import { AngbandObject, AngbandObjectJSON, } from '../../common/objects/object'
+import { AngbandObject, AngbandObjectJSON } from '../../common/objects/object'
 
 import { OF } from '../../common/objects/flags'
 import { KF } from '../../common/objects/kindFlags'
@@ -81,7 +81,7 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
   handleAttack(values: ParserValues) {
     const current = this.current
     const [baseDamage, plusToHit, plusToDamage] = asTokens(values, 3)
-    current.attack = { baseDamage, plusToHit, plusToDamage, }
+    current.attack = { baseDamage, plusToHit, plusToDamage }
   }
 
   handleArmor(values: ParserValues) {

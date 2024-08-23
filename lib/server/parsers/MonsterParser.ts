@@ -6,7 +6,7 @@ import {
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 
-import { Monster, MonsterJSON, } from '../../common/monsters/monster'
+import { Monster, MonsterJSON } from '../../common/monsters/monster'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'

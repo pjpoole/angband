@@ -128,7 +128,6 @@ export enum RF {
 
 export type RF_VALUE = EnumValueOnly<typeof RF>
 
-// TODO: description I18n
 export const MonsterFlagsTable: [RF, RFT, string][] = [
   [RF.NONE, RFT.NONE, ''],
   [RF.UNIQUE, RFT.OBV, ''],

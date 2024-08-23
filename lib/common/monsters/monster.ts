@@ -185,6 +185,8 @@ export class Monster extends SerializableBase {
   register() {
     MonsterRegistry.add(this.name, this)
   }
+
+  // TODO: toJSON
 }
 
 export const MonsterRegistry = new NameRegistry(Monster)

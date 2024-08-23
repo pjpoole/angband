@@ -33,7 +33,7 @@ export const CurseSchema = z.object({
   effect: z.array(z_effect).optional(),
   dice: z_diceExpression.optional(),
   // Shows up in shape, activation, class, monster_spell, object, trap
-  expression: z_expression.optional(), // TODO
+  expression: z_expression.optional(),
   time: z_diceExpression.optional(),
   flags: z.array(z_curseFlag).optional(),
   values: z.array(z_value).optional(),
