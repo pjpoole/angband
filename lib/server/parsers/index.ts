@@ -1,5 +1,6 @@
 import { ActivationParser } from './ActivationParser'
 import { BlowParser } from './BlowParser'
+import { BrandParser } from './BrandParser'
 import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
@@ -18,6 +19,7 @@ import { WorldParser } from './WorldParser'
 export {
   ActivationParser,
   BlowParser,
+  BrandParser,
   CurseParser,
   DungeonProfileParser,
   FeatureParser,
@@ -39,6 +41,7 @@ export {
 export const PARSERS: any[] = [
   PainParser,
   BlowParser,
+  BrandParser,
   SlayParser,
   ActivationParser,
   ProjectionParser,
