@@ -12,7 +12,6 @@ import {
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
 import { GameObject } from '../../common/GameObject'
-import { JsonArray } from '../../common/utilities/json'
 
 export type ParserFunction = (values: ParserValues) => void
 
@@ -54,8 +53,6 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   }
 
   abstract _finalizeItem(obj: T): void
-
-  abstract toJSON(): JsonArray
 
   register(key: S, handler: ParserFunction): void {
     this._handlers.set(key, handler)

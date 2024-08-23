@@ -1,9 +1,8 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Brand, BrandJSON, BrandRegistry } from '../../common/objects/brand'
+import { Brand, BrandJSON } from '../../common/objects/brand'
 
 import { RF } from '../../common/monsters/flags'
 
@@ -29,10 +28,6 @@ export class BrandParser extends Parser<BrandFields, BrandJSON> {
 
   _finalizeItem(obj: BrandJSON) {
     Brand.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return BrandRegistry.toJSON()
   }
 
   handleFlag(key: 'resistFlag' | 'vulnerabilityFlag', values: ParserValues) {

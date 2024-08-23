@@ -10,9 +10,8 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
+import { Shape, ShapeEffectsJSON, ShapeJSON } from '../../common/player/shape'
 
 import { OF } from '../../common/objects/flags'
 import { PF } from '../../common/player/flags'
@@ -51,10 +50,6 @@ export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
 
   _finalizeItem(obj: ShapeJSON) {
     Shape.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return ShapeRegistry.toJSON()
   }
 
   handleSkill(key: ShapeFields & SkillFields, values: ParserValues) {

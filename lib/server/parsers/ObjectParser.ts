@@ -11,16 +11,11 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
-import { JsonArray } from '../../common/utilities/json'
 import { normalizeColorString } from '../../common/utilities/colors'
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
-import {
-  AngbandObject,
-  AngbandObjectJSON,
-  AngbandObjectRegistry,
-} from '../../common/objects/object'
+import { AngbandObject, AngbandObjectJSON, } from '../../common/objects/object'
 
 import { OF } from '../../common/objects/flags'
 import { KF } from '../../common/objects/kindFlags'
@@ -67,10 +62,6 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
 
   _finalizeItem(obj: AngbandObjectJSON) {
     AngbandObject.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return AngbandObjectRegistry.toJSON()
   }
 
   handleGraphics(values: ParserValues) {

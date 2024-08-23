@@ -1,9 +1,8 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Summon, SummonJSON, SummonRegistry } from '../../common/spells/summons'
+import { Summon, SummonJSON } from '../../common/spells/summons'
 
 import { MSG } from '../../common/game/messages'
 import { RF } from '../../common/monsters/flags'
@@ -29,10 +28,6 @@ export class SummonParser extends Parser<SummonFields, SummonJSON> {
 
   _finalizeItem(obj: SummonJSON) {
     Summon.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return SummonRegistry.toJSON()
   }
 
   handleMessageType(values: ParserValues) {

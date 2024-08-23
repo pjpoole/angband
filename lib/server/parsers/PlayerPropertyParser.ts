@@ -5,13 +5,11 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
 import {
   PLAYER_PROPERTY_TYPES,
   PlayerProperty,
   PlayerPropertyJSON,
-  PlayerPropertyRegistry,
   RESIST_VALUES
 } from '../../common/player/properties'
 
@@ -37,10 +35,6 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
 
   _finalizeItem(obj: PlayerPropertyJSON) {
     PlayerProperty.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return PlayerPropertyRegistry.toJSON()
   }
 
   // can't be pkey since codes overlap

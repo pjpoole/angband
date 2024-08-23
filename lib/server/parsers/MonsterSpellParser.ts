@@ -10,13 +10,11 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { normalizeColorString } from '../../common/utilities/colors'
-import { JsonArray } from '../../common/utilities/json'
 
 import {
   LoreObjectJson,
   MonsterSpell,
   MonsterSpellJSON,
-  MonsterSpellRegistry
 } from '../../common/monsters/spells'
 
 import { MSG } from '../../common/game/messages'
@@ -77,10 +75,6 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
 
   _finalizeItem(obj: MonsterSpellJSON) {
     MonsterSpell.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return MonsterSpellRegistry.toJSON()
   }
 
   handleName(values: ParserValues) {

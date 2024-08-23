@@ -6,9 +6,8 @@ import {
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 import { normalizeColorString } from '../../common/utilities/colors'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Pit, PitJSON, PitRegistry } from '../../common/world/pit'
+import { Pit, PitJSON } from '../../common/world/pit'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
@@ -41,10 +40,6 @@ export class PitParser extends Parser<PitFields, PitJSON> {
 
   _finalizeItem(obj: PitJSON) {
     Pit.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return PitRegistry.toJSON()
   }
 
   handleAllocation(values: ParserValues) {

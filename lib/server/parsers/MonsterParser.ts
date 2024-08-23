@@ -5,13 +5,8 @@ import {
 } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
-import { JsonArray } from '../../common/utilities/json'
 
-import {
-  Monster,
-  MonsterJSON,
-  MonsterRegistry
-} from '../../common/monsters/monster'
+import { Monster, MonsterJSON, } from '../../common/monsters/monster'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
@@ -66,10 +61,6 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
 
   _finalizeItem(obj: MonsterJSON) {
     Monster.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return MonsterRegistry.toJSON()
   }
 
   handleBase(value: ParserValues) {

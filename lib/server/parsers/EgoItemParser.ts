@@ -13,15 +13,10 @@ import { isInEnum } from '../../common/utilities/parsing/enums'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
-import { JsonArray } from '../../common/utilities/json'
 import { zObjectActivationJson } from '../../common/utilities/zod/activation'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
-import {
-EgoItem,
-  EgoItemJSON,
-  EgoItemRegistry
-} from '../../common/objects/egoItem'
+import { EgoItem, EgoItemJSON, } from '../../common/objects/egoItem'
 
 import { OF } from '../../common/objects/flags'
 import { KF } from '../../common/objects/kindFlags'
@@ -59,10 +54,6 @@ export class EgoItemParser extends Parser<EgoItemFields, EgoItemJSON> {
 
   _finalizeItem(obj: EgoItemJSON) {
     EgoItem.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return EgoItemRegistry.toJSON()
   }
 
   handleInfo(values: ParserValues) {

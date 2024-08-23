@@ -1,13 +1,11 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
 import {
   ROOMF,
   RoomTemplate,
   RoomTemplateJSON,
-  RoomTemplateRegistry
 } from '../../common/world/roomTemplate'
 
 import { TV_NAMES } from '../../common/objects/tval'
@@ -35,10 +33,6 @@ export class RoomTemplateParser extends Parser<RoomTemplateFields, RoomTemplateJ
 
   _finalizeItem(obj: RoomTemplateJSON) {
     RoomTemplate.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return RoomTemplateRegistry.toJSON()
   }
 
   handleTval(values: ParserValues) {

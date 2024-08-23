@@ -1,13 +1,8 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
-import {
-  Projection,
-  ProjectionJSON,
-  ProjectionRegistry,
-} from '../../common/spells/Projection'
+import { Projection, ProjectionJSON } from '../../common/spells/Projection'
 
 import { MSG } from '../../common/game/messages'
 import { ELEM } from '../../common/spells/elements'
@@ -42,10 +37,6 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
 
   _finalizeItem(obj: ProjectionJSON) {
     Projection.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return ProjectionRegistry.toJSON()
   }
 
   handleCode(value: ParserValues) {

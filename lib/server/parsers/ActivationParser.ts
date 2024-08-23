@@ -7,13 +7,11 @@ import {
 import { parseEffect } from '../../common/utilities/parsing/effect'
 import { parseExpression } from '../../common/utilities/parsing/expression'
 
-import { JsonArray } from '../../common/utilities/json'
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 
 import {
   Activation,
   ActivationJSON,
-  ActivationRegistry,
 } from '../../common/objects/activation'
 
 type ActivationFields = 'name' | 'aim' | 'power' | 'effect' | 'effect-yx'
@@ -38,10 +36,6 @@ export class ActivationParser extends Parser<ActivationFields, ActivationJSON> {
 
   _finalizeItem(obj: ActivationJSON) {
     Activation.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return ActivationRegistry.toJSON()
   }
 
   handleEffect(values: ParserValues) {

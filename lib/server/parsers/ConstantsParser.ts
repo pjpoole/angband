@@ -4,7 +4,7 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { JsonArray, JsonObject } from '../../common/utilities/json'
+import { JsonObject } from '../../common/utilities/json'
 import { kebabToPascal } from '../../common/utilities/string'
 
 import { writeGameData } from '../loading/writing'
@@ -132,11 +132,6 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
 
   // Stub for class; TODO: is this necessary?
   _finalizeItem(obj: ConstantsJSONOverride) {}
-
-  // TODO: how should this work?
-  toJSON(): JsonArray {
-    return []
-  }
 
   handleRemapper(jsonKey: keyof ConstantsJSON, remapper: Record<string, string>, values: ParserValues) {
     const current = this.current

@@ -7,9 +7,8 @@ import {
 } from '../../common/utilities/parsing/primitives'
 
 import { arrayUnion } from '../../common/utilities/array'
-import { JsonArray } from '../../common/utilities/json'
 
-import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
+import { ObjectBase, ObjectBaseJSON } from '../../common/objects/objectBase'
 
 import { TV_NAMES } from '../../common/objects/tval'
 
@@ -35,10 +34,6 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
 
   _finalizeItem(obj: ObjectBaseJSON) {
     ObjectBase.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return ObjectBaseRegistry.toJSON()
   }
 
   // Weird custom code

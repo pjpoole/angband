@@ -5,12 +5,10 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-import { JsonArray } from '../../common/utilities/json'
 
 import {
   DungeonProfile,
   DungeonProfileJSON,
-  DungeonProfileRegistry
 } from '../../common/world/dungeonProfiles'
 
 import { isValidRoomName } from '../../common/world/room'
@@ -35,10 +33,6 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   _finalizeItem(obj: DungeonProfileJSON) {
     DungeonProfile.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return DungeonProfileRegistry.toJSON()
   }
 
   handleParams(values: ParserValues) {

@@ -1,10 +1,9 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
 import { MSG } from '../../common/game/messages'
-import { Blow, BlowJSON, BlowRegistry } from '../../common/monsters/blows'
+import { Blow, BlowJSON } from '../../common/monsters/blows'
 
 type BlowFields = 'name' | 'cut' | 'stun' | 'miss' | 'phys' | 'msg' | 'act'
   | 'desc'
@@ -27,10 +26,6 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
 
   _finalizeItem(obj: BlowJSON) {
     Blow.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return BlowRegistry.toJSON()
   }
 
   handleActions(values: ParserValues) {

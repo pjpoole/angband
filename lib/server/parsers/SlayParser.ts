@@ -2,9 +2,8 @@ import { Parser } from './Parser'
 
 import { asEnum } from '../../common/utilities/parsing/enums'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Slay, SlayJSON, SlayRegistry } from '../../common/objects/slay'
+import { Slay, SlayJSON } from '../../common/objects/slay'
 
 import { RF } from '../../common/monsters/flags'
 
@@ -29,10 +28,6 @@ export class SlayParser extends Parser<SlayFields, SlayJSON> {
 
   _finalizeItem(obj: SlayJSON) {
     Slay.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return SlayRegistry.toJSON()
   }
 
   handleRaceFlag(values: ParserValues) {

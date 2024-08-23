@@ -3,13 +3,11 @@ import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum, asEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 import { normalizeColorString } from '../../common/utilities/colors'
-import { JsonArray } from '../../common/utilities/json'
 
 import {
   FEAT,
   Feature,
   FeatureJSON,
-  FeatureRegistry,
   TF
 } from '../../common/world/features'
 
@@ -46,10 +44,6 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
 
   _finalizeItem(obj: FeatureJSON) {
     Feature.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return FeatureRegistry.toJSON()
   }
 
   handleCode(values: ParserValues) {

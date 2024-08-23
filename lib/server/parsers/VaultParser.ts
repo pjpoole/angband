@@ -1,9 +1,8 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
-import { JsonArray } from '../../common/utilities/json'
 
-import { Vault, VaultJSON, VaultRegistry } from '../../common/world/vault'
+import { Vault, VaultJSON } from '../../common/world/vault'
 
 import { ROOMF } from '../../common/world/roomTemplate'
 import { arrayUnion } from '../../common/utilities/array'
@@ -30,10 +29,6 @@ export class VaultParser extends Parser<VaultFields, VaultJSON> {
 
   _finalizeItem(obj: VaultJSON) {
     Vault.fromJSON(obj).register()
-  }
-
-  toJSON(): JsonArray {
-    return VaultRegistry.toJSON()
   }
 
   handleFlags(values: ParserValues) {
