@@ -11,3 +11,11 @@ export const z_curse = z.string().transform((str, ctx) => {
   })
   return z.NEVER
 })
+
+export const z_objectCurse = z.object({
+  curse: z_curse,
+  power: z.number().positive(),
+})
+
+export type zObjectCurseJson = z.input<typeof z_objectCurse>
+export type zObjectCurseParams = z.output<typeof z_objectCurse>

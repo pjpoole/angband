@@ -5,13 +5,26 @@ import { SerializableBase } from '../core/serializable'
 import { enumValueToKey } from '../utilities/serializing/enum'
 import { effectObjectsToJson } from '../utilities/serializing/effect'
 import { ifExists } from '../utilities/serializing/helpers'
+import {
+  armorToJson,
+  attackToJson,
+  curseObjectToJson
+} from '../utilities/serializing/object'
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
-import { z_curse } from '../utilities/zod/curse'
+import { z_objectCurse, zObjectCurseParams } from '../utilities/zod/curse'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
 import { ObjectFlag, z_objectFlag } from '../utilities/zod/flags'
+import {
+  zAllocationParams,
+  zArmorParams,
+  zAttackParams,
+  z_allocation,
+  z_armor,
+  z_attack
+} from '../utilities/zod/object'
 import { z_slay } from '../utilities/zod/slay'
 import { z_tVal } from '../utilities/zod/tVal'
 import { z_value } from '../utilities/zod/values'
@@ -21,28 +34,6 @@ import { Dice } from '../utilities/dice'
 import { ValueParams } from '../utilities/values'
 import { TV } from './tval'
 import { Slay } from './slay'
-
-const allocation = z.object({
-  commonness: z.number(),
-  minLevel: z.number(),
-  maxLevel: z.number(),
-})
-
-const armor = z.object({
-  baseAC: z.number(),
-  plusToAC: z_diceExpression,
-})
-
-const attack = z.object({
-  baseDamage: z_diceExpression,
-  plusToHit: z_diceExpression,
-  plusToDamage: z_diceExpression,
-})
-
-const curse = z.object({
-  curse: z_curse,
-  power: z.number().positive(),
-})
 
 const pile = z.object({
   chance: z.number(),
@@ -57,16 +48,16 @@ export const AngbandObjectSchema = z.object({
   level: z.number().optional(),
   weight: z.number().optional(),
   cost: z.number().optional(),
-  attack: attack.optional(),
-  armor: armor.optional(),
-  allocation: allocation.optional(),
+  attack: z_attack.optional(),
+  armor: z_armor.optional(),
+  allocation: z_allocation.optional(),
   charges: z_diceExpression.optional(),
   pile: pile.optional(),
   flags: z.array(z_objectFlag).optional(),
   values: z.array(z_value).optional(),
   slay: z.array(z_slay).optional(),
   power: z.number().optional(),
-  curses: z.array(curse).optional(),
+  curses: z.array(z_objectCurse).optional(),
   message: z.string().optional(),
   messageVisible: z.string().optional(),
   effects: z.array(z_effectObject).optional(),
@@ -78,12 +69,6 @@ export const AngbandObjectSchema = z.object({
 export type AngbandObjectJSON = z.input<typeof AngbandObjectSchema>
 export type AngbandObjectParams = z.output<typeof AngbandObjectSchema>
 
-type ObjectAllocation = z.output<typeof allocation>
-type ObjectArmorJson = z.input<typeof armor>
-type ObjectArmor = z.output<typeof armor>
-type ObjectAttackJson = z.input<typeof attack>
-type ObjectAttack = z.output<typeof attack>
-type ObjectCurse = z.output<typeof curse>
 type ObjectPile = z.output<typeof pile>
 
 export class AngbandObject extends SerializableBase {
@@ -96,16 +81,16 @@ export class AngbandObject extends SerializableBase {
   readonly level?: number
   readonly weight?: number
   readonly cost?: number
-  readonly attack?: ObjectAttack
-  readonly armor?: ObjectArmor
-  readonly allocation?: ObjectAllocation
+  readonly attack?: zAttackParams
+  readonly armor?: zArmorParams
+  readonly allocation?: zAllocationParams
   readonly charges?: Dice
   readonly pile?: ObjectPile
   readonly flags: Set<ObjectFlag>
   readonly values?: ValueParams[]
   readonly slay?: Slay[]
   readonly power?: number
-  readonly curses?: ObjectCurse[]
+  readonly curses?: zObjectCurseParams[]
   readonly message?: string
   readonly messageVisible?: string
   readonly effects?: zEffectObjectParams[]
@@ -155,19 +140,8 @@ export class AngbandObject extends SerializableBase {
       level: this.level,
       weight: this.weight,
       cost: this.cost,
-      attack: ifExists(this.attack, (attack) => {
-        return {
-          baseDamage: attack.baseDamage.toString(),
-          plusToHit: attack.plusToHit.toString(),
-          plusToDamage: attack.plusToDamage.toString(),
-        } as ObjectAttackJson
-      }),
-      armor: ifExists(this.armor, (armor) => {
-        return {
-          baseAC: armor.baseAC,
-          plusToAC: armor.plusToAC.toString(),
-        } as ObjectArmorJson
-      }),
+      attack: ifExists(this.attack, attackToJson),
+      armor: ifExists(this.armor, armorToJson),
       allocation: this.allocation,
       charges: this.charges?.toString(),
       pile: ifExists(this.pile, (pile) => {
@@ -180,12 +154,7 @@ export class AngbandObject extends SerializableBase {
       values: ifExists(this.values, valueParamsToJson),
       slay: this.slay?.map(slay => slay.name),
       power: this.power,
-      curses: this.curses?.map(curse => {
-        return {
-          curse: curse.curse.name,
-          power: curse.power,
-        }
-      }),
+      curses: this.curses?.map(curseObjectToJson),
       message: this.message,
       messageVisible: this.messageVisible,
       effects: ifExists(this.effects, effectObjectsToJson),
