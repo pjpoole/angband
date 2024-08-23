@@ -26,7 +26,7 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
 
     this.register('default', this.handleDefault.bind(this))
     this.register('name', this.handleName.bind(this))
-    this.register('graphics', this.keyToColor('graphics'))
+    this.register('graphics', this.keyToColor('color'))
     this.register('break', this.keyToInteger('break'))
     this.register('flags', this.handleFlags.bind(this))
   }
