@@ -1,3 +1,16 @@
+import { z } from 'zod'
+import { NameRegistry } from '../core/Registry'
+import { SerializableBase } from '../core/serializable'
+
+import { enumValueToKey } from '../utilities/serializing/enum'
+import { effectObjectsToJson } from '../utilities/serializing/effect'
+
+import { z_enumValueParser } from '../utilities/zod/enums'
+import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
+
+import { C } from '../utilities/colors'
+import { MSG } from '../game/messages'
+
 // mon-spell.h, mon_spell_type
 export const RST = {
   NONE: 0x0000,
@@ -207,3 +220,81 @@ export const monsterSpells = {
   [RSF.S_WRAITH]: RST.SUMMON,
   [RSF.S_UNIQUE]: RST.SUMMON,
 }
+
+const loreObject = z.object({
+  powerCutoff: z.number().optional(),
+  lore: z.string(),
+  colorBase: z.nativeEnum(C),
+  colorResist: z.nativeEnum(C).optional(),
+  colorImmune: z.nativeEnum(C).optional(),
+  messageSave: z.string(),
+  messageVisible: z.string(),
+  messageInvisible: z.string(),
+  messageMiss: z.string(),
+})
+
+export const MonsterSpellSchema = z.object({
+  name: z.string(),
+  messageType: z_enumValueParser(MSG).optional(),
+  hit: z.number().min(0).max(100),
+  effects: z.array(z_effectObject),
+  lore: z.array(loreObject),
+}).refine(
+  (obj) => {
+    let previous: number | undefined = undefined
+    for (const lore of obj.lore) {
+      if (previous == null) {
+        previous = lore.powerCutoff || Number.MIN_VALUE
+      } else {
+        if (lore.powerCutoff == null) return false
+        if (previous > lore.powerCutoff) return false
+        previous = lore.powerCutoff
+      }
+    }
+
+    return true
+  },
+  { message: 'misconfigured power cutoffs in lore' }
+)
+
+export type MonsterSpellJSON = z.input<typeof MonsterSpellSchema>
+export type MonsterSpellParams = z.output<typeof MonsterSpellSchema>
+
+export type LoreObjectJson = z.input<typeof loreObject>
+type LoreObjectParams = z.output<typeof loreObject>
+
+export class MonsterSpell extends SerializableBase {
+  static readonly schema = MonsterSpellSchema
+
+  readonly name: string
+  readonly messageType?: MSG
+  readonly hit: number
+  readonly effects: zEffectObjectParams[]
+  readonly lore: LoreObjectParams[]
+
+  constructor(params: MonsterSpellParams) {
+    super(params)
+
+    this.name = params.name
+    this.messageType = params.messageType
+    this.hit = params.hit
+    this.effects = params.effects
+    this.lore = params.lore
+  }
+
+  register() {
+    MonsterSpellRegistry.add(this.name, this)
+  }
+
+  toJSON(): MonsterSpellJSON {
+    return {
+      name: this.name,
+      messageType: enumValueToKey(this.messageType, MSG),
+      hit: this.hit,
+      effects: effectObjectsToJson(this.effects),
+      lore: this.lore,
+    }
+  }
+}
+
+export const MonsterSpellRegistry = new NameRegistry(MonsterSpell)

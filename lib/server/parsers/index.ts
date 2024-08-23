@@ -6,6 +6,7 @@ import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
 import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
+import { MonsterSpellParser } from './MonsterSpellParser'
 import { ObjectParser } from './ObjectParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
 import { PainParser } from './PainParser'
@@ -26,6 +27,7 @@ export {
   DungeonProfileParser,
   FeatureParser,
   MonsterBaseParser,
+  MonsterSpellParser,
   ObjectParser,
   ObjectBaseParser,
   PainParser,
@@ -55,6 +57,7 @@ export const PARSERS: any[] = [
   // Monster parser must come first
   PitParser,
   SummonParser,
+  MonsterSpellParser,
   CurseParser,
   WorldParser,
   FeatureParser,
