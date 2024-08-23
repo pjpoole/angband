@@ -12,13 +12,13 @@ import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
 import { colorStringToAttribute } from '../../common/utilities/colors'
+import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 
 import {
   AngbandObject,
   AngbandObjectJSON,
   AngbandObjectRegistry,
-  ObjectEffectJson,
 } from '../../common/objects/object'
 
 import { OF } from '../../common/objects/flags'
@@ -188,7 +188,7 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
     current.curses.push({ curse, power: asInteger(power) })
   }
 
-  private getCurrentEffect(): ObjectEffectJson {
+  private getCurrentEffect(): zEffectObjectJSON {
     const effects = this.current.effects
     if (effects == null || effects.length === 0) {
       throw new Error('no current effect')

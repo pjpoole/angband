@@ -3,14 +3,14 @@ import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
 import { enumValueToKey } from '../utilities/serializing/enum'
+import { effectObjectsToJson } from '../utilities/serializing/effect'
 import { ifExists } from '../utilities/serializing/helpers'
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
 import { z_curse } from '../utilities/zod/curse'
 import { z_diceExpression } from '../utilities/zod/dice'
-import { z_effect } from '../utilities/zod/effect'
-import { z_expression } from '../utilities/zod/expression'
+import { z_effectObject, zEffectObjectParams } from '../utilities/zod/effect'
 import { ObjectFlag, z_objectFlag } from '../utilities/zod/flags'
 import { z_slay } from '../utilities/zod/slay'
 import { z_tVal } from '../utilities/zod/tVal'
@@ -21,8 +21,6 @@ import { Dice } from '../utilities/dice'
 import { ValueParams } from '../utilities/values'
 import { TV } from './tval'
 import { Slay } from './slay'
-import { effectToJson } from '../utilities/serializing/effect'
-import { expressionToJson } from '../utilities/serializing/expression'
 
 const allocation = z.object({
   commonness: z.number(),
@@ -45,15 +43,6 @@ const curse = z.object({
   curse: z_curse,
   power: z.number().positive(),
 })
-
-const effect = z.object({
-  effect: z_effect,
-  x: z.number().optional(),
-  y: z.number().optional(),
-  dice: z_diceExpression.optional(),
-  expression: z_expression.optional(),
-})
-
 
 const pile = z.object({
   chance: z.number(),
@@ -80,7 +69,7 @@ export const AngbandObjectSchema = z.object({
   curses: z.array(curse).optional(),
   message: z.string().optional(),
   messageVisible: z.string().optional(),
-  effects: z.array(effect).optional(),
+  effects: z.array(z_effectObject).optional(),
   time: z_diceExpression.optional(),
   pval: z.number().optional(),
   description: z.string().optional(),
@@ -95,8 +84,6 @@ type ObjectArmor = z.output<typeof armor>
 type ObjectAttackJson = z.input<typeof attack>
 type ObjectAttack = z.output<typeof attack>
 type ObjectCurse = z.output<typeof curse>
-export type ObjectEffectJson = z.input<typeof effect>
-type ObjectEffect = z.output<typeof effect>
 type ObjectPile = z.output<typeof pile>
 
 export class AngbandObject extends SerializableBase {
@@ -121,7 +108,7 @@ export class AngbandObject extends SerializableBase {
   readonly curses?: ObjectCurse[]
   readonly message?: string
   readonly messageVisible?: string
-  readonly effects?: ObjectEffect[]
+  readonly effects?: zEffectObjectParams[]
   readonly time?: Dice
   readonly pval?: number
   readonly description?: string
@@ -201,15 +188,7 @@ export class AngbandObject extends SerializableBase {
       }),
       message: this.message,
       messageVisible: this.messageVisible,
-      effects: this.effects == null ? undefined : this.effects.map(el => {
-        return {
-          effect: effectToJson(el.effect),
-          x: el.x,
-          y: el.y,
-          dice: el.dice?.toString(),
-          expression: ifExists(el.expression, expressionToJson),
-        }
-      }),
+      effects: ifExists(this.effects, effectObjectsToJson),
       time: this.time?.toString(),
       pval: this.pval,
       description: this.description,

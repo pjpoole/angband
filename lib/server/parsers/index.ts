@@ -1,3 +1,4 @@
+import { ActivationParser } from './ActivationParser'
 import { BlowParser } from './BlowParser'
 import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
@@ -14,6 +15,7 @@ import { SummonParser } from './SummonParser'
 import { WorldParser } from './WorldParser'
 
 export {
+  ActivationParser,
   BlowParser,
   CurseParser,
   DungeonProfileParser,
@@ -35,6 +37,7 @@ export {
 export const PARSERS: any[] = [
   BlowParser,
   SlayParser,
+  ActivationParser,
   ProjectionParser,
   ShapeParser,
   PlayerPropertyParser,
