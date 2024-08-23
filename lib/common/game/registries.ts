@@ -3,6 +3,7 @@ import { ActivationRegistry } from '../objects/activation'
 import { AngbandObjectRegistry } from '../objects/object'
 import { ArtifactRegistry } from '../objects/artifact'
 import { BlowRegistry } from '../monsters/blows'
+import { BlowEffectRegistry } from '../monsters/blowEffect'
 import { BrandRegistry } from '../objects/brand'
 import { CurseRegistry } from '../objects/curse'
 import { DungeonProfileRegistry } from '../world/dungeonProfiles'
@@ -29,6 +30,7 @@ export {
   AngbandObjectRegistry,
   ArtifactRegistry,
   BlowRegistry,
+  BlowEffectRegistry,
   BrandRegistry,
   CurseRegistry,
   DungeonProfileRegistry,

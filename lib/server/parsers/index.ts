@@ -1,6 +1,7 @@
 import { ActivationParser } from './ActivationParser'
 import { ArtifactParser } from './ArtifactParser'
 import { BlowParser } from './BlowParser'
+import { BlowEffectParser } from './BlowEffectParser'
 import { BrandParser } from './BrandParser'
 import { CurseParser } from './CurseParser'
 import { DungeonProfileParser } from './DungeonProfileParser'
@@ -30,6 +31,7 @@ import {
   AngbandObjectRegistry,
   ArtifactRegistry,
   BlowRegistry,
+  BlowEffectRegistry,
   BrandRegistry,
   CurseRegistry,
   DungeonProfileRegistry,
@@ -85,6 +87,7 @@ export const PARSERS: [any, Registry<any, any, any>][] = [
   [NameParser, NamesRegistry],
   [RoomTemplateParser, RoomTemplateRegistry],
   [PainParser, PainRegistry],
+  [BlowEffectParser, BlowEffectRegistry],
   [BlowParser, BlowRegistry],
   [BrandParser, BrandRegistry],
   [SlayParser, SlayRegistry],
