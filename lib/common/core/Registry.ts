@@ -14,7 +14,9 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     this.ctor = ctor
   }
 
-  finalize(): void {}
+  finalize(): void {
+    this.seal()
+  }
 
   seal(): boolean {
     const notYetSealed = !this._sealed
@@ -27,10 +29,24 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
   }
 
   get(key: V): T | undefined {
+    if (!this._sealed) {
+      throw new Error(
+        'registry read before sealing',
+        { cause: { registry: this.ctor.name }}
+      )
+    }
+
     return this.data.get(key)
   }
 
   getById(id: number): T | undefined {
+    if (!this._sealed) {
+      throw new Error(
+        'registry read before sealing',
+        { cause: { registry: this.ctor.name }}
+      )
+    }
+
     for (const el of this.data.values()) {
       if (el.id === id) return el
     }
@@ -40,7 +56,7 @@ export class Registry<T extends SerializableBase, U extends GameObject, V extend
     const result = this.data.get(key)
     if (result) return result
 
-    throw new Error('value not found') // TODO: more verbose
+    throw new Error('value not found', { cause: { key }})
   }
 
   build(key: V, data: U): void {

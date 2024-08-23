@@ -16,7 +16,7 @@ async function doParse<
   checkForParserError(parser)
   parser.finalize()
 
-  registry.seal()
+  registry.finalize()
   const data = registry.toJSON()
 
   await writeGameData(cls.fileName, data)

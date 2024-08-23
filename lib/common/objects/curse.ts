@@ -32,14 +32,13 @@ export const CurseSchema = z.object({
   combat: z_combat.optional(),
   effect: z.array(z_effect).optional(),
   dice: z_diceExpression.optional(),
-  // Shows up in shape, activation, class, monster_spell, object, trap
   expression: z_expression.optional(),
   time: z_diceExpression.optional(),
   flags: z.array(z_curseFlag).optional(),
   values: z.array(z_value).optional(),
   message: z.string().optional(),
   description: z.string(),
-  conflicts: z.array(z.string()).optional(), // TODO
+  conflicts: z.array(z.string()).optional(),
   conflictFlags: z.array(z_enumValueParser(OF)).optional(),
 })
 
@@ -107,4 +106,23 @@ export class Curse extends SerializableBase {
   }
 }
 
-export const CurseRegistry = new NameRegistry(Curse)
+class CurseNameRegistry extends NameRegistry<Curse, CurseParams> {
+  override finalize() {
+    super.finalize()
+
+    // TODO: maybe hydrate conflicts at this point?
+    for (const curse of this.data.values()) {
+      for (const conflict of curse.conflicts ?? []) {
+        if (!this.get(conflict)) {
+          throw new Error(
+            'invalid conflict for curse',
+            { cause: { key: conflict } }
+          )
+        }
+      }
+    }
+
+  }
+}
+
+export const CurseRegistry = new CurseNameRegistry(Curse)
