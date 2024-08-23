@@ -4,6 +4,7 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Level, LevelJSON, LevelRegistry } from '../../common/world/level'
 
@@ -11,7 +12,6 @@ type WorldFields = 'level'
 
 export class WorldParser extends Parser<WorldFields, LevelJSON> {
   static readonly fileName = 'world'
-  static readonly registry = LevelRegistry
 
   constructor() {
     super()
@@ -21,6 +21,10 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
 
   _finalizeItem(obj: LevelJSON) {
     Level.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return LevelRegistry.toJSON()
   }
 
   handleLevel(value: ParserValues) {

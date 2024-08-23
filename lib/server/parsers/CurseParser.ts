@@ -11,6 +11,7 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
+import { JsonArray } from '../../common/utilities/json'
 import { CurseFlag } from '../../common/utilities/zod/flags'
 
 import { Curse, CurseJSON, CurseRegistry } from '../../common/objects/curse'
@@ -25,7 +26,6 @@ type CurseFields = 'name' | 'type' | 'weight' | 'combat' | 'effect' | 'dice'
 
 export class CurseParser extends Parser<CurseFields, CurseJSON> {
   static readonly fileName = 'curse'
-  static readonly registry = CurseRegistry
 
   constructor() {
     super()
@@ -48,6 +48,10 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
 
   _finalizeItem(obj: CurseJSON) {
     Curse.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return CurseRegistry.toJSON()
   }
 
   handleType(values: ParserValues) {

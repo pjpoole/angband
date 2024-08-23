@@ -3,6 +3,7 @@ import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum, asEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
 import { normalizeColorString } from '../../common/utilities/colors'
+import { JsonArray } from '../../common/utilities/json'
 
 import {
   FEAT,
@@ -21,7 +22,6 @@ type FeatureFields = 'code' | 'name' | 'graphics' | 'mimic'
 
 export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
   static readonly fileName = 'terrain'
-  static readonly registry = FeatureRegistry
 
   constructor() {
     super()
@@ -46,6 +46,10 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
 
   _finalizeItem(obj: FeatureJSON) {
     Feature.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return FeatureRegistry.toJSON()
   }
 
   handleCode(values: ParserValues) {

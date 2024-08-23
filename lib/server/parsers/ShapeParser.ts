@@ -10,6 +10,7 @@ import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
 import { arrayUnion } from '../../common/utilities/array'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Shape, ShapeEffectsJSON, ShapeJSON, ShapeRegistry } from '../../common/player/shape'
 
@@ -24,7 +25,6 @@ type ShapeFields = 'name' | 'combat' | 'skill-disarm-phys'
 
 export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
   static readonly fileName = 'shape'
-  static readonly registry = ShapeRegistry
 
   constructor() {
     super()
@@ -51,6 +51,10 @@ export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
 
   _finalizeItem(obj: ShapeJSON) {
     Shape.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return ShapeRegistry.toJSON()
   }
 
   handleSkill(key: ShapeFields & SkillFields, values: ParserValues) {

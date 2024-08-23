@@ -1,6 +1,7 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Vault, VaultJSON, VaultRegistry } from '../../common/world/vault'
 
@@ -12,7 +13,6 @@ type VaultFields = 'name' | 'type' | 'rating' | 'rows' | 'columns'
 
 export class VaultParser extends Parser<VaultFields, VaultJSON> {
   static readonly fileName = 'vault'
-  static readonly registry = VaultRegistry
 
   constructor() {
     super()
@@ -30,6 +30,10 @@ export class VaultParser extends Parser<VaultFields, VaultJSON> {
 
   _finalizeItem(obj: VaultJSON) {
     Vault.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return VaultRegistry.toJSON()
   }
 
   handleFlags(values: ParserValues) {

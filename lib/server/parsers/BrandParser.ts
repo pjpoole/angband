@@ -1,6 +1,7 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Brand, BrandJSON, BrandRegistry } from '../../common/objects/brand'
 
@@ -12,7 +13,6 @@ type BrandFields = 'code' | 'name' | 'verb' | 'multiplier' | 'o-multiplier'
 
 export class BrandParser extends Parser<BrandFields, BrandJSON> {
   static readonly fileName = 'brand'
-  static readonly registry = BrandRegistry
 
   constructor() {
     super()
@@ -29,6 +29,10 @@ export class BrandParser extends Parser<BrandFields, BrandJSON> {
 
   _finalizeItem(obj: BrandJSON) {
     Brand.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return BrandRegistry.toJSON()
   }
 
   handleFlag(key: 'resistFlag' | 'vulnerabilityFlag', values: ParserValues) {

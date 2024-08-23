@@ -12,6 +12,7 @@ import { zObjectActivationJson } from '../../common/utilities/zod/activation'
 import { ObjectFlag } from '../../common/utilities/zod/flags'
 import { arrayUnion } from '../../common/utilities/array'
 import { normalizeColorString } from '../../common/utilities/colors'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Artifact, ArtifactJSON, ArtifactRegistry } from '../../common/objects/artifact'
 
@@ -26,7 +27,6 @@ type ArtifactFields = 'name' | 'base-object' | 'graphics' | 'level' | 'weight'
 
 export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
   static readonly fileName = 'artifact'
-  static readonly registry = ArtifactRegistry
 
   constructor() {
     super()
@@ -53,6 +53,10 @@ export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
 
   _finalizeItem(obj: ArtifactJSON) {
     Artifact.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return ArtifactRegistry.toJSON()
   }
 
   handleBaseObject(values: ParserValues) {

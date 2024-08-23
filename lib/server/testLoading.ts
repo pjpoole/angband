@@ -14,7 +14,7 @@ async function doParse<A extends string, B extends GameObject, C extends Seriali
   checkForParserError(parser)
   parser.finalize()
 
-  await writeGameData(cls.fileName, cls.registry.toJSON())
+  await writeGameData(cls.fileName, parser.toJSON())
 }
 
 async function parseConstants() {

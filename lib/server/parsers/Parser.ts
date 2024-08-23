@@ -12,30 +12,26 @@ import {
   PARSE_ERROR_REPEATED_DIRECTIVE
 } from '../../common/core/errors'
 import { GameObject } from '../../common/GameObject'
-import { Registry } from '../../common/core/Registry'
-import { SerializableBase } from '../../common/core/serializable'
+import { JsonArray } from '../../common/utilities/json'
 
 export type ParserFunction = (values: ParserValues) => void
 
 type KeyOfType<T, U> = keyof { [K in keyof T as NonNullable<T[K]> extends U ? K : never]: T[K] }
 
-interface hasStaticProperties<S extends SerializableBase, T extends GameObject> {
+interface hasStaticProperties {
   fileName: string
-  registry: Registry<S, T, any>
 }
 
 export type ParserDerived<
   S extends string,
   T extends GameObject,
-  U extends SerializableBase,
-  V extends GameObject
 > =
-  (new () => Parser<S, T>) & hasStaticProperties<U, V>
+  (new () => Parser<S, T>) & hasStaticProperties
 
 export abstract class ParserBase<S extends string, T extends { [K in keyof T]: any }> {
   private _error?: Error
-  private _handlers: Map<S, ParserFunction> = new Map()
-  private _objects: T[] = []
+  private readonly _handlers: Map<S, ParserFunction> = new Map()
+  private readonly _objects: T[] = []
   private _current: T | null = null
 
   parse(key: string, value: ParserValues): void {
@@ -58,6 +54,8 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   }
 
   abstract _finalizeItem(obj: T): void
+
+  abstract toJSON(): JsonArray
 
   register(key: S, handler: ParserFunction): void {
     this._handlers.set(key, handler)

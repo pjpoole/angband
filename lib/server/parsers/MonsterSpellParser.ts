@@ -5,8 +5,12 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 import { parseEffect } from '../../common/utilities/parsing/effect'
+import { asEnum } from '../../common/utilities/parsing/enums'
 import { parseExpression } from '../../common/utilities/parsing/expression'
+
 import { zEffectObjectJSON } from '../../common/utilities/zod/effect'
+import { normalizeColorString } from '../../common/utilities/colors'
+import { JsonArray } from '../../common/utilities/json'
 
 import {
   LoreObjectJson,
@@ -15,8 +19,6 @@ import {
   MonsterSpellRegistry
 } from '../../common/monsters/spells'
 
-import { normalizeColorString } from '../../common/utilities/colors'
-import { asEnum } from '../../common/utilities/parsing/enums'
 import { MSG } from '../../common/game/messages'
 
 type MonsterSpellFields = 'name' | 'msgt' | 'hit' | 'effect' | 'effect-yx'
@@ -30,7 +32,6 @@ type LoreMessageFields = 'messageSave' | 'messageVisible' | 'messageInvisible'
 
 export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJSON> {
   static readonly fileName = 'monster_spell'
-  static readonly registry = MonsterSpellRegistry
 
   constructor() {
     super()
@@ -76,6 +77,10 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
 
   _finalizeItem(obj: MonsterSpellJSON) {
     MonsterSpell.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return MonsterSpellRegistry.toJSON()
   }
 
   handleName(values: ParserValues) {

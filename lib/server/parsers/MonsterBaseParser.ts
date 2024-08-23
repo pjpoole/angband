@@ -2,6 +2,7 @@ import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { allAsEnum } from '../../common/utilities/parsing/enums'
 import { arrayUnion } from '../../common/utilities/array'
+import { JsonArray } from '../../common/utilities/json'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBase, MonsterBaseJSON, MonsterBaseRegistry } from '../../common/monsters/monsterBase'
@@ -10,7 +11,6 @@ type MonsterBaseFields = 'name' | 'glyph' | 'pain' | 'flags' | 'desc'
 
 export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON> {
   static readonly fileName = 'monster_base'
-  static readonly registry = MonsterBaseRegistry
 
   constructor() {
     super()
@@ -24,6 +24,10 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
 
   _finalizeItem(obj: MonsterBaseJSON): void {
     MonsterBase.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return MonsterBaseRegistry.toJSON()
   }
 
   handleGlyph(value: ParserValues) {

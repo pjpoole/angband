@@ -1,6 +1,7 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum, maybeAsEnum } from '../../common/utilities/parsing/enums'
+import { JsonArray } from '../../common/utilities/json'
 
 import {
   Projection,
@@ -18,7 +19,6 @@ type ProjectionFields = 'code' | 'name' | 'type' | 'desc' | 'player-desc'
 
 export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
   static readonly fileName = 'projection'
-  static readonly registry = ProjectionRegistry
 
   constructor() {
     super()
@@ -42,6 +42,10 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
 
   _finalizeItem(obj: ProjectionJSON) {
     Projection.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return ProjectionRegistry.toJSON()
   }
 
   handleCode(value: ParserValues) {

@@ -5,12 +5,14 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
+import { JsonArray } from '../../common/utilities/json'
 
 import {
   DungeonProfile,
   DungeonProfileJSON,
   DungeonProfileRegistry
 } from '../../common/world/dungeonProfiles'
+
 import { isValidRoomName } from '../../common/world/room'
 
 type DungeonProfileFields = 'name' | 'params' | 'tunnel' | 'streamer' | 'alloc'
@@ -18,7 +20,6 @@ type DungeonProfileFields = 'name' | 'params' | 'tunnel' | 'streamer' | 'alloc'
 
 export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonProfileJSON> {
   static readonly fileName = 'dungeon_profile'
-  static readonly registry = DungeonProfileRegistry
 
   constructor() {
     super()
@@ -34,6 +35,10 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   _finalizeItem(obj: DungeonProfileJSON) {
     DungeonProfile.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return DungeonProfileRegistry.toJSON()
   }
 
   handleParams(values: ParserValues) {

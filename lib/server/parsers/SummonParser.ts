@@ -1,6 +1,7 @@
 import { Parser } from './Parser'
 import { ParserValues } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Summon, SummonJSON, SummonRegistry } from '../../common/spells/summons'
 
@@ -13,7 +14,6 @@ type SummonFields = 'name' | 'msgt' | 'uniques' | 'base' | 'race-flag'
 
 export class SummonParser extends Parser<SummonFields, SummonJSON> {
   static readonly fileName = 'summon'
-  static readonly registry = SummonRegistry
 
   constructor() {
     super()
@@ -29,6 +29,10 @@ export class SummonParser extends Parser<SummonFields, SummonJSON> {
 
   _finalizeItem(obj: SummonJSON) {
     Summon.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return SummonRegistry.toJSON()
   }
 
   handleMessageType(values: ParserValues) {

@@ -6,8 +6,11 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 
-import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
 import { arrayUnion } from '../../common/utilities/array'
+import { JsonArray } from '../../common/utilities/json'
+
+import { ObjectBase, ObjectBaseJSON, ObjectBaseRegistry } from '../../common/objects/objectBase'
+
 import { TV_NAMES } from '../../common/objects/tval'
 
 type ObjectBaseFields = 'name' | 'graphics' | 'max-stack' | 'break' | 'flags'
@@ -17,7 +20,6 @@ const DEFAULT_KEYS = ['max-stack', 'break-chance'] as const
 
 export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
   static readonly fileName = 'object_base'
-  static readonly registry = ObjectBaseRegistry
 
   private readonly defaults: Partial<Record<'break' | 'max-stack', number>> = {}
 
@@ -33,6 +35,10 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
 
   _finalizeItem(obj: ObjectBaseJSON) {
     ObjectBase.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return ObjectBaseRegistry.toJSON()
   }
 
   // Weird custom code

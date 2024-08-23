@@ -5,6 +5,7 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 import { asEnum } from '../../common/utilities/parsing/enums'
+import { JsonArray } from '../../common/utilities/json'
 
 import {
   PLAYER_PROPERTY_TYPES,
@@ -22,7 +23,6 @@ type PlayerPropertyFields = 'type' | 'code' | 'bindui' | 'name' | 'desc'
 
 export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPropertyJSON> {
   static readonly fileName = 'player_property'
-  static readonly registry = PlayerPropertyRegistry
 
   constructor() {
     super()
@@ -37,6 +37,10 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
 
   _finalizeItem(obj: PlayerPropertyJSON) {
     PlayerProperty.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return PlayerPropertyRegistry.toJSON()
   }
 
   // can't be pkey since codes overlap

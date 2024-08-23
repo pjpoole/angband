@@ -3,6 +3,7 @@ import {
   asInteger,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
+import { JsonArray } from '../../common/utilities/json'
 
 import { Name, NameJSON, NamesRegistry } from '../../common/core/names'
 
@@ -10,7 +11,6 @@ type NameFields = 'section' | 'word'
 
 export class NameParser extends Parser<NameFields, NameJSON> {
   static readonly fileName = 'names'
-  static readonly registry = NamesRegistry
 
   constructor() {
     super()
@@ -21,6 +21,10 @@ export class NameParser extends Parser<NameFields, NameJSON> {
 
   _finalizeItem(obj: NameJSON) {
     Name.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return NamesRegistry.toJSON()
   }
 
   handleSection(values: ParserValues) {

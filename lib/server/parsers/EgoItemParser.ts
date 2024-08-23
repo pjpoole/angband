@@ -5,25 +5,28 @@ import {
   asTokens,
   ParserValues
 } from '../../common/utilities/parsing/primitives'
-
-import {
-  EgoItem,
-  EgoItemJSON,
-  EgoItemRegistry
-} from '../../common/objects/egoItem'
-import { TV_NAMES } from '../../common/objects/tval'
-import { ObjectFlag } from '../../common/utilities/zod/flags'
-import { isInEnum } from '../../common/utilities/parsing/enums'
-import { OF } from '../../common/objects/flags'
-import { KF } from '../../common/objects/kindFlags'
-import { isIgnoreElem } from '../../common/spells/elements'
-import { arrayUnion } from '../../common/utilities/array'
 import {
   parseCombat,
   parseCombatMin
 } from '../../common/utilities/parsing/combat'
-import { zObjectActivationJson } from '../../common/utilities/zod/activation'
+import { isInEnum } from '../../common/utilities/parsing/enums'
 import { parseValuesString } from '../../common/utilities/parsing/values'
+
+import { arrayUnion } from '../../common/utilities/array'
+import { JsonArray } from '../../common/utilities/json'
+import { zObjectActivationJson } from '../../common/utilities/zod/activation'
+import { ObjectFlag } from '../../common/utilities/zod/flags'
+
+import {
+EgoItem,
+  EgoItemJSON,
+  EgoItemRegistry
+} from '../../common/objects/egoItem'
+
+import { OF } from '../../common/objects/flags'
+import { KF } from '../../common/objects/kindFlags'
+import { TV_NAMES } from '../../common/objects/tval'
+import { isIgnoreElem } from '../../common/spells/elements'
 
 type EgoItemFields = 'name' | 'info' | 'alloc' | 'combat' | 'min-combat'
   | 'type' | 'item' | 'flags' | 'flags-off' | 'values' | 'min-values' | 'act'
@@ -31,7 +34,6 @@ type EgoItemFields = 'name' | 'info' | 'alloc' | 'combat' | 'min-combat'
 
 export class EgoItemParser extends Parser<EgoItemFields, EgoItemJSON> {
   static readonly fileName = 'ego_item'
-  static readonly registry = EgoItemRegistry
 
   constructor() {
     super()
@@ -57,6 +59,10 @@ export class EgoItemParser extends Parser<EgoItemFields, EgoItemJSON> {
 
   _finalizeItem(obj: EgoItemJSON) {
     EgoItem.fromJSON(obj).register()
+  }
+
+  toJSON(): JsonArray {
+    return EgoItemRegistry.toJSON()
   }
 
   handleInfo(values: ParserValues) {
