@@ -1,6 +1,13 @@
 import { NativeEnum } from '../enum'
 import { PARSE_ERROR_INVALID_FLAG } from '../../core/errors'
 
+export function isInEnum<T extends NativeEnum>(
+  key: unknown,
+  enumObject: T
+): key is keyof typeof enumObject {
+  return enumObject[key as keyof typeof enumObject] != null
+}
+
 export function asEnum<T extends NativeEnum>(
   key: string,
   enumObject: T

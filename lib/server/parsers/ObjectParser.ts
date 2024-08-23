@@ -6,7 +6,7 @@ import {
   ParserValues
 } from '../../common/utilities/parsing/primitives'
 import { parseEffect } from '../../common/utilities/parsing/effect'
-import { maybeAsEnum } from '../../common/utilities/parsing/enums'
+import { isInEnum } from '../../common/utilities/parsing/enums'
 import { parseExpression } from '../../common/utilities/parsing/expression'
 import { parseValuesString } from '../../common/utilities/parsing/values'
 
@@ -150,22 +150,11 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
 
     const results: ObjectFlag[] = []
     for (const flag of flags) {
-      const maybeOF = maybeAsEnum(flag, OF)
-      if (maybeOF) {
-        results.push(maybeOF)
-      } else {
-        const maybeKF = maybeAsEnum(flag, KF)
-        if (maybeKF) {
-          results.push(maybeKF)
-        } else {
-          if (isIgnoreElem(flag)) {
-            results.push(flag)
-          } else {
-            console.log(flag)
-            throw new Error('invalid object flag')
-          }
-        }
+      if (!isInEnum(flag, OF) && !isInEnum(flag, KF) && !isIgnoreElem(flag)) {
+        throw new Error('invalid object flag')
       }
+
+      results.push(flag)
     }
 
     current.flags = arrayUnion(current.flags ?? [], results)
