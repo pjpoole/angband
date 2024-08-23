@@ -6,6 +6,7 @@ import { FeatureParser } from './FeatureParser'
 import { MonsterBaseParser } from './MonsterBaseParser'
 import { ObjectParser } from './ObjectParser'
 import { ObjectBaseParser } from './ObjectBaseParser'
+import { PainParser } from './PainParser'
 import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
 import { ProjectionParser } from './ProjectionParser'
@@ -23,6 +24,7 @@ export {
   MonsterBaseParser,
   ObjectParser,
   ObjectBaseParser,
+  PainParser,
   PitParser,
   PlayerPropertyParser,
   ProjectionParser,
@@ -35,6 +37,7 @@ export {
 // TODO: More accurate type information
 //       this is just good enough to get loading to work
 export const PARSERS: any[] = [
+  PainParser,
   BlowParser,
   SlayParser,
   ActivationParser,

@@ -7,11 +7,21 @@ import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { RF } from './flags'
+import { Pain, PainRegistry } from './pain'
 
 export const MonsterBaseSchema = z.object({
   name: z.string(),
   glyph: z.string().length(1),
-  pain: z.number().nonnegative(),
+  pain: z.number().transform((val, ctx) => {
+    const pain = PainRegistry.get(val)
+    if (pain != null) return pain
+
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'missing pain value',
+    })
+    return z.NEVER
+  }),
   flags: z.array(z_enumValueParser(RF)).optional(),
   description: z.string()
 })
@@ -24,7 +34,7 @@ export class MonsterBase extends SerializableBase {
 
   readonly name: string
   readonly glyph: string
-  readonly pain: number
+  readonly pain: Pain
   readonly flags: Set<RF>
   readonly description: string
 
@@ -46,7 +56,7 @@ export class MonsterBase extends SerializableBase {
     return {
       name: this.name,
       glyph: this.glyph,
-      pain: this.pain,
+      pain: this.pain.type,
       flags: enumValueSetToArray(this.flags, RF),
       description: this.description,
     }
