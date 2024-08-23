@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
-import { enumValueToKey } from '../utilities/serializing/enum'
 import { effectObjectsToJson } from '../utilities/serializing/effect'
 import { ifExists } from '../utilities/serializing/helpers'
 import {
@@ -31,8 +30,9 @@ import { z_value } from '../utilities/zod/values'
 
 import { C } from '../utilities/colors'
 import { Dice } from '../utilities/dice'
+import { objectValueToKey } from '../utilities/object'
 import { ValueParams } from '../utilities/values'
-import { TV } from './tval'
+import { TV, TV_NAMES } from './tval'
 import { Slay } from './slay'
 
 const pile = z.object({
@@ -136,7 +136,7 @@ export class AngbandObject extends SerializableBase {
       name: this.name,
       glyph: this.glyph,
       color: this.color,
-      type: enumValueToKey(this.type, TV) as keyof typeof TV,
+      type: objectValueToKey(this.type, TV_NAMES)!,
       level: this.level,
       weight: this.weight,
       cost: this.cost,
