@@ -19,6 +19,7 @@ import { PainRegistry } from '../monsters/pain'
 import { PitRegistry } from '../world/pit'
 import { PlayerPropertyRegistry } from '../player/properties'
 import { ProjectionRegistry } from '../spells/Projection'
+import { QuestRegistry } from './quest'
 import { RoomTemplateRegistry } from '../world/roomTemplate'
 import { ShapeRegistry } from '../player/shape'
 import { SlayRegistry } from '../objects/slay'
@@ -46,6 +47,7 @@ export {
   PitRegistry,
   PlayerPropertyRegistry,
   ProjectionRegistry,
+  QuestRegistry,
   RoomTemplateRegistry,
   ShapeRegistry,
   SlayRegistry,

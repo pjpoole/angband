@@ -17,6 +17,7 @@ import { PainParser } from './PainParser'
 import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
 import { ProjectionParser } from './ProjectionParser'
+import { QuestParser } from './QuestParser'
 import { RoomTemplateParser } from './RoomTemplateParser'
 import { ShapeParser } from './ShapeParser'
 import { SlayParser } from './SlayParser'
@@ -47,6 +48,7 @@ import {
   PitRegistry,
   PlayerPropertyRegistry,
   ProjectionRegistry,
+  QuestRegistry,
   RoomTemplateRegistry,
   ShapeRegistry,
   SlayRegistry,
@@ -73,6 +75,7 @@ export {
   PitParser,
   PlayerPropertyParser,
   ProjectionParser,
+  QuestParser,
   RoomTemplateParser,
   ShapeParser,
   SlayParser,
@@ -103,6 +106,7 @@ export const PARSERS: [any, Registry<any, any, any>][] = [
   [SummonParser, SummonRegistry],
   [MonsterSpellParser, MonsterSpellRegistry],
   [MonsterParser, MonsterRegistry],
+  [QuestParser, QuestRegistry],
   [CurseParser, CurseRegistry],
   [WorldParser, LevelRegistry],
   [FeatureParser, FeatureRegistry],
