@@ -120,8 +120,6 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
 
   // we handle our own serialization because we're a singleton
   override async finalize() {
-    this.finalizeCurrent()
-
     let seenOne = false
     for (const obj of this.objects) {
       if (seenOne) throw new Error('multiple constants specified')

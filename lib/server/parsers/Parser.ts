@@ -43,8 +43,6 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   }
 
   finalize(): void {
-    this.finalizeCurrent()
-
     for (const obj of this.objects) {
       try {
         this._finalizeItem(obj)
@@ -66,21 +64,14 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
   }
 
   newCurrent(defaults?: Partial<T>): Partial<T> {
-    if (this._current) {
-      this.finalizeCurrent()
-    }
-
     this._current = Object.assign({}, defaults) as T
+    this._objects.push(this._current)
     return this._current
   }
 
   get current(): T {
     if (this._current == null) throw new Error(PARSE_ERROR_MISSING_HEADER)
     return this._current
-  }
-
-  finalizeCurrent(): void {
-    if (this._current != null) this._objects.push(this._current)
   }
 
   set error(err: Error) {
