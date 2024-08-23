@@ -1,7 +1,7 @@
 import { asTokens, ParserValues } from './primitives'
-import { CombatJSON } from '../zod/combat'
+import { zCombatJSON } from '../zod/combat'
 
-export function parseCombat(values: ParserValues): CombatJSON {
+export function parseCombat(values: ParserValues): zCombatJSON {
   const [toHit, toDamage, toAC] = asTokens(values, 3)
   return { toHit, toDamage, toAC }
 }

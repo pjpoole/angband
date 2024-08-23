@@ -10,7 +10,7 @@ import { ifExists } from '../utilities/serializing/helpers'
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
-import { CombatParams, z_combat } from '../utilities/zod/combat'
+import { z_combat, zCombatParams } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effect, zEffectParams } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
@@ -52,7 +52,7 @@ export class Curse extends SerializableBase {
   readonly name: string
   readonly types: ObjectBase[] // TODO: Set?
   readonly weight?: number
-  readonly combat?: CombatParams
+  readonly combat?: zCombatParams
   readonly effect?: zEffectParams[]
   readonly dice?: Dice
   readonly expression?: zExpressionParams

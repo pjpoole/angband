@@ -11,7 +11,7 @@ export const z_combat = z.object({
 // here as "missing"
 export const z_combatMin = z_combat.partial()
 
-export type CombatJSON = z.input<typeof z_combat>
-export type CombatParams = z.output<typeof z_combat>
-export type CombatMinJSON = z.input<typeof z_combatMin>
-export type CombatMinParams = z.output<typeof z_combatMin>
+export type zCombatJSON = z.input<typeof z_combat>
+export type zCombatParams = z.output<typeof z_combat>
+export type zCombatMinJSON = z.input<typeof z_combatMin>
+export type zCombatMinParams = z.output<typeof z_combatMin>

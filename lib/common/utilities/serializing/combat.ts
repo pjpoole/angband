@@ -1,11 +1,11 @@
 import {
-  CombatJSON,
-  CombatMinJSON,
-  CombatMinParams,
-  CombatParams
+  zCombatJSON,
+  zCombatMinJSON,
+  zCombatMinParams,
+  zCombatParams
 } from '../zod/combat'
 
-export function combatToJson(combat: CombatParams): CombatJSON {
+export function combatToJson(combat: zCombatParams): zCombatJSON {
   return {
     toHit: combat.toHit.toString(),
     toDamage: combat.toDamage.toString(),
@@ -13,7 +13,7 @@ export function combatToJson(combat: CombatParams): CombatJSON {
   }
 }
 
-export function combatMinToJson(combat: CombatMinParams): CombatMinJSON {
+export function combatMinToJson(combat: zCombatMinParams): zCombatMinJSON {
   return {
     toHit: combat.toHit?.toString(),
     toDamage: combat.toDamage?.toString(),

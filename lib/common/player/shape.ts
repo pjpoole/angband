@@ -9,7 +9,7 @@ import { expressionToJson } from '../utilities/serializing/expression'
 import { ifExists } from '../utilities/serializing/helpers'
 import { valueParamsToJson } from '../utilities/serializing/values'
 
-import { CombatParams, z_combat } from '../utilities/zod/combat'
+import { z_combat, zCombatParams } from '../utilities/zod/combat'
 import { z_diceExpression } from '../utilities/zod/dice'
 import { z_effect } from '../utilities/zod/effect'
 import { z_enumValueParser } from '../utilities/zod/enums'
@@ -54,7 +54,7 @@ export class Shape extends SerializableBase {
   static schema = ShapeSchema
 
   readonly name: string
-  readonly combat?: CombatParams
+  readonly combat?: zCombatParams
   readonly skill?: SkillData
   readonly objectFlags: Set<OF>
   readonly playerFlags: Set<PF>
