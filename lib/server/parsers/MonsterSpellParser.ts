@@ -74,7 +74,7 @@ export class MonsterSpellParser extends Parser<MonsterSpellFields, MonsterSpellJ
     )
   }
 
-  _finalize(obj: MonsterSpellJSON) {
+  _finalizeItem(obj: MonsterSpellJSON) {
     MonsterSpell.fromJSON(obj).register()
   }
 

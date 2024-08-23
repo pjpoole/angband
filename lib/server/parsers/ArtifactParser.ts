@@ -51,7 +51,7 @@ export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: ArtifactJSON) {
+  _finalizeItem(obj: ArtifactJSON) {
     Artifact.fromJSON(obj).register()
   }
 

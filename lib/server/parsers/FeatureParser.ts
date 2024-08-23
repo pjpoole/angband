@@ -44,7 +44,7 @@ export class FeatureParser extends Parser<FeatureFields, FeatureJSON> {
     this.register('resist-flag', this.handleResistFlag.bind(this))
   }
 
-  _finalize(obj: FeatureJSON) {
+  _finalizeItem(obj: FeatureJSON) {
     Feature.fromJSON(obj).register()
   }
 

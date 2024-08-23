@@ -35,7 +35,7 @@ export class PlayerPropertyParser extends Parser<PlayerPropertyFields, PlayerPro
     this.register('value', this.handleValue.bind(this))
   }
 
-  _finalize(obj: PlayerPropertyJSON) {
+  _finalizeItem(obj: PlayerPropertyJSON) {
     PlayerProperty.fromJSON(obj).register()
   }
 

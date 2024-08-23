@@ -32,7 +32,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
     this.register('room', this.handleRoom.bind(this))
   }
 
-  _finalize(obj: DungeonProfileJSON) {
+  _finalizeItem(obj: DungeonProfileJSON) {
     DungeonProfile.fromJSON(obj).register()
   }
 

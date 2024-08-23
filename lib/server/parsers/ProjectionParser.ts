@@ -40,7 +40,7 @@ export class ProjectionParser extends Parser<ProjectionFields, ProjectionJSON> {
     this.register('color', this.keyToColor('color'))
   }
 
-  _finalize(obj: ProjectionJSON) {
+  _finalizeItem(obj: ProjectionJSON) {
     Projection.fromJSON(obj).register()
   }
 

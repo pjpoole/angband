@@ -33,7 +33,7 @@ export class RoomTemplateParser extends Parser<RoomTemplateFields, RoomTemplateJ
     this.register('D', this.handleRoom.bind(this))
   }
 
-  _finalize(obj: RoomTemplateJSON) {
+  _finalizeItem(obj: RoomTemplateJSON) {
     RoomTemplate.fromJSON(obj).register()
   }
 

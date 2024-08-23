@@ -28,7 +28,7 @@ export class VaultParser extends Parser<VaultFields, VaultJSON> {
     this.register('D', this.handleRoom.bind(this))
   }
 
-  _finalize(obj: VaultJSON) {
+  _finalizeItem(obj: VaultJSON) {
     Vault.fromJSON(obj).register()
   }
 

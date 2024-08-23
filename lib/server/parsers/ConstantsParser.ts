@@ -133,7 +133,7 @@ export class ConstantsParser extends Parser<ConstantsFields, ConstantsJSONOverri
   }
 
   // Stub for class; TODO: is this necessary?
-  _finalize(obj: ConstantsJSONOverride) {}
+  _finalizeItem(obj: ConstantsJSONOverride) {}
 
   handleRemapper(jsonKey: keyof ConstantsJSON, remapper: Record<string, string>, values: ParserValues) {
     const current = this.current

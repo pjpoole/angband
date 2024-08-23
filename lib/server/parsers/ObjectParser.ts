@@ -65,7 +65,7 @@ export class ObjectParser extends Parser<ObjectFields, AngbandObjectJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: AngbandObjectJSON) {
+  _finalizeItem(obj: AngbandObjectJSON) {
     AngbandObject.fromJSON(obj).register()
   }
 

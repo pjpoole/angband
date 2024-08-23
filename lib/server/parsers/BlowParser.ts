@@ -25,7 +25,7 @@ export class BlowParser extends Parser<BlowFields, BlowJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: BlowJSON) {
+  _finalizeItem(obj: BlowJSON) {
     Blow.fromJSON(obj).register()
   }
 

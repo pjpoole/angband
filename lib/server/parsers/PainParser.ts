@@ -16,7 +16,7 @@ export class PainParser extends Parser<PainFields, PainJSON> {
     this.register('message', this.handleMessage.bind(this))
   }
 
-  _finalize(obj: PainJSON) {
+  _finalizeItem(obj: PainJSON) {
     Pain.fromJSON(obj).register()
   }
 

@@ -27,7 +27,7 @@ export class BrandParser extends Parser<BrandFields, BrandJSON> {
     this.register('vuln-flag', this.handleFlag.bind(this, 'vulnerabilityFlag'))
   }
 
-  _finalize(obj: BrandJSON) {
+  _finalizeItem(obj: BrandJSON) {
     Brand.fromJSON(obj).register()
   }
 

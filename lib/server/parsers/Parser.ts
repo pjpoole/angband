@@ -47,7 +47,7 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
 
     for (const obj of this.objects) {
       try {
-        this._finalize(obj)
+        this._finalizeItem(obj)
       } catch (e) {
         console.log(`error instantiating object:`, obj)
         throw e
@@ -55,7 +55,7 @@ export abstract class ParserBase<S extends string, T extends { [K in keyof T]: a
     }
   }
 
-  abstract _finalize(obj: T): void
+  abstract _finalizeItem(obj: T): void
 
   register(key: S, handler: ParserFunction): void {
     this._handlers.set(key, handler)

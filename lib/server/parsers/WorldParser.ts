@@ -19,7 +19,7 @@ export class WorldParser extends Parser<WorldFields, LevelJSON> {
     this.register('level', this.handleLevel.bind(this))
   }
 
-  _finalize(obj: LevelJSON) {
+  _finalizeItem(obj: LevelJSON) {
     Level.fromJSON(obj).register()
   }
 

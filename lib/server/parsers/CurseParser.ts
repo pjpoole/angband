@@ -46,7 +46,7 @@ export class CurseParser extends Parser<CurseFields, CurseJSON> {
     this.register('conflict-flags', this.handleConflictFlags.bind(this))
   }
 
-  _finalize(obj: CurseJSON) {
+  _finalizeItem(obj: CurseJSON) {
     Curse.fromJSON(obj).register()
   }
 

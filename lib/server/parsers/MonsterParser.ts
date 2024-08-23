@@ -56,7 +56,7 @@ export class MonsterParser extends Parser<MonsterFields, MonsterJSON> {
     this.register('color-cycle', this.handleColorCycle.bind(this))
   }
 
-  _finalize(obj: MonsterJSON) {
+  _finalizeItem(obj: MonsterJSON) {
     Monster.fromJSON(obj).register()
   }
 

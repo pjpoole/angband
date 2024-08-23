@@ -36,7 +36,7 @@ export class ActivationParser extends Parser<ActivationFields, ActivationJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: ActivationJSON) {
+  _finalizeItem(obj: ActivationJSON) {
     Activation.fromJSON(obj).register()
   }
 

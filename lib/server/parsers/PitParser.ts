@@ -39,7 +39,7 @@ export class PitParser extends Parser<PitFields, PitJSON> {
     this.register('spell-ban', this.handleSpells.bind(this, 'spellsBanned'))
   }
 
-  _finalize(obj: PitJSON) {
+  _finalizeItem(obj: PitJSON) {
     Pit.fromJSON(obj).register()
   }
 

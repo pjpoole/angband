@@ -27,7 +27,7 @@ export class SummonParser extends Parser<SummonFields, SummonJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: SummonJSON) {
+  _finalizeItem(obj: SummonJSON) {
     Summon.fromJSON(obj).register()
   }
 

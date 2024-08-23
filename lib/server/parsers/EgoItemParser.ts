@@ -55,7 +55,7 @@ export class EgoItemParser extends Parser<EgoItemFields, EgoItemJSON> {
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: EgoItemJSON) {
+  _finalizeItem(obj: EgoItemJSON) {
     EgoItem.fromJSON(obj).register()
   }
 

@@ -49,7 +49,7 @@ export class ShapeParser extends Parser<ShapeFields, ShapeJSON> {
     this.register('blow', this.handleBlow.bind(this))
   }
 
-  _finalize(obj: ShapeJSON) {
+  _finalizeItem(obj: ShapeJSON) {
     Shape.fromJSON(obj).register()
   }
 

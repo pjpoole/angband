@@ -19,7 +19,7 @@ export class NameParser extends Parser<NameFields, NameJSON> {
     this.register('word', this.handleWord.bind(this))
   }
 
-  _finalize(obj: NameJSON) {
+  _finalizeItem(obj: NameJSON) {
     Name.fromJSON(obj).register()
   }
 

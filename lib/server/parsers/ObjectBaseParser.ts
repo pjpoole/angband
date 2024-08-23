@@ -31,7 +31,7 @@ export class ObjectBaseParser extends Parser<ObjectBaseFields, ObjectBaseJSON> {
     this.register('flags', this.handleFlags.bind(this))
   }
 
-  _finalize(obj: ObjectBaseJSON) {
+  _finalizeItem(obj: ObjectBaseJSON) {
     ObjectBase.fromJSON(obj).register()
   }
 

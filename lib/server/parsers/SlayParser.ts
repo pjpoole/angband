@@ -27,7 +27,7 @@ export class SlayParser extends Parser<SlayFields, SlayJSON> {
     this.register('range-verb', this.keyToString('rangeVerb'))
   }
 
-  _finalize(obj: SlayJSON) {
+  _finalizeItem(obj: SlayJSON) {
     Slay.fromJSON(obj).register()
   }
 

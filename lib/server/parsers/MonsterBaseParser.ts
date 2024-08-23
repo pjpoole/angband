@@ -22,7 +22,7 @@ export class MonsterBaseParser extends Parser<MonsterBaseFields, MonsterBaseJSON
     this.register('desc', this.keyToString('description'))
   }
 
-  _finalize(obj: MonsterBaseJSON): void {
+  _finalizeItem(obj: MonsterBaseJSON): void {
     MonsterBase.fromJSON(obj).register()
   }
 
