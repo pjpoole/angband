@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { z_diceExpression } from './dice'
+import { z_tVal } from './tVal'
 
 export const z_allocation = z.object({
   commonness: z.number(),
@@ -18,8 +19,15 @@ export const z_attack = z.object({
   plusToDamage: z_diceExpression,
 })
 
+export const z_item = z.object({
+  tval: z_tVal,
+  sval: z.string(), // TODO: object subvalue lookup
+})
+
 export type zAllocationParams = z.output<typeof z_allocation>
 export type zArmorJson = z.input<typeof z_armor>
 export type zArmorParams = z.output<typeof z_armor>
 export type zAttackJson = z.input<typeof z_attack>
 export type zAttackParams = z.output<typeof z_attack>
+export type zItemJson = z.input<typeof z_item>
+export type zItemParams = z.output<typeof z_item>

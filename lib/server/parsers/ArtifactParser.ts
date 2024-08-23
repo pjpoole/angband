@@ -64,8 +64,10 @@ export class ArtifactParser extends Parser<ArtifactFields, ArtifactJSON> {
       : tVal
 
     if (TV_NAMES[lookupKey] == null) throw new Error('invalid object type')
-    current.type = lookupKey
-    current.sval = sVal
+    current.item = {
+      tval: lookupKey,
+      sval: sVal,
+    }
   }
 
   handleGraphics(values: ParserValues) {

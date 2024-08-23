@@ -3,12 +3,12 @@ import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
 import { activationToJson } from '../utilities/serializing/activation'
-import { enumValueToKey } from '../utilities/serializing/enum'
 import { ifExists } from '../utilities/serializing/helpers'
 import {
   armorToJson,
   attackToJson,
-  curseObjectToJson
+  curseObjectToJson,
+  itemToJson
 } from '../utilities/serializing/object'
 import { setToJson } from '../utilities/serializing/set'
 import { valueParamsToJson } from '../utilities/serializing/values'
@@ -24,25 +24,23 @@ import {
   z_allocation,
   z_armor,
   z_attack,
+  z_item,
   zAllocationParams,
   zArmorParams,
-  zAttackParams
+  zAttackParams,
+  zItemParams
 } from '../utilities/zod/object'
 import { z_slay } from '../utilities/zod/slay'
 import { z_value } from '../utilities/zod/values'
-import { z_tVal } from '../utilities/zod/tVal'
 
 import { C } from '../utilities/colors'
 import { ValueParams } from '../utilities/values'
-import { TV, TV_NAMES } from './tval'
 import { Brand } from './brand'
 import { Slay } from './slay'
-import { objectValueToKey } from '../utilities/object'
 
 export const ArtifactSchema = z.object({
   name: z.string(),
-  type: z_tVal,
-  sval: z.string(), // TODO: object subvalue lookup
+  item: z_item,
   glyph: z.string().length(1).optional(), // derives from base type, then
   color: z.nativeEnum(C).optional(),
   level: z.number(),
@@ -67,8 +65,7 @@ export class Artifact extends SerializableBase {
   static readonly schema = ArtifactSchema
 
   readonly name: string
-  readonly type: TV
-  readonly sval: string
+  readonly item: zItemParams
   readonly glyph?: string
   readonly color?: C
   readonly level: number
@@ -89,8 +86,7 @@ export class Artifact extends SerializableBase {
     super(params)
 
     this.name = params.name
-    this.type = params.type
-    this.sval = params.sval
+    this.item = params.item
     this.glyph = params.glyph
     this.color = params.color
     this.level = params.level
@@ -115,8 +111,7 @@ export class Artifact extends SerializableBase {
   toJSON(): ArtifactJSON {
     return {
       name: this.name,
-      type: objectValueToKey(this.type, TV_NAMES)!,
-      sval: this.sval,
+      item: itemToJson(this.item),
       glyph: this.glyph,
       color: this.color,
       level: this.level,
