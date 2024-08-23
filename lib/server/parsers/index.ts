@@ -13,6 +13,7 @@ import { PainParser } from './PainParser'
 import { PitParser } from './PitParser'
 import { PlayerPropertyParser } from './PlayerPropertyParser'
 import { ProjectionParser } from './ProjectionParser'
+import { RoomTemplateParser } from './RoomTemplateParser'
 import { ShapeParser } from './ShapeParser'
 import { SlayParser } from './SlayParser'
 import { SummonParser } from './SummonParser'
@@ -34,6 +35,7 @@ export {
   PitParser,
   PlayerPropertyParser,
   ProjectionParser,
+  RoomTemplateParser,
   ShapeParser,
   SlayParser,
   SummonParser,
@@ -43,6 +45,7 @@ export {
 // TODO: More accurate type information
 //       this is just good enough to get loading to work
 export const PARSERS: any[] = [
+  RoomTemplateParser,
   PainParser,
   BlowParser,
   BrandParser,
