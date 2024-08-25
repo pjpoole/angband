@@ -44,7 +44,7 @@ export class Summon extends SerializableBase {
     this.base = params.base
     this.raceFlag = params.raceFlag
     // TODO: Circular dependency; maybe move to external caller
-    this.fallback = params.fallback ? SummonRegistry.getOrThrow(params.fallback) : undefined
+    this.fallback = params.fallback ? SummonRegistry.get(params.fallback) : undefined
     this.description = params.description
   }
 

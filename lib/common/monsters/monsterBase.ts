@@ -13,7 +13,7 @@ export const MonsterBaseSchema = z.object({
   name: z.string(),
   glyph: z.string().length(1),
   pain: z.number().transform((val, ctx) => {
-    const pain = PainRegistry.get(val)
+    const pain = PainRegistry.getSafe(val)
     if (pain != null) return pain
 
     ctx.addIssue({

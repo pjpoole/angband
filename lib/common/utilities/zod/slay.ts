@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { SlayRegistry } from '../../objects/slay'
 
 export const z_slay = z.string().transform((str, ctx) => {
-  const slay = SlayRegistry.get(str)
+  const slay = SlayRegistry.getSafe(str)
   if (slay != null) return slay
 
   ctx.addIssue({

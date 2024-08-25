@@ -123,7 +123,7 @@ function getNourishSubEffect(token: string): keyof typeof NOURISH | null {
 }
 
 function getMonsterSummon(token: string): number | null {
-  return SummonRegistry.get(token)?.id ?? null
+  return SummonRegistry.getSafe(token)?.id ?? null
 }
 
 function getStat(token: string): keyof typeof STAT | null {
@@ -135,7 +135,7 @@ function getEnchantment(token: string): keyof typeof ENCH | null {
 }
 
 function getShape(token: string): number | null {
-  return ShapeRegistry.get(token)?.id ?? null
+  return ShapeRegistry.getSafe(token)?.id ?? null
 }
 
 function getEarthQuake(token: string): number | null {

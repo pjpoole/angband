@@ -3,7 +3,7 @@ import { ActivationRegistry } from '../../objects/activation'
 import { z_diceExpression } from './dice'
 
 export const z_activation = z.string().transform((val, ctx) => {
-  const activation = ActivationRegistry.get(val)
+  const activation = ActivationRegistry.getSafe(val)
   if (activation != null) return activation
 
   ctx.addIssue({

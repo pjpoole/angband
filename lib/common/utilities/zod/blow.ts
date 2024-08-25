@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { BlowRegistry } from '../../monsters/blows'
 
 export const z_blow = z.string().transform((str, ctx) => {
-  const blow = BlowRegistry.get(str)
+  const blow = BlowRegistry.getSafe(str)
   if (blow != null) return blow
 
   ctx.addIssue({

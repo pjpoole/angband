@@ -16,11 +16,11 @@ export class Registry<
     this.ctor = ctor
   }
 
-  finalize(): void {
-    this.seal()
+  finalize(): boolean {
+    return this.seal()
   }
 
-  seal(): boolean {
+  private seal(): boolean {
     const notYetSealed = !this._sealed
     this._sealed = true
     return notYetSealed
@@ -35,41 +35,28 @@ export class Registry<
     return this.data.has(key as V)
   }
 
-  get(key: V): T | undefined {
-    if (!this._sealed) {
-      throw new Error(
-        'registry read before sealing',
-        { cause: { registry: this.ctor.name }}
-      )
-    }
-
+  getSafe(key: V): T | undefined {
+    this.assertSealed()
     return this.data.get(key)
   }
 
-  getById(id: number): T | undefined {
-    if (!this._sealed) {
-      throw new Error(
-        'registry read before sealing',
-        { cause: { registry: this.ctor.name }}
-      )
-    }
-
-    for (const el of this.data.values()) {
-      if (el.id === id) return el
-    }
-  }
-
-  getOrThrow(key: any): T {
+  get(key: any): T {
+    this.assertSealed()
     const result = this.data.get(key)
     if (result) return result
 
     throw new Error('value not found', { cause: { key }})
   }
 
-  add(key: V, obj: T): void {
-    if (this._sealed) {
-      throw new Error('attempt to register new value after registry sealed')
+  getById(id: number): T | undefined {
+    this.assertSealed()
+    for (const el of this.data.values()) {
+      if (el.id === id) return el
     }
+  }
+
+  add(key: V, obj: T): void {
+    this.assertNotSealed()
     this.data.set(key, obj)
   }
 
@@ -82,6 +69,21 @@ export class Registry<
     }
 
     return result
+  }
+
+  private assertSealed() {
+    if (!this._sealed) {
+      throw new Error(
+        'registry accessed before sealing',
+        { cause: { registry: this.ctor.name }}
+      )
+    }
+  }
+
+  private assertNotSealed() {
+    if (this._sealed) {
+      throw new Error('modifying registry after sealing')
+    }
   }
 }
 

@@ -10,12 +10,7 @@ export class Tile {
     this.x = x
     this.y = y
 
-    const found = FeatureRegistry.get(feature)
-    if (found == null) {
-      throw new Error('invalid feature', { cause: { feature }})
-    }
-
-    this.feature = found
+    this.feature = FeatureRegistry.get(feature)
   }
 
   get glyph(): string {

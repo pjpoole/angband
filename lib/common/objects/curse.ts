@@ -107,13 +107,13 @@ export class Curse extends SerializableBase {
 }
 
 class CurseNameRegistry extends NameRegistry<Curse, CurseParams> {
-  override finalize() {
-    super.finalize()
+  override finalize(): boolean {
+    const firstTime = super.finalize()
 
     // TODO: maybe hydrate conflicts at this point?
     for (const curse of this.data.values()) {
       for (const conflict of curse.conflicts ?? []) {
-        if (!this.get(conflict)) {
+        if (!this.getSafe(conflict)) {
           throw new Error(
             'invalid conflict for curse',
             { cause: { key: conflict } }
@@ -122,6 +122,7 @@ class CurseNameRegistry extends NameRegistry<Curse, CurseParams> {
       }
     }
 
+    return firstTime
   }
 }
 

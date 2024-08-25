@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { CurseRegistry } from '../../objects/curse'
 
 export const z_curse = z.string().transform((str, ctx) => {
-  const curse = CurseRegistry.get(str)
+  const curse = CurseRegistry.getSafe(str)
   if (curse != null) return curse
 
   ctx.addIssue({
