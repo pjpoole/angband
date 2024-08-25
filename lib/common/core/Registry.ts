@@ -8,7 +8,7 @@ import { SerializableBase } from './serializable'
 // I suspect that in time I'll find this assumption violated
 export class Registry<
   T extends SerializableBase, U extends GameObject, V extends string | number
-> implements Iterable<[V, T]> {
+> implements Iterable<T> {
   readonly data: Map<V, T> = new Map()
   private _sealed: boolean = false
 
@@ -26,8 +26,9 @@ export class Registry<
     return notYetSealed
   }
 
-  *[Symbol.iterator](): IterableIterator<[V, T]> {
-    yield* this.data
+  *[Symbol.iterator](): IterableIterator<T> {
+    this.assertSealed()
+    yield* this.data.values()
   }
 
   has(key: unknown): boolean {
