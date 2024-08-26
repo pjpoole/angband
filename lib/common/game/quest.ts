@@ -5,6 +5,15 @@ import { SerializableBase } from '../core/serializable'
 import { z_monster } from '../utilities/zod/monster'
 
 import { Monster } from '../monsters/monster'
+import { Player } from '../player/player'
+
+export function isQuest(player: Player, depth: number) {
+  for (const quest of player.quests) {
+    if (quest.level === depth) return true
+  }
+
+  return false
+}
 
 export const QuestSchema = z.object({
   name: z.string(),

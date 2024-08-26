@@ -101,7 +101,7 @@ export class DungeonProfile extends SerializableBase {
   readonly unusual: number
   readonly rarity: number
   readonly allocation: number
-  readonly minLevel?: number
+  readonly minLevel: number
   readonly tunnel?: Tunnel
   readonly streamer?: Streamer
   readonly allowedRooms?: Room[]
@@ -114,8 +114,8 @@ export class DungeonProfile extends SerializableBase {
     this.rooms = params.rooms
     this.unusual = params.unusual
     this.rarity = params.rarity
-    this.allocation = params.allocation
-    this.minLevel = params.minLevel
+    this.allocation = params.allocation ?? 0
+    this.minLevel = params.minLevel ?? 0
     this.tunnel = params.tunnel
     this.streamer = params.streamer
     this.allowedRooms = params.allowedRooms
