@@ -1,4 +1,4 @@
-import { Tile } from './Tile'
+import { Tile } from '../world/tile'
 import { FEAT } from '../world/features'
 import { Entity } from './Entity'
 
