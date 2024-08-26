@@ -187,6 +187,126 @@ export class Feature extends SerializableBase {
     FeatureRegistry.add(this.code, this)
   }
 
+  isPermanent(): boolean {
+    return this.flags.has(TF.PERMANENT) && this.flags.has(TF.ROCK)
+  }
+
+  isInteresting(): boolean {
+    return this.flags.has(TF.INTERESTING)
+  }
+
+  isStair(): boolean {
+    return this.flags.has(TF.STAIR)
+  }
+
+  isUpStair(): boolean {
+    return this.flags.has(TF.UPSTAIR)
+  }
+
+  isDownStair(): boolean {
+    return this.flags.has(TF.DOWNSTAIR)
+  }
+
+  isDoorish(): boolean {
+    return this.flags.has(TF.DOOR_ANY)
+  }
+
+  isOpenDoor(): boolean {
+    return this.flags.has(TF.CLOSABLE)
+  }
+
+  isClosedDoor(): boolean {
+    return this.flags.has(TF.DOOR_CLOSED)
+  }
+
+  isBrokenDoor(): boolean {
+    return (
+      this.flags.has(TF.DOOR_ANY) &&
+      this.flags.has(TF.PASSABLE) &&
+      this.flags.has(TF.CLOSABLE)
+    )
+  }
+
+  isMagma(): boolean {
+    return this.flags.has(TF.MAGMA)
+  }
+
+  isQuartz(): boolean {
+    return this.flags.has(TF.QUARTZ)
+  }
+
+  isGranite(): boolean {
+    return this.flags.has(TF.GRANITE)
+  }
+
+  isRock(): boolean {
+    return this.flags.has(TF.ROCK)
+  }
+
+  isTreasure(): boolean {
+    return this.flags.has(TF.GOLD)
+  }
+
+  isWall(): boolean {
+    return this.flags.has(TF.WALL)
+  }
+
+  isFloor(): boolean {
+    return this.flags.has(TF.FLOOR)
+  }
+
+  isTrapHolding(): boolean {
+    return this.flags.has(TF.TRAP)
+  }
+
+  isObjectHolding(): boolean {
+    return this.flags.has(TF.OBJECT)
+  }
+
+  isMonsterWalkable(): boolean {
+    return this.flags.has(TF.PASSABLE)
+  }
+
+  isShop(): boolean {
+    return this.flags.has(TF.SHOP)
+  }
+
+  isLineOfSight(): boolean {
+    return this.flags.has(TF.LOS)
+  }
+
+  isPassable(): boolean {
+    return this.flags.has(TF.PASSABLE)
+  }
+
+  isProjectable(): boolean {
+    return this.flags.has(TF.PROJECT)
+  }
+
+  isLightable(): boolean {
+    return this.flags.has(TF.TORCH)
+  }
+
+  isBright(): boolean {
+    return this.flags.has(TF.BRIGHT)
+  }
+
+  isFiery(): boolean {
+    return this.flags.has(TF.FIERY)
+  }
+
+  isNoFlow(): boolean {
+    return this.flags.has(TF.NO_FLOW)
+  }
+
+  isNoScent(): boolean {
+    return this.flags.has(TF.NO_SCENT)
+  }
+
+  isSmooth(): boolean {
+    return this.flags.has(TF.SMOOTH)
+  }
+
   toJSON(): FeatureJSON {
     return {
       code: enumValueToKey(this.code, FEAT),
