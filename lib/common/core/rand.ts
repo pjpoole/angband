@@ -3,6 +3,10 @@ export function randInt0(number: number): number {
   return Math.floor(Math.random() * number)
 }
 
+export function randInt1(number: number): number {
+  return Math.floor(Math.random() * number) + 1
+}
+
 export function oneIn(number: number): boolean {
   return randInt0(number) === 0
 }
