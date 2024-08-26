@@ -9,9 +9,10 @@ import { generate as generateModified } from './modified'
 import { generate as generateTown } from './town'
 
 import { Player } from '../../player/player'
+import { Dungeon } from '../dungeon'
 import { DUN } from '../dungeonTypes'
 
-export type DungeonGenerator = (player: Player, minHeight: number, minWidth: number) => any
+export type DungeonGenerator = (dungeon: Dungeon, player: Player, minHeight: number, minWidth: number) => any
 
 export const GENERATORS: Record<DUN, DungeonGenerator> = {
   [DUN.town]: generateTown,
