@@ -1,5 +1,5 @@
 // list-square-flags.h
-enum SQUARE {
+export enum SQUARE {
   NONE,
   MARK,
   GLOW,
