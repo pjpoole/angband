@@ -83,10 +83,31 @@ export function buildRoom(
     if (!builder(dungeon, chunk, chunk.width, chunk.height, profile.rating)) {
       return false
     }
+  } else {
+    if (!dungeon.checkForUnreservedBlocks(bx1, by1, bx2, by2)) {
+      return false
+    }
+
+    const centerX = Math.trunc((bx1 + bx2 + 1) * dungeon.blockWidth / 2)
+    const centerY = Math.trunc((by1 + by2 + 1) * dungeon.blockHeight / 2)
+
+    // per C comments, this has to be available in the dungeon for proper
+    // entrance calculation
+    dungeon.addCenter(centerX, centerY)
+
+    if (!builder(dungeon, chunk, centerX, centerY, profile.rating)) {
+      // TODO: figure out if we can simply put this in the builder
+      dungeon.popCenter()
+      return false
+    }
+
+    dungeon.reserveBlocks(bx1, by1, bx2, by2)
   }
 
+  if (profile.pit) dungeon.numPits++
+
   // TODO: remove before flight
-  return false
+  return true
 }
 
 export function isValidRoomName(name: string): boolean {
