@@ -6,6 +6,7 @@ import { enumValueToKey } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
 
+import { DungeonGenerator, GENERATORS } from './generators'
 import { isValidRoomName } from './room'
 
 // list-dun-profiles.h
@@ -106,6 +107,8 @@ export class DungeonProfile extends SerializableBase {
   readonly streamer?: Streamer
   readonly allowedRooms?: Room[]
 
+  readonly generator: DungeonGenerator
+
   constructor(params: DungeonProfileParams) {
     super(params)
 
@@ -119,6 +122,8 @@ export class DungeonProfile extends SerializableBase {
     this.tunnel = params.tunnel
     this.streamer = params.streamer
     this.allowedRooms = params.allowedRooms
+
+    this.generator = GENERATORS[this.name]
   }
 
   register() {
