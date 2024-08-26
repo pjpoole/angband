@@ -1,8 +1,27 @@
-// list-rooms.h
 import { Dungeon } from '../dungeon'
 import { Cave } from '../cave'
 import { Room } from '../dungeonProfiles'
 import { getConstants } from '../../core/loading'
+
+import { build as buildCircular } from './circular'
+import { build as buildCrossed } from './crossed'
+import { build as buildGreaterVault } from './greaterVault'
+import { build as buildGreaterVaultNew } from './greaterVaultNew'
+import { build as buildHuge } from './huge'
+import { build as buildInteresting } from './interesting'
+import { build as buildLarge } from './large'
+import { build as buildLesserVault } from './lesserVault'
+import { build as buildLesserVaultNew } from './lesserVaultNew'
+import { build as buildMediumVault } from './mediumVault'
+import { build as buildMediumVaultNew } from './mediumVaultNew'
+import { build as buildMoria } from './moria'
+import { build as buildNest } from './nest'
+import { build as buildOverlap } from './overlap'
+import { build as buildPit } from './pit'
+import { build as buildRoomOfChambers } from './roomOfChambers'
+import { build as buildSimple } from './simple'
+import { build as buildStaircase } from './staircase'
+import { build as buildTemplate } from './template'
 
 type RoomBuilder = (
   dungeon: Dungeon,
@@ -19,6 +38,7 @@ interface RoomEntry {
   fn: RoomBuilder
 }
 
+// list-rooms.h
 const ROOM: RoomEntry[] = [
   { name: 'staircase room', rows: 0, cols: 0, fn: buildStaircase },
   { name: 'simple room', rows: 0, cols: 0, fn: buildSimple },
@@ -36,9 +56,9 @@ const ROOM: RoomEntry[] = [
   { name: 'Lesser vault', rows: 22, cols: 22, fn: buildLesserVault },
   { name: 'Medium vault', rows: 22, cols: 33, fn: buildMediumVault },
   { name: 'Greater vault', rows: 44, cols: 66, fn: buildGreaterVault },
-  { name: 'Lesser vault (new)', rows: 22, cols: 22, fn: buildLesserNewVault },
-  { name: 'Medium vault (new)', rows: 22, cols: 33, fn: buildMediumNewVault },
-  { name: 'Greater vault (new)', rows: 44, cols: 66, fn: buildGreaterNewVault },
+  { name: 'Lesser vault (new)', rows: 22, cols: 22, fn: buildLesserVaultNew },
+  { name: 'Medium vault (new)', rows: 22, cols: 33, fn: buildMediumVaultNew },
+  { name: 'Greater vault (new)', rows: 44, cols: 66, fn: buildGreaterVaultNew },
 ]
 
 export function buildRoom(
@@ -85,194 +105,4 @@ function findBuilder(name: string): RoomBuilder {
   }
 
   throw new Error('invalid room name')
-}
-
-function buildStaircase(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildSimple(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildMoria(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildLarge(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildCrossed(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildCircular(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildOverlap(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildTemplate(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildInteresting(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildPit(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildNest(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildHuge(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildRoomOfChambers(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildLesserVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildMediumVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildGreaterVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildLesserNewVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildMediumNewVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
-}
-
-function buildGreaterNewVault(
-  dungeon: Dungeon,
-  chunk: Cave,
-  x: number,
-  y: number,
-  rating: number,
-): boolean {
-  return false
 }
