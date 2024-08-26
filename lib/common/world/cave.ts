@@ -13,7 +13,7 @@ interface CaveParams {
 export class Cave {
   readonly height: number
   readonly width: number
-  private readonly depth: number
+  readonly depth: number
 
   private readonly tiles: Tile[][]
 

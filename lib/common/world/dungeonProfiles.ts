@@ -15,9 +15,9 @@ import { isValidRoomName } from './room'
 export const DungeonProfileSchema = z.object({
   name: z_enumValueParser(DUN),
   blockSize: z.number(),
-  rooms: z.number(),
+  rooms: z.number().int().nonnegative(),
   unusual: z.number(),
-  rarity: z.number(),
+  maxRarity: z.number(),
   tunnel: z.object({
     rnd: z.number(),
     chg: z.number(),
@@ -70,7 +70,7 @@ interface Streamer {
   qc: number
 }
 
-interface Room {
+export interface Room {
   name: string
   rating: number
   height: number
@@ -88,7 +88,7 @@ export class DungeonProfile extends SerializableBase {
   readonly blockSize: number
   readonly rooms: number
   readonly unusual: number
-  readonly rarity: number
+  readonly maxRarity: number
   readonly allocation: number
   readonly minLevel: number
   readonly tunnel?: Tunnel
@@ -104,7 +104,7 @@ export class DungeonProfile extends SerializableBase {
     this.blockSize = params.blockSize
     this.rooms = params.rooms
     this.unusual = params.unusual
-    this.rarity = params.rarity
+    this.maxRarity = params.maxRarity
     this.allocation = params.allocation ?? 0
     this.minLevel = params.minLevel ?? 0
     this.tunnel = params.tunnel
@@ -124,7 +124,7 @@ export class DungeonProfile extends SerializableBase {
       blockSize: this.blockSize,
       rooms: this.rooms,
       unusual: this.unusual,
-      rarity: this.rarity,
+      maxRarity: this.maxRarity,
       allocation: this.allocation,
       minLevel: this.minLevel,
       tunnel: this.tunnel,

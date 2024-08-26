@@ -42,7 +42,7 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
     current.blockSize = asInteger(blockSize)
     current.rooms = asInteger(rooms)
     current.unusual = asInteger(unusual)
-    current.rarity = asInteger(rarity)
+    current.maxRarity = asInteger(rarity)
   }
 
   handleTunnel(values: ParserValues) {
