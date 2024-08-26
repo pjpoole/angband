@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { IdRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
+import { onlyIfNonEmpty } from '../utilities/serializing/array'
 import { enumValueToKey } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
@@ -92,7 +93,7 @@ export class DungeonProfile extends SerializableBase {
   readonly minLevel: number
   readonly tunnel?: Tunnel
   readonly streamer?: Streamer
-  readonly allowedRooms?: Room[]
+  readonly allowedRooms: Room[]
 
   readonly generator: DungeonGenerator
 
@@ -108,7 +109,7 @@ export class DungeonProfile extends SerializableBase {
     this.minLevel = params.minLevel ?? 0
     this.tunnel = params.tunnel
     this.streamer = params.streamer
-    this.allowedRooms = params.allowedRooms
+    this.allowedRooms = params.allowedRooms ?? []
 
     this.generator = GENERATORS[this.name]
   }
@@ -128,7 +129,7 @@ export class DungeonProfile extends SerializableBase {
       minLevel: this.minLevel,
       tunnel: this.tunnel,
       streamer: this.streamer,
-      allowedRooms: this.allowedRooms
+      allowedRooms: onlyIfNonEmpty(this.allowedRooms),
     }
   }
 }
