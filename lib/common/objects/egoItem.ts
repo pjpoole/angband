@@ -44,12 +44,12 @@ export const EgoItemSchema = z.object({
   rating: z.number(),
   allocation: z_allocation,
   combat: z_combat.optional(),
-  combatMin: z_combatMin.optional(), // TODO: 255 means "there is no min"
+  combatMin: z_combatMin.optional(),
   types: z.array(z_tVal).optional(),
   items: z.array(z_item).optional(),
   flags: z.array(z_objectFlag).optional(),
   flagsOff: z.array(z_objectFlag).optional(),
-  values: z.array(z_value).optional(), // TODO: Dice work differently on values than other places; figure out how they differ
+  values: z.array(z_value).optional(),
   valuesMin: z.array(z_value.refine(
     (val) => {
       return !(val.value.x || val.value.y || val.value.m)

@@ -20,6 +20,8 @@ interface IntermediateValue {
   value: Dice,
 }
 
+// TODO: Dice work differently on values than other places; figure out how they
+//       differ. text files say they handle the minus sign differently.
 export const z_value = z.object({
   stat: z.string(),
   value: z_diceExpression,

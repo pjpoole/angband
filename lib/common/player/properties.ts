@@ -16,7 +16,7 @@ export type PlayerPropertyTypes = typeof PLAYER_PROPERTY_TYPES[number]
 export type ResistValues = typeof RESIST_VALUES[number]
 
 const PlayerPropertySchemaBase = z.object({
-  bindui: z.string().optional(), // TODO
+  bindui: z.string().optional(), // TODO: validate against UI components
   name: z.string(),
   description: z.string(),
 })

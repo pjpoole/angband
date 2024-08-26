@@ -16,7 +16,6 @@ import { RF } from '../monsters/flags'
 import { MonsterBase } from '../monsters/monsterBase'
 import { RSF } from '../monsters/spells'
 
-// TODO: Spells, flags, monsters, monster bases
 export const PitSchema = z.object({
   name: z.string(),
   room: z.number().int().gte(1).lte(3), // TODO: where do these come from?

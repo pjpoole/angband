@@ -9,6 +9,7 @@ export const z_combat = z.object({
 
 // min-combat from ego item permits "no lower bound" as a value; we represent it
 // here as "missing"
+// TODO: 255 means "there is no min"
 export const z_combatMin = z_combat.partial()
 
 export type zCombatJSON = z.input<typeof z_combat>

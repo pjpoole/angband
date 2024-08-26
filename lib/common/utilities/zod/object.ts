@@ -21,7 +21,7 @@ export const z_attack = z.object({
 
 export const z_item = z.object({
   tval: z_tVal,
-  sval: z.string(), // TODO: object subvalue lookup
+  sval: z.string(), // TODO: object subvalue lookup against Object
 })
 
 export type zAllocationParams = z.output<typeof z_allocation>
