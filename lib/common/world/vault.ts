@@ -7,7 +7,7 @@ import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { ROOMF } from './roomTemplate'
-import { isValidRoomName } from './room'
+import { isValidRoomName } from './roomGenerators'
 
 const VAULT_REGEX = /[ .%#@*:`/;&+^<>0-9~$\]|="!?_,A-Za-z-]/
 

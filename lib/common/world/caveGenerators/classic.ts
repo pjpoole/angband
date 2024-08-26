@@ -7,7 +7,7 @@ import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { FEAT, FeatureRegistry } from '../features'
 import { SQUARE } from '../square'
-import { buildRoom } from '../room'
+import { buildRoom } from '../roomGenerators'
 
 export function generate(dungeon: Dungeon, player: Player, minHeight: number, minWidth: number) {
   const constants = getConstants()

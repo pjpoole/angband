@@ -1,8 +1,8 @@
 // list-rooms.h
-import { Dungeon } from './dungeon'
-import { Cave } from './cave'
-import { Room } from './dungeonProfiles'
-import { getConstants } from '../core/loading'
+import { Dungeon } from '../dungeon'
+import { Cave } from '../cave'
+import { Room } from '../dungeonProfiles'
+import { getConstants } from '../../core/loading'
 
 type RoomBuilder = (
   dungeon: Dungeon,

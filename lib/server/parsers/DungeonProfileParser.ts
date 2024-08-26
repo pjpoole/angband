@@ -11,7 +11,7 @@ import {
   DungeonProfileJSON,
 } from '../../common/world/dungeonProfiles'
 
-import { isValidRoomName } from '../../common/world/room'
+import { isValidRoomName } from '../../common/world/roomGenerators'
 
 type DungeonProfileFields = 'name' | 'params' | 'tunnel' | 'streamer' | 'alloc'
   | 'min-level' | 'room'

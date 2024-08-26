@@ -9,7 +9,7 @@ import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { DUN } from './dungeonTypes'
 import { DungeonGenerator, GENERATORS } from './generators'
-import { isValidRoomName } from './room'
+import { isValidRoomName } from './roomGenerators'
 
 // TODO: Refine validators for e.g. boundary checks
 export const DungeonProfileSchema = z.object({
