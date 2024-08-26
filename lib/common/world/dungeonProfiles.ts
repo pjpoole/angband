@@ -6,22 +6,9 @@ import { enumValueToKey } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
 
+import { DUN } from './dungeonTypes'
 import { DungeonGenerator, GENERATORS } from './generators'
 import { isValidRoomName } from './room'
-
-// list-dun-profiles.h
-// Types of dungeon generators
-export enum DUN {
-  town,
-  modified,
-  moria,
-  lair,
-  gauntlet,
-  "hard centre",
-  labyrinth,
-  cavern,
-  classic,
-}
 
 // TODO: Refine validators for e.g. boundary checks
 export const DungeonProfileSchema = z.object({

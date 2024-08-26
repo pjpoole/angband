@@ -7,8 +7,9 @@ import { generate as generateLair } from './lair'
 import { generate as generateMoria } from './moria'
 import { generate as generateModified } from './modified'
 import { generate as generateTown } from './town'
-import { DUN } from '../dungeonProfiles'
+
 import { Player } from '../../player/player'
+import { DUN } from '../dungeonTypes'
 
 export type DungeonGenerator = (player: Player, minHeight: number, minWidth: number) => any
 

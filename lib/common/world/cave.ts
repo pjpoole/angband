@@ -2,8 +2,9 @@ import { findByAlloc, oneIn, randInt0 } from '../core/rand'
 import { isQuest } from '../game/quest'
 import { Player } from '../player/player'
 
-import { DUN, DungeonProfile, DungeonProfileRegistry } from './dungeonProfiles'
 import { Dungeon } from './dungeon'
+import { DungeonProfile, DungeonProfileRegistry } from './dungeonProfiles'
+import { DUN } from './dungeonTypes'
 
 export function caveGenerate(player: any, height: number, width: number) {
   const dungeon = new Dungeon({
