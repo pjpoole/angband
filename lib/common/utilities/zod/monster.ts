@@ -1,8 +1,8 @@
 import { z } from 'zod'
-import { MonsterRegistry } from '../../monsters/monster'
+import { lookupMonster } from '../../monsters/monster'
 
 export const z_monster = z.string().transform((str, ctx) => {
-  const monster = MonsterRegistry.getSafe(str)
+  const monster = lookupMonster(str)
   if (monster != null) return monster
 
   ctx.addIssue({

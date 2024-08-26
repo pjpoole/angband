@@ -2,6 +2,17 @@ export function stricmp(str1: string, str2: string): boolean {
   return str1.toLowerCase() === str2.toLowerCase()
 }
 
+export function stristr(str: string, pattern: string): string | null {
+  const istr = str.toLowerCase(), ipat = pattern.toLowerCase()
+  const idx = istr.indexOf(ipat)
+  return idx === -1 ? null : str.substring(idx, idx + pattern.length)
+}
+
+export function isISubstr(str: string, pattern: string): boolean {
+  const istr = str.toLowerCase(), ipat = pattern.toLowerCase()
+  return istr.indexOf(ipat) !== -1
+}
+
 export function kebabToPascal(str: string): string {
   return str.replace(/-[a-z]/g, (substr) => substr.replace('-', '').toUpperCase())
 }

@@ -16,11 +16,25 @@ import { z_item, zItemParams } from '../utilities/zod/object'
 
 import { C, colorCodeToString } from '../utilities/colors'
 import { setDifference, setUnion } from '../utilities/set'
+import { isISubstr, stricmp } from '../utilities/string'
 
 import { BLOW_EF } from './blows'
 import { RF } from './flags'
 import { MonsterBase } from './monsterBase'
 import { RSF } from './spells'
+
+export function lookupMonster(name: string) {
+  let closestMatch = null
+  for (const monster of MonsterRegistry) {
+    if (stricmp(monster.name, name)) return monster
+    // Ugly legacy behavior
+    if (closestMatch == null && isISubstr(monster.name, name)) {
+      closestMatch = monster
+    }
+  }
+
+  return closestMatch
+}
 
 const spellObject = z.object({
   spell: z_enumValueParser(RSF),

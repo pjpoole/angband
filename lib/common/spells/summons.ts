@@ -44,8 +44,16 @@ export class Summon extends SerializableBase {
     this.base = params.base
     this.raceFlag = params.raceFlag
     // TODO: Circular dependency; maybe move to external caller
-    this.fallback = params.fallback ? SummonRegistry.get(params.fallback) : undefined
+    this.fallback = params.fallback ? this.getFallback(params.fallback) : undefined
     this.description = params.description
+  }
+
+  private getFallback(fallback: string): Summon {
+    // hack to peek in the registry, around safeties
+    for (const summon of SummonRegistry.data.values()) {
+      if (summon.name === fallback) return summon
+    }
+    throw new Error('invalid fallback')
   }
 
   register() {

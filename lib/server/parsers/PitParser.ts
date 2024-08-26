@@ -11,7 +11,7 @@ import { Pit, PitJSON } from '../../common/world/pit'
 
 import { RF } from '../../common/monsters/flags'
 import { MonsterBaseRegistry } from '../../common/monsters/monsterBase'
-import { MonsterRegistry } from '../../common/monsters/monster'
+import { lookupMonster } from '../../common/monsters/monster'
 import { RSF } from '../../common/monsters/spells'
 
 type PitFields = 'name' | 'room' | 'alloc' | 'obj-rarity' | 'color' | 'mon-base'
@@ -64,10 +64,8 @@ export class PitParser extends Parser<PitFields, PitJSON> {
   }
 
   handleMonstersBanned(values: ParserValues) {
-    return
-    // TODO: turn back on when monsters are populated
     const current = this.current
-    if (!MonsterRegistry.has(values)) {
+    if (lookupMonster(values) == null) {
       throw new Error('monster not found', { cause: { key: values } })
     }
 
