@@ -153,7 +153,7 @@ export class AngbandObject extends SerializableBase {
       }),
       flags: setToJson(this.flags),
       values: ifExists(this.values, valueParamsToJson),
-      slay: this.slay?.map(slay => slay.name),
+      slay: this.slay?.map(slay => slay.code),
       power: this.power,
       curses: this.curses?.map(curseObjectToJson),
       message: this.message,

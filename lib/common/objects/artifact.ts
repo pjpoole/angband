@@ -124,8 +124,8 @@ export class Artifact extends SerializableBase {
       flags: setToJson(this.flags),
       activation: ifExists(this.activation, activationToJson),
       values: ifExists(this.values, valueParamsToJson),
-      brands: this.brands?.map(brand => brand.name),
-      slays: this.slays?.map(slay => slay.name),
+      brands: this.brands?.map(brand => brand.code),
+      slays: this.slays?.map(slay => slay.code),
       curses: this.curses?.map(curseObjectToJson),
       description: this.description,
     }

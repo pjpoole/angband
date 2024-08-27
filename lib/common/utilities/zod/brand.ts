@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { stricmp } from '../string'
 import { BrandRegistry } from '../../objects/brand'
 
 export const z_brand = z.string().transform((val, ctx) => {

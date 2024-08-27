@@ -8,7 +8,7 @@ import { enumValueToKey } from '../utilities/serializing/enum'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { DUN } from './dungeonTypes'
-import { DungeonGenerator, GENERATORS } from './generators'
+import { DungeonGenerator, GENERATORS } from './caveGenerators'
 import { isValidRoomName } from './roomGenerators'
 
 // TODO: Refine validators for e.g. boundary checks
@@ -17,7 +17,7 @@ export const DungeonProfileSchema = z.object({
   blockSize: z.number(),
   rooms: z.number().int().nonnegative(),
   unusual: z.number(),
-  maxRarity: z.number(),
+  maxRarity: z.number().optional(),
   tunnel: z.object({
     rnd: z.number(),
     chg: z.number(),
@@ -104,7 +104,7 @@ export class DungeonProfile extends SerializableBase {
     this.blockSize = params.blockSize
     this.rooms = params.rooms
     this.unusual = params.unusual
-    this.maxRarity = params.maxRarity
+    this.maxRarity = params.maxRarity ?? 0
     this.allocation = params.allocation ?? 0
     this.minLevel = params.minLevel ?? 0
     this.tunnel = params.tunnel

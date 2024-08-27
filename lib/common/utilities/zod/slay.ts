@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { stricmp } from '../string'
 import { SlayRegistry } from '../../objects/slay'
 
 export const z_slay = z.string().transform((str, ctx) => {

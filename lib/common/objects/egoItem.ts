@@ -135,8 +135,8 @@ export class EgoItem extends SerializableBase {
       values: ifExists(this.values, valueParamsToJson),
       valuesMin: ifExists(this.valuesMin, valueParamsToJson),
       activation: ifExists(this.activation, activationToJson),
-      brands: this.brands?.map(brand => brand.name),
-      slays: this.slays?.map(slay => slay.name),
+      brands: this.brands?.map(brand => brand.code),
+      slays: this.slays?.map(slay => slay.code),
       curses: this.curses?.map(curseObjectToJson),
       description: this.description,
     }
