@@ -48,7 +48,7 @@ export class GameMap {
     }
 
     const result: string[][] = [[]]
-    rect.eachCell((cell, pt, isNewRow) => {
+    rect.forEach((cell, pt, isNewRow) => {
       if (isNewRow) result.push([])
       result[result.length - 1].push(cell)
     })

@@ -73,29 +73,38 @@ export class Rectangle<T> {
     this.rect[pt.y][pt.x] = value
   }
 
-  eachCell(fn: IteratorFn<T>): void {
-    this.eachCellInRange({ x: 0, y: 0}, { x: this.mx, y: this.my }, fn)
-  }
-
-  everyCellInRange(p1: Coord, p2: Coord, fn: IteratorTestFn<T>): boolean {
+  *coordinates(p1: Coord, p2: Coord): IterableIterator<Coord>  {
     const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
 
-    let newRow = false
     for (let y = top; y <= bottom; y++) {
       for (let x = left; x <= right; x++) {
-        const value = fn(this.rect[y][x], { x, y }, newRow)
-        if (!value) return false
+        yield { x, y }
       }
-      newRow = true
+    }
+  }
+
+  forEach(fn: IteratorFn<T>): void {
+    this.forEachInRange({ x: 0, y: 0}, { x: this.mx, y: this.my }, fn)
+  }
+
+  every(p1: Coord, p2: Coord, fn: IteratorTestFn<T>): boolean {
+    let prevY = 0
+    let newRow = false
+    for (const { x, y } of this.coordinates(p1, p2)) {
+      if (y !== prevY) newRow = true
+      if (!fn(this.rect[y][x], { x, y }, newRow)) return false
+
+      newRow = false
+      prevY = y
     }
 
     return true
   }
 
-  eachBorderCell(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
+  forEachBorder(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
     const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
@@ -123,19 +132,15 @@ export class Rectangle<T> {
     }
   }
 
-  eachCellInRange(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
-    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
-
-    const { x: left, y: top } = topLeft
-    const { x: right, y: bottom } = bottomRight
-
+  forEachInRange(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
+    let prevY = 0
     let newRow = false
-    for (let y = top; y <= bottom; y++) {
-      for (let x = left; x <= right; x++) {
-        fn(this.rect[y][x], { x, y }, newRow)
-        newRow = false
-      }
-      newRow = true
+    for (const { x, y } of this.coordinates(p1, p2)) {
+      if (y !== prevY) newRow = true
+      prevY = y
+      fn(this.rect[y][x], { x, y }, newRow)
+
+      newRow = false
     }
   }
 

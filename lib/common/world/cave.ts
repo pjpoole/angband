@@ -57,7 +57,7 @@ export class Cave {
     feature: Feature,
     flag?: SQUARE,
   ) {
-    this.tiles.eachCellInRange(p1, p2, (tile: Tile) => {
+    this.tiles.forEachInRange(p1, p2, (tile: Tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
@@ -70,7 +70,7 @@ export class Cave {
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
-    this.tiles.eachBorderCell(p1, p2, (tile) => {
+    this.tiles.forEachBorder(p1, p2, (tile) => {
       if (overwritePermanent || !tile.isPermanent()) {
         this.setFeature(tile, feature)
       }
@@ -83,7 +83,7 @@ export class Cave {
     p2: Coord,
     flag: SQUARE,
   ) {
-    this.tiles.eachCellInRange(p1, p2, (tile) => { tile.turnOn(flag) })
+    this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
   }
 
   // this should be the only code setting features

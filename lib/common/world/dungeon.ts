@@ -1,6 +1,7 @@
-import { DungeonProfile } from './dungeonProfiles'
 import { Coord } from '../core/coordinate'
 import { Rectangle } from '../utilities/rectangle'
+
+import { DungeonProfile } from './dungeonProfiles'
 
 interface DungeonParams {
   profile: DungeonProfile
@@ -44,12 +45,15 @@ export class Dungeon {
   // generation
   checkForUnreservedBlocks(p1: Coord, p2: Coord): boolean {
     assertInitialized(this.roomMap)
-    return this.roomMap.everyCellInRange(p1, p2, (cell) => !cell)
+    return this.roomMap.every(p1, p2, (cell) => !cell)
   }
 
   reserveBlocks(p1: Coord, p2: Coord) {
     assertInitialized(this.roomMap)
-    this.roomMap.eachCellInRange(p1, p2, () => true)
+
+    for (const p of this.roomMap.coordinates(p1, p2)) {
+      this.roomMap.set(p, true)
+    }
   }
 
   addCenter(x: number, y: number) {

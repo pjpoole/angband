@@ -89,7 +89,7 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, pt: Coord): boolean {
 function pickRandomUntriedBlock(blocksTried: Rectangle<boolean>): Coord {
   let tempPt: Coord | null = null
   let count = 0
-  blocksTried.eachCell((cell, pt) => {
+  blocksTried.forEach((cell, pt) => {
     if (cell) return
     count++
     if (oneIn(count)) tempPt = pt
