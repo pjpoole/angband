@@ -1,6 +1,7 @@
+import { Coord } from '../../core/coordinate'
 import { getConstants } from '../../core/loading'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
-import { initRect } from '../../utilities/rectangle'
+import { Rectangle } from '../../utilities/rectangle'
 
 import { Player } from '../../player/player'
 
@@ -12,7 +13,7 @@ import { SQUARE } from '../square'
 
 export function generate(dungeon: Dungeon, player: Player, minHeight: number, minWidth: number) {
   const constants = getConstants()
-  const sizePercent = getSizePercent(dungeon, player)
+  const sizePercent = getScaleFactor(dungeon, player)
 
   const numRooms = Math.trunc((dungeon.profile.rooms * sizePercent) / 100)
 
@@ -35,19 +36,19 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   dungeon.blockRows = blockRows
   dungeon.blockColumns = blockColumns
 
-  const blocksTried = initRect(blockRows, blockColumns, false)
+  const blocksTried = new Rectangle(blockRows, blockColumns, false)
 
-  // TODO: persist
+  // PORT: TODO: persistent level logic
 
   let built = 0
   let triedBlocks = 0
   const totalBlocks = blockRows * blockColumns
   while (built < numRooms) {
     if (totalBlocks === triedBlocks) break
-    let [bx, by] = pickRandomUntriedBlock(blocksTried)
+    let pt = pickRandomUntriedBlock(blocksTried)
     triedBlocks++
 
-    if (buildRandomRoom(dungeon, chunk, bx, by)) built++
+    if (buildRandomRoom(dungeon, chunk, pt.x, pt.y)) built++
   }
 
   // Surround the map with permanent rock
@@ -85,33 +86,23 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, x: number, y: number): b
  * block, which has equal probability of overwriting a choice from each of the
  * previous n-1 possible choice; thus each one has a chance of 1/n.
  */
-function pickRandomUntriedBlock(blocksTried: boolean[][]): [number, number] {
-  const maxY = blocksTried.length
-  const maxX = blocksTried[0].length
-
-  let tempX, tempY
+function pickRandomUntriedBlock(blocksTried: Rectangle<boolean>): Coord {
+  let tempPt: Coord | null = null
   let count = 0
-  for (let y = 0; y < maxY; y++) {
-    for (let x = 0; x < maxX; x++) {
-      if (blocksTried[y][x]) continue
-      count++
-      if (oneIn(count)) {
-        tempX = x
-        tempY = y
-      }
-    }
-  }
+  blocksTried.eachCell((cell, pt) => {
+    if (cell) return
+    count++
+    if (oneIn(count)) tempPt = pt
+  })
 
   // should never happen
-  if (tempX == null || tempY == null) {
+  if (tempPt == null) {
     throw new Error('failed to pick block')
   }
 
-  blocksTried[tempY][tempX] = true
-  return [tempX, tempY]
+  blocksTried.set(tempPt, true)
 
-  // should never happen
-  throw new Error('fell through loop')
+  return tempPt
 }
 
 function getRoomRarityCap(dungeon: Dungeon, chunk: Cave): number {
@@ -127,9 +118,9 @@ function getRoomRarityCap(dungeon: Dungeon, chunk: Cave): number {
    *
    * so, at level 1:
    * rarity 0 = 3/4 chance
-   * rarity 1 or greater = 1/4 chance
-   * rarity 2 or greater = 1/16 chance (exactly rarity 1 = 3/16 chance)
-   * rarity 3 or greater = 1/64 chance (exactly rarity 2 = 3/64 chance)
+   * rarity 1 or greater = 1/4 chance (exactly rarity 1 = 3/16 chance)
+   * rarity 2 or greater = 1/16 chance (exactly rarity 2 = 3/64 chance)
+   * rarity 3 or greater = 1/64 chance (exactly rarity 3 = 3/256 chance)
    *
    * at level 100:
    * rarity 0 = 1/2 chance
@@ -145,7 +136,7 @@ function getRoomRarityCap(dungeon: Dungeon, chunk: Cave): number {
 }
 
 // Supposedly unused
-function getSizePercent(dungeon: Dungeon, player: Player) {
+function getScaleFactor(dungeon: Dungeon, player: Player) {
   const i = Math.trunc(randInt1(10) + player.depth / 24)
   if (dungeon.quest) return 100
   else if (i < 2) return 75
