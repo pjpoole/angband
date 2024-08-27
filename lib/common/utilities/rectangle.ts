@@ -1,35 +1,5 @@
 import { Coord } from '../core/coordinate'
 
-export function initRect<T>(height: number, width: number, value?: T): T[][] {
-  const result: T[][] = new Array(height)
-  for (let y = 0; y < height; y++) {
-    result[y] = new Array(width)
-    if (value !== undefined) {
-      for (let x = 0; x < width; x++) {
-        result[y][x] = value
-      }
-    }
-  }
-
-  return result
-}
-
-export function initRectWith<T>(
-  height: number,
-  width: number,
-  fn: (x: number, y: number) => T
-): T[][] {
-  const result: T[][] = new Array(height)
-  for (let y = 0; y < height; y++) {
-    result[y] = new Array(width)
-    for (let x = 0; x < width; x++) {
-      result[y][x] = fn(x, y)
-    }
-  }
-
-  return result
-}
-
 type InitializerFn<T> = (pt: Coord) => T
 type IteratorFn<T> = (obj: T, pt: Coord, newRow?: boolean) => void
 type IteratorTestFn<T> = (obj: T, pt: Coord, newRow?: boolean) => boolean
