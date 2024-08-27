@@ -1,9 +1,17 @@
 import { DungeonProfile } from './dungeonProfiles'
+import { Coord } from '../core/coordinate'
+import { Rectangle } from '../utilities/rectangle'
 
 interface DungeonParams {
   profile: DungeonProfile
   persist: boolean
   quest: boolean
+}
+
+function assertInitialized<T>(value: T): asserts value is NonNullable<T> {
+  if (value == null) {
+    throw new Error('value not yet initialized')
+  }
 }
 
 export class Dungeon {
@@ -21,7 +29,7 @@ export class Dungeon {
   private _blockRows: number = 0
   private _blockColumns: number = 0
 
-  roomMap: boolean[][]
+  roomMap?: Rectangle<boolean>
 
   centers: [number, number][]
 
@@ -30,31 +38,18 @@ export class Dungeon {
     this.persist = params.persist
     this.quest = params.quest
 
-    this.roomMap = [[]]
-
     this.centers = []
   }
 
   // generation
-  checkForUnreservedBlocks(x1: number, y1: number, x2: number, y2: number): boolean {
-    if (x1 < 0 || x2 >= this._blockColumns) return false
-    if (y1 < 0 || y2 >= this._blockRows) return false
-
-    for (let y = y1; y <= y2; y++) {
-      for (let x = x1; x <= x2; x++) {
-        if (this.roomMap[y][x]) return false
-      }
-    }
-
-    return true
+  checkForUnreservedBlocks(p1: Coord, p2: Coord): boolean {
+    assertInitialized(this.roomMap)
+    return this.roomMap.everyCellInRange(p1, p2, (cell) => !cell)
   }
 
-  reserveBlocks(x1: number, y1: number, x2: number, y2: number) {
-    for (let y = y1; y <= y2; y++) {
-      for (let x = x1; x <= x2; x++) {
-        this.roomMap[y][x] = true
-      }
-    }
+  reserveBlocks(p1: Coord, p2: Coord) {
+    assertInitialized(this.roomMap)
+    this.roomMap.eachCellInRange(p1, p2, () => true)
   }
 
   addCenter(x: number, y: number) {
@@ -77,10 +72,7 @@ export class Dungeon {
 
   private maybeInitRoomMap() {
     if (this._blockColumns > 0 && this._blockRows > 0) {
-      this.roomMap = new Array(this._blockRows)
-      for (let y = 0; y < this._blockRows; y++) {
-        this.roomMap[y] = new Array(this._blockColumns)
-      }
+      this.roomMap = new Rectangle(this._blockColumns, this._blockRows, false)
     }
   }
 }

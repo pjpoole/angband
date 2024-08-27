@@ -48,7 +48,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
     let pt = pickRandomUntriedBlock(blocksTried)
     triedBlocks++
 
-    if (buildRandomRoom(dungeon, chunk, pt.x, pt.y)) built++
+    if (buildRandomRoom(dungeon, chunk, pt)) built++
   }
 
   // Surround the map with permanent rock
@@ -61,7 +61,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   )
 }
 
-function buildRandomRoom(dungeon: Dungeon, chunk: Cave, x: number, y: number): boolean {
+function buildRandomRoom(dungeon: Dungeon, chunk: Cave, pt: Coord): boolean {
   let builtRoom = false
   const cutoffThreshold = randInt0(100)
   const rarity = getRoomRarityCap(dungeon, chunk)
@@ -70,7 +70,7 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, x: number, y: number): b
     if (roomProfile.rarity > rarity) continue
     if (roomProfile.cutoff <= cutoffThreshold) continue
 
-    builtRoom = buildRoom(dungeon, chunk, x, y, roomProfile, false)
+    builtRoom = buildRoom(dungeon, chunk, pt, roomProfile, false)
     if (builtRoom) break
   }
   return builtRoom

@@ -32,6 +32,7 @@ export function initRectWith<T>(
 
 type InitializerFn<T> = (pt: Coord) => T
 type IteratorFn<T> = (obj: T, pt: Coord, newRow?: boolean) => void
+type IteratorTestFn<T> = (obj: T, pt: Coord, newRow?: boolean) => boolean
 
 export class Rectangle<T> {
   readonly height: number
@@ -74,6 +75,24 @@ export class Rectangle<T> {
 
   eachCell(fn: IteratorFn<T>): void {
     this.eachCellInRange({ x: 0, y: 0}, { x: this.mx, y: this.my }, fn)
+  }
+
+  everyCellInRange(p1: Coord, p2: Coord, fn: IteratorTestFn<T>): boolean {
+    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
+
+    const { x: left, y: top } = topLeft
+    const { x: right, y: bottom } = bottomRight
+
+    let newRow = false
+    for (let y = top; y <= bottom; y++) {
+      for (let x = left; x <= right; x++) {
+        const value = fn(this.rect[y][x], { x, y }, newRow)
+        if (!value) return false
+      }
+      newRow = true
+    }
+
+    return true
   }
 
   eachBorderCell(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {

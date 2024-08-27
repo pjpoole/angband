@@ -1,3 +1,4 @@
+import { Coord } from '../../core/coordinate'
 import { getConstants } from '../../core/loading'
 
 import { Cave } from '../cave'
@@ -65,18 +66,19 @@ const ROOM: RoomEntry[] = [
 export function buildRoom(
   dungeon: Dungeon,
   chunk: Cave,
-  bx0: number,
-  by0: number,
+  pt: Coord,
   profile: Room,
   findsOwnSpace: boolean
 ): boolean {
   if (chunk.depth < profile.level) return false
   if (profile.pit && dungeon.numPits >= getConstants().dungeonGeneration.pitMax) return false
 
-  let bx1 = bx0
-  let by1 = by0
-  let bx2 = bx0 + Math.ceil(profile.width / dungeon.blockWidth)
-  let by2 = by0 + Math.ceil(profile.height / dungeon.blockHeight)
+  const { x: bx0, y: by0 } = pt
+  const p1 = { ...pt }
+  const p2 = {
+    x: bx0 + Math.ceil(profile.width / dungeon.blockWidth),
+    y: by0 + Math.ceil(profile.height / dungeon.blockHeight)
+  }
 
   const builder = findBuilder(profile.name)
 
@@ -85,12 +87,12 @@ export function buildRoom(
       return false
     }
   } else {
-    if (!dungeon.checkForUnreservedBlocks(bx1, by1, bx2, by2)) {
+    if (!dungeon.checkForUnreservedBlocks(p1, p2)) {
       return false
     }
 
-    const centerX = Math.trunc((bx1 + bx2 + 1) * dungeon.blockWidth / 2)
-    const centerY = Math.trunc((by1 + by2 + 1) * dungeon.blockHeight / 2)
+    const centerX = Math.trunc((p1.x + p2.x + 1) * dungeon.blockWidth / 2)
+    const centerY = Math.trunc((p1.y + p2.y + 1) * dungeon.blockHeight / 2)
 
     // per C comments, this has to be available in the dungeon for proper
     // entrance calculation
@@ -102,7 +104,7 @@ export function buildRoom(
       return false
     }
 
-    dungeon.reserveBlocks(bx1, by1, bx2, by2)
+    dungeon.reserveBlocks(p1, p2)
   }
 
   if (profile.pit) dungeon.numPits++
