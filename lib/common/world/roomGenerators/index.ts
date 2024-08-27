@@ -1,7 +1,8 @@
-import { Dungeon } from '../dungeon'
-import { Cave } from '../cave'
-import { Room } from '../dungeonProfiles'
 import { getConstants } from '../../core/loading'
+
+import { Cave } from '../cave'
+import { Dungeon } from '../dungeon'
+import { Room } from '../dungeonProfiles'
 
 import { build as buildCircular } from './circular'
 import { build as buildCrossed } from './crossed'

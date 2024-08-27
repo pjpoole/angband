@@ -1,4 +1,5 @@
 import { Coord } from '../core/coordinate'
+import { initRectWith } from '../utilities/rectangle'
 
 import { FEAT, Feature } from './features'
 import { SQUARE } from './square'
@@ -10,6 +11,8 @@ interface CaveParams {
   depth: number
 }
 
+type FeatureCount = Record<FEAT, number>
+
 // This is going to have significant overlap with GameMap until they're aligned
 export class Cave {
   readonly height: number
@@ -19,41 +22,40 @@ export class Cave {
   private readonly tiles: Tile[][]
 
   // TODO: not space efficient; bitflag
-  private readonly featureCount: Record<FEAT, number>
+  private readonly featureCount: FeatureCount
 
   constructor(params: CaveParams) {
     this.width = params.width
     this.height = params.height
     this.depth = params.depth
 
-    this.tiles = new Array(this.height)
+    this.featureCount = this.initFeatureCount()
 
-    const temp: Partial<Record<FEAT, number>> = {}
+    this.tiles = initRectWith(this.height, this.width, (x, y) => {
+      const tile = new Tile({ x, y })
+      this.featureCount[tile.feature.code] += 1
+      return tile
+    })
+  }
+
+  private initFeatureCount(): FeatureCount {
+    const result: Partial<FeatureCount> = {}
     for (const code of Object.values(FEAT)) {
       if (typeof code === 'number') {
-        temp[code] = 0
+        result[code] = 0
       }
     }
 
-    this.featureCount = temp as typeof this.featureCount
-
-    for (let y = 0; y < this.height; y++) {
-      this.tiles[y] = new Array(this.width)
-      for (let x = 0; x < this.width; x++) {
-        this.tiles[y][x] = new Tile({ x, y })
-        this.featureCount[this.tiles[y][x].feature.code]! += 1
-      }
-    }
+    return result as FeatureCount
   }
 
   fillRectangle(
-    topLeft: Coord,
-    bottomRight: Coord,
+    p1: Coord,
+    p2: Coord,
     feature: Feature,
     flag?: SQUARE,
   ) {
-    this.assertIsInbounds(topLeft)
-    this.assertIsInbounds(bottomRight)
+    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
@@ -68,14 +70,13 @@ export class Cave {
   }
 
   drawRectangle(
-    topLeft: Coord,
-    bottomRight: Coord,
+    p1: Coord,
+    p2: Coord,
     feature: Feature,
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
-    this.assertIsInbounds(topLeft)
-    this.assertIsInbounds(bottomRight)
+    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
@@ -83,7 +84,16 @@ export class Cave {
     for (const x of [left, right]) {
       for (let y = top; y <= bottom; y++) {
         const tile = this.tiles[y][x]
-        if (overwritePermanent || tile.isPermanent()) {
+        if (overwritePermanent || !tile.isPermanent()) {
+          this.setFeature(tile, feature)
+        }
+      }
+    }
+
+    for (const y of [top, bottom]) {
+      for (let x = left; x <= right; x++) {
+        const tile = this.tiles[y][x]
+        if (overwritePermanent || !tile.isPermanent()) {
           this.setFeature(tile, feature)
         }
       }
@@ -92,31 +102,17 @@ export class Cave {
     if (flag) {
       this.generateMark(topLeft, { y: bottom, x: left }, flag)
       this.generateMark({ y: top, x: right }, bottomRight, flag)
-    }
-
-
-    for (const y of [top, bottom]) {
-      for (let x = left; x <= right; x++) {
-        const tile = this.tiles[y][x]
-        if (overwritePermanent || tile.isPermanent()) {
-          this.setFeature(tile, feature)
-        }
-      }
-    }
-
-    if (flag) {
       this.generateMark(topLeft, { y: top, x: right }, flag)
       this.generateMark({ y: bottom, x: left }, bottomRight, flag)
     }
   }
 
   generateMark(
-    topLeft: Coord,
-    bottomRight: Coord,
+    p1: Coord,
+    p2: Coord,
     flag: SQUARE,
   ) {
-    this.assertIsInbounds(topLeft)
-    this.assertIsInbounds(bottomRight)
+    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
@@ -144,6 +140,16 @@ export class Cave {
     // TODO: traps
     // TODO: square_note_spot
     // TOOD: square_light_spot
+  }
+
+  private wellOrdered(pt1: Coord, pt2: Coord): [Coord, Coord] {
+    this.assertIsInbounds(pt1)
+    this.assertIsInbounds(pt2)
+
+    return [
+      { x: Math.min(pt1.x, pt2.x), y: Math.min(pt1.y, pt2.y) },
+      { x: Math.max(pt1.x, pt2.x), y: Math.max(pt1.y, pt2.y) },
+    ]
   }
 
   assertIsInbounds(pt: Coord) {
