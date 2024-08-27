@@ -65,16 +65,16 @@ const ROOM: RoomEntry[] = [
 export function buildRoom(
   dungeon: Dungeon,
   chunk: Cave,
-  pt: Coord,
+  bpt: Coord,
   profile: Room,
   findsOwnSpace: boolean
 ): boolean {
   if (chunk.depth < profile.level) return false
   if (profile.pit && dungeon.numPits >= getConstants().dungeonGeneration.pitMax) return false
 
-  const { x: bx0, y: by0 } = pt
-  const p1 = { ...pt }
-  const p2 = {
+  const { x: bx0, y: by0 } = bpt
+  const bp1 = { ...bpt }
+  const bp2 = {
     x: bx0 + Math.ceil(profile.width / dungeon.blockWidth),
     y: by0 + Math.ceil(profile.height / dungeon.blockHeight)
   }
@@ -86,24 +86,26 @@ export function buildRoom(
       return false
     }
   } else {
-    if (!dungeon.checkForUnreservedBlocks(p1, p2)) {
+    if (!dungeon.checkForUnreservedBlocks(bp1, bp2)) {
       return false
     }
 
-    const centerX = Math.trunc((p1.x + p2.x + 1) * dungeon.blockWidth / 2)
-    const centerY = Math.trunc((p1.y + p2.y + 1) * dungeon.blockHeight / 2)
+    const center = {
+      x: Math.trunc((bp1.x + bp2.x + 1) * dungeon.blockWidth / 2),
+      y: Math.trunc((bp1.y + bp2.y + 1) * dungeon.blockHeight / 2)
+    }
 
     // per C comments, this has to be available in the dungeon for proper
     // entrance calculation
-    dungeon.addCenter(centerX, centerY)
+    dungeon.addCenter(center)
 
-    if (!builder(dungeon, chunk, { x: centerX, y: centerY }, profile.rating)) {
+    if (!builder(dungeon, chunk, center, profile.rating)) {
       // TODO: figure out if we can simply put this in the builder
       dungeon.popCenter()
       return false
     }
 
-    dungeon.reserveBlocks(p1, p2)
+    dungeon.reserveBlocks(bp1, bp2)
   }
 
   if (profile.pit) dungeon.numPits++

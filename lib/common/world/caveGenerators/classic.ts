@@ -45,10 +45,10 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   const totalBlocks = blockRows * blockColumns
   while (built < numRooms) {
     if (totalBlocks === triedBlocks) break
-    let pt = pickRandomUntriedBlock(blocksTried)
+    const bpt = pickRandomUntriedBlock(blocksTried)
     triedBlocks++
 
-    if (buildRandomRoom(dungeon, chunk, pt)) built++
+    if (buildRandomRoom(dungeon, chunk, bpt)) built++
   }
 
   // Surround the map with permanent rock
@@ -61,7 +61,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   )
 }
 
-function buildRandomRoom(dungeon: Dungeon, chunk: Cave, pt: Coord): boolean {
+function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Coord): boolean {
   let builtRoom = false
   const cutoffThreshold = randInt0(100)
   const rarity = getRoomRarityCap(dungeon, chunk)
@@ -70,7 +70,7 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, pt: Coord): boolean {
     if (roomProfile.rarity > rarity) continue
     if (roomProfile.cutoff <= cutoffThreshold) continue
 
-    builtRoom = buildRoom(dungeon, chunk, pt, roomProfile, false)
+    builtRoom = buildRoom(dungeon, chunk, bpt, roomProfile, false)
     if (builtRoom) break
   }
   return builtRoom
@@ -87,22 +87,22 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, pt: Coord): boolean {
  * previous n-1 possible choice; thus each one has a chance of 1/n.
  */
 function pickRandomUntriedBlock(blocksTried: Rectangle<boolean>): Coord {
-  let tempPt: Coord | null = null
+  let tempBpt: Coord | null = null
   let count = 0
-  blocksTried.forEach((cell, pt) => {
+  blocksTried.forEach((cell, bpt) => {
     if (cell) return
     count++
-    if (oneIn(count)) tempPt = pt
+    if (oneIn(count)) tempBpt = bpt
   })
 
   // should never happen
-  if (tempPt == null) {
+  if (tempBpt == null) {
     throw new Error('failed to pick block')
   }
 
-  blocksTried.set(tempPt, true)
+  blocksTried.set(tempBpt, true)
 
-  return tempPt
+  return tempBpt
 }
 
 function getRoomRarityCap(dungeon: Dungeon, chunk: Cave): number {

@@ -32,7 +32,7 @@ export class Dungeon {
 
   roomMap?: Rectangle<boolean>
 
-  centers: [number, number][]
+  centers: Coord[]
 
   constructor(params: DungeonParams) {
     this.profile = params.profile
@@ -56,8 +56,9 @@ export class Dungeon {
     }
   }
 
-  addCenter(x: number, y: number) {
-    this.centers.push([x, y])
+  // QUESTION: Always a block coord?
+  addCenter(pt: Coord) {
+    this.centers.push(pt)
   }
 
   popCenter() {
