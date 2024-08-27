@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const map = new GameMap(mapData)
   const player = new Entity()
 
-  player.add(map, 40, 15)
+  player.add(map, { x: 40, y: 15 })
 
   const gameWindow = document.getElementById('main')
 
@@ -31,37 +31,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!player.isOnMap()) return
 
+    const { x, y } = player
+
     switch (command) {
       case COMMANDS.MOVE_EAST: {
-        player.move(player.x + 1, player.y)
+        player.move({ x: x + 1, y })
         break
       }
       case COMMANDS.MOVE_NORTHEAST: {
-        player.move(player.x + 1, player.y - 1)
+        player.move({ x: x + 1, y: y - 1 })
         break
       }
       case COMMANDS.MOVE_NORTH: {
-        player.move(player.x, player.y - 1)
+        player.move({ x, y: y - 1 })
         break
       }
       case COMMANDS.MOVE_NORTHWEST: {
-        player.move(player.x - 1, player.y - 1)
+        player.move({ x: x - 1, y: y - 1 })
         break
       }
       case COMMANDS.MOVE_WEST: {
-        player.move(player.x - 1, player.y)
+        player.move({ x: x - 1, y })
         break
       }
       case COMMANDS.MOVE_SOUTHWEST: {
-        player.move(player.x - 1, player.y + 1)
+        player.move({ x: x - 1, y: y + 1 })
         break
       }
       case COMMANDS.MOVE_SOUTH: {
-        player.move(player.x, player.y + 1)
+        player.move({ x, y: y + 1 })
         break
       }
       case COMMANDS.MOVE_SOUTHEAST: {
-        player.move(player.x + 1, player.y + 1)
+        player.move({ x: x + 1, y: y + 1 })
         break
       }
     }

@@ -1,4 +1,4 @@
-// This is going to have significant overlap with GameMap until they're aligned
+import { Coord } from '../core/coordinate'
 
 import { FEAT, Feature } from './features'
 import { SQUARE } from './square'
@@ -10,6 +10,7 @@ interface CaveParams {
   depth: number
 }
 
+// This is going to have significant overlap with GameMap until they're aligned
 export class Cave {
   readonly height: number
   readonly width: number
@@ -39,25 +40,26 @@ export class Cave {
     for (let y = 0; y < this.height; y++) {
       this.tiles[y] = new Array(this.width)
       for (let x = 0; x < this.width; x++) {
-        this.tiles[y][x] = new Tile(x, y)
+        this.tiles[y][x] = new Tile({ x, y })
         this.featureCount[this.tiles[y][x].feature.code]! += 1
       }
     }
   }
 
   fillRectangle(
-    startX: number,
-    startY: number,
-    stopX: number,
-    stopY: number,
+    topLeft: Coord,
+    bottomRight: Coord,
     feature: Feature,
     flag?: SQUARE,
   ) {
-    this.assertIsInbounds(startX, startY)
-    this.assertIsInbounds(stopX, stopY)
+    this.assertIsInbounds(topLeft)
+    this.assertIsInbounds(bottomRight)
 
-    for (let y = startY; y <= stopY; y++) {
-      for (let x = startX; x <= stopX; x++) {
+    const { x: left, y: top } = topLeft
+    const { x: right, y: bottom } = bottomRight
+
+    for (let y = top; y <= bottom; y++) {
+      for (let x = left; x <= right; x++) {
         const tile = this.tiles[y][x]
         this.setFeature(tile, feature)
         if (flag) tile.turnOn(flag)
@@ -66,19 +68,20 @@ export class Cave {
   }
 
   drawRectangle(
-    startX: number,
-    startY: number,
-    stopX: number,
-    stopY: number,
+    topLeft: Coord,
+    bottomRight: Coord,
     feature: Feature,
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
-    this.assertIsInbounds(startX, startY)
-    this.assertIsInbounds(stopX, stopY)
+    this.assertIsInbounds(topLeft)
+    this.assertIsInbounds(bottomRight)
 
-    for (const x of [startX, stopX]) {
-      for (let y = startY; y <= stopY; y++) {
+    const { x: left, y: top } = topLeft
+    const { x: right, y: bottom } = bottomRight
+
+    for (const x of [left, right]) {
+      for (let y = top; y <= bottom; y++) {
         const tile = this.tiles[y][x]
         if (overwritePermanent || tile.isPermanent()) {
           this.setFeature(tile, feature)
@@ -87,13 +90,13 @@ export class Cave {
     }
 
     if (flag) {
-      this.generateMark(startX, startY, startX, stopY, flag)
-      this.generateMark(stopX, startY, stopX, stopY, flag)
+      this.generateMark(topLeft, { y: bottom, x: left }, flag)
+      this.generateMark({ y: top, x: right }, bottomRight, flag)
     }
 
 
-    for (const y of [startY, stopY]) {
-      for (let x = startX; x <= stopX; x++) {
+    for (const y of [top, bottom]) {
+      for (let x = left; x <= right; x++) {
         const tile = this.tiles[y][x]
         if (overwritePermanent || tile.isPermanent()) {
           this.setFeature(tile, feature)
@@ -102,25 +105,26 @@ export class Cave {
     }
 
     if (flag) {
-      this.generateMark(startX, startY, stopX, startY, flag)
-      this.generateMark(startX, stopY, stopX, stopY, flag)
+      this.generateMark(topLeft, { y: top, x: right }, flag)
+      this.generateMark({ y: bottom, x: left }, bottomRight, flag)
     }
   }
 
   generateMark(
-    startX: number,
-    startY: number,
-    stopX: number,
-    stopY: number,
+    topLeft: Coord,
+    bottomRight: Coord,
     flag: SQUARE,
   ) {
-    this.assertIsInbounds(startX, startY)
-    this.assertIsInbounds(stopX, stopY)
+    this.assertIsInbounds(topLeft)
+    this.assertIsInbounds(bottomRight)
+
+    const { x: left, y: top } = topLeft
+    const { x: right, y: bottom } = bottomRight
 
     // TODO: maybe generic iterator? Depends on how often we have to go through
     //       all tiles, or all tiles on a line, or all tiles in a rectangle
-    for (let y = startY; y <= stopY; y++) {
-      for (let x = startX; x <= stopX; x++) {
+    for (let y = top; y <= bottom; y++) {
+      for (let x = left; x <= right; x++) {
         const tile = this.tiles[y][x]
         tile.turnOn(flag)
       }
@@ -142,18 +146,18 @@ export class Cave {
     // TOOD: square_light_spot
   }
 
-  assertIsInbounds(x: number, y: number) {
-    if (!this.isInbounds(x, y)) throw new Error(
+  assertIsInbounds(pt: Coord) {
+    if (!this.isInbounds(pt)) throw new Error(
       'invalid coordinates',
-      { cause: { x, y }}
+      { cause: { x: pt.x, y: pt.y }}
     )
   }
 
-  isInbounds(x: number, y: number): boolean {
-    return x >= 0 && x < this.width && y >= 0 && y < this.height
+  isInbounds(pt: Coord): boolean {
+    return pt.x >= 0 && pt.x < this.width && pt.y >= 0 && pt.y < this.height
   }
 
-  isFullyInbounds(x: number, y: number): boolean {
-    return x > 0 && x < this.width - 1 && y > 0 && y < this.height - 1
+  isFullyInbounds(pt: Coord): boolean {
+    return pt.x > 0 && pt.x < this.width - 1 && pt.y > 0 && pt.y < this.height - 1
   }
 }

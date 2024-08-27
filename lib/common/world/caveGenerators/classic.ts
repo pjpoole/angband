@@ -21,7 +21,12 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
     depth: player.depth,
   })
 
-  chunk.fillRectangle(0, 0, chunk.height - 1, chunk.width - 1, FeatureRegistry.get(FEAT.GRANITE), SQUARE.NONE)
+  chunk.fillRectangle(
+    { x: 0, y: 0 },
+    { x: chunk.height - 1, y: chunk.width - 1 },
+    FeatureRegistry.get(FEAT.GRANITE),
+    SQUARE.NONE
+  )
 
   dungeon.blockHeight = dungeon.profile.blockSize
   dungeon.blockWidth = dungeon.profile.blockSize

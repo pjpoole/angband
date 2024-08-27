@@ -1,6 +1,7 @@
 import { Tile } from '../world/tile'
-import { FEAT } from '../world/features'
+import { FEAT, FeatureRegistry } from '../world/features'
 import { Entity } from './Entity'
+import { Coord } from '../core/coordinate'
 
 export class GameMap {
   private readonly width: number
@@ -17,22 +18,23 @@ export class GameMap {
     for (let y = 0; y < this.height; y++) {
       this.tiles[y] = new Array(this.width)
       for (let x = 0; x < this.width; x++) {
-        this.tiles[y][x] = new Tile(x, y, features[y][x])
+        this.tiles[y][x] = new Tile({ x, y })
+        this.tiles[y][x].feature = FeatureRegistry.get(features[y][x])
       }
     }
   }
 
   addEntity(entity: Entity): boolean {
     if (this.entities.has(entity)) return false
-    if (entity.x == null || entity.y == null) return false
-    if (!this.isInbounds(entity.x, entity.y)) return false
+    if (entity.pt == null) return false
+    if (!this.isInbounds(entity.pt)) return false
 
     this.entities.add(entity)
 
     return true
   }
 
-  remoteEntity(entity: Entity): boolean {
+  removeEntity(entity: Entity): boolean {
     return this.entities.delete(entity)
   }
 
@@ -55,14 +57,15 @@ export class GameMap {
     return result.map(row => row.join('')).join('\n')
   }
 
-  get(x: number, y: number): Tile | undefined {
-    if (!this.isInbounds(x, y)) {
+  get(pt: Coord): Tile | undefined {
+    if (!this.isInbounds(pt)) {
       return undefined
     }
+    const { x, y } = pt
     return this.tiles[y][x]
   }
 
-  isInbounds(x: number, y: number): boolean {
-    return x >= 0 && x < this.width && y >= 0 && y < this.height
+  isInbounds(pt: Coord): boolean {
+    return pt.x >= 0 && pt.x < this.width && pt.y >= 0 && pt.y < this.height
   }
 }

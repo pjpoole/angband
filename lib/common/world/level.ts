@@ -44,7 +44,7 @@ export class Level extends SerializableBase {
 }
 
 class LevelNameRegistry extends IdRegistry<Level, LevelParams> {
-  override finalize() {
+  override finalize(): boolean {
     const findByName = (name: string) => {
       for (const level of this.data.values()) {
         if (level.name === name) return true
@@ -62,7 +62,7 @@ class LevelNameRegistry extends IdRegistry<Level, LevelParams> {
       }
     }
 
-    super.finalize()
+    return super.finalize()
   }
 }
 

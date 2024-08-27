@@ -1,41 +1,38 @@
 import { GameMap } from './Map'
+import { Coord } from '../core/coordinate'
 
 export class Entity {
   protected map?: GameMap
-  x?: number
-  y?: number
+  pt?: Coord
 
-  add(map: GameMap, x: number, y: number): boolean {
+  add(map: GameMap, pt: Coord): boolean {
     this.map = map
 
-    this.x = x
-    this.y = y
+    this.pt = pt
 
     return this.map.addEntity(this)
   }
 
   remove(): boolean {
-    const removed = this.map?.remoteEntity(this)
+    const removed = this.map?.removeEntity(this)
     this.map = undefined
-    this.x = undefined
-    this.y = undefined
+    this.pt = undefined
 
     return removed || false
   }
 
   isOnMap(): this is Entity & { map: GameMap; x: number; y: number } {
-    return (this.map != null && this.x != null && this.y != null)
+    return (this.map != null && this.pt != null)
   }
 
-  move(x: number, y: number): boolean {
+  move(pt: Coord): boolean {
     if (this.isOnMap()) {
-      if (this.map.isInbounds(x, y)) {
-        const tile = this.map.get(x, y)
+      if (this.map.isInbounds(pt)) {
+        const tile = this.map.get(pt)
         if (tile == null) return false
         if (!tile.isPassable()) return false
 
-        this.x = x
-        this.y = y
+        this.pt = pt
       }
     }
 

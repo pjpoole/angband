@@ -1,11 +1,11 @@
-import { FEAT, Feature } from './features'
-import { FeatureRegistry } from '../game/registries'
+import { Coord } from '../core/coordinate'
+
 import { Monster } from '../monsters/monster'
+import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
 
 export class Tile {
-  private readonly x: number
-  private readonly y: number
+  private readonly pt: Coord
   feature: Feature
 
   light: number = 0
@@ -18,9 +18,8 @@ export class Tile {
   // noise
   // smell
 
-  constructor(x: number, y: number) {
-    this.x = x
-    this.y = y
+  constructor(pt: Coord) {
+    this.pt = pt
 
     this.feature = FeatureRegistry.get(FEAT.NONE)
   }
