@@ -17,11 +17,17 @@ export function doInit<T extends SerializableBase>(
   _loading[name] = true
 
   console.log(`Loading ${name}...`)
-  for (const entry of ary) {
-    cls.fromJSON(entry).register()
-  }
-  registry.finalize()
+  try {
+    for (const entry of ary) {
+      cls.fromJSON(entry).register()
+    }
+    registry.finalize()
 
-  console.log('... done.')
+    console.log(`... done loading ${name}.`)
+  } catch(e) {
+    console.error(`failed to load ${name}!`)
+    console.error(e)
+    throw e
+  }
   _loading[name] = false
 }
