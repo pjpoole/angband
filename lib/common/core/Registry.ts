@@ -16,6 +16,10 @@ export class Registry<
     this.ctor = ctor
   }
 
+  get loaded(): boolean {
+    return this._sealed
+  }
+
   finalize(): boolean {
     return this.seal()
   }
