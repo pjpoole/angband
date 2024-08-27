@@ -18,10 +18,11 @@ export class Tile {
   // noise
   // smell
 
-  constructor(pt: Coord) {
+  constructor(pt: Coord, feature?: Feature, flag?: SQUARE) {
     this.pt = pt
 
-    this.feature = FeatureRegistry.get(FEAT.NONE)
+    this.feature = feature ?? FeatureRegistry.get(FEAT.NONE)
+    if (flag) this.turnOn(flag)
   }
 
   get glyph(): string {

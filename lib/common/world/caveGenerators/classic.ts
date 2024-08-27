@@ -20,16 +20,14 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
     height: constants.world.dungeonHeight,
     width: constants.world.dungeonWidth,
     depth: player.depth,
+    // Fill the entire cave with granite to start
+    fill: FeatureRegistry.get(FEAT.GRANITE),
+    flag: SQUARE.NONE,
   })
 
-  // Fill the entire cave with granite to start
-  chunk.fillRectangle(
-    { x: 0, y: 0 },
-    { x: chunk.height - 1, y: chunk.width - 1 },
-    FeatureRegistry.get(FEAT.GRANITE),
-    SQUARE.NONE
-  )
-
+  // TODO: figure out which of this stuff can be moved to the Dungeon
+  //       constructor
+  //       A lot of this is a legacy of dungeon being a global singleton
   dungeon.blockHeight = dungeon.profile.blockSize
   dungeon.blockWidth = dungeon.profile.blockSize
   const blockRows = Math.trunc(chunk.height / dungeon.blockHeight)

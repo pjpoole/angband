@@ -9,6 +9,8 @@ interface CaveParams {
   height: number
   width: number
   depth: number
+  fill?: Feature
+  flag?: SQUARE
 }
 
 type FeatureCount = Record<FEAT, number>
