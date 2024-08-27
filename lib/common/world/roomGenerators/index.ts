@@ -28,8 +28,7 @@ import { build as buildTemplate } from './template'
 type RoomBuilder = (
   dungeon: Dungeon,
   chunk: Cave,
-  x: number,
-  y: number,
+  pt: Coord,
   rating: number,
 ) => boolean
 
@@ -83,7 +82,7 @@ export function buildRoom(
   const builder = findBuilder(profile.name)
 
   if (findsOwnSpace) {
-    if (!builder(dungeon, chunk, chunk.width, chunk.height, profile.rating)) {
+    if (!builder(dungeon, chunk, { x: chunk.width, y: chunk.height }, profile.rating)) {
       return false
     }
   } else {
@@ -98,7 +97,7 @@ export function buildRoom(
     // entrance calculation
     dungeon.addCenter(centerX, centerY)
 
-    if (!builder(dungeon, chunk, centerX, centerY, profile.rating)) {
+    if (!builder(dungeon, chunk, { x: centerX, y: centerY }, profile.rating)) {
       // TODO: figure out if we can simply put this in the builder
       dungeon.popCenter()
       return false
