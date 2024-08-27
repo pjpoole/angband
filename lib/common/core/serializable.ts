@@ -1,15 +1,20 @@
-import { JsonObject } from '../utilities/json'
-import { ZodObject } from 'zod'
+import { JsonObject, JsonValue } from '../utilities/json'
 
 interface Serializable {
   toJSON(): JsonObject
+  register(): void
 }
 
-type Deserializable = {
+type Parsable = {
   schema: { parse: (args: any) => any }
 }
 
-type Buildable<T> = (new (...args: any[]) => T) & Deserializable
+type Deserializable<T> = {
+  fromJSON: (data: JsonValue) => T
+}
+
+export type Buildable<T> = (new (...args: any[]) => T) & Parsable
+export type Loadable<T> = Buildable<T> & Deserializable<T>
 
 export class SerializableBase implements Serializable {
   // THIS IS NOT UNUSED DESPITE SYNTAX HIGHLIGHTING
@@ -31,10 +36,14 @@ export class SerializableBase implements Serializable {
   }
 
   toJSON(): JsonObject {
-    throw new Error('not implemented')
+    throw new Error('implement in subclass')
   }
 
-  static fromJSON<T extends SerializableBase>(this: Buildable<T>, data: JsonObject): T {
+  register() {
+    throw new Error('implement in subclass')
+  }
+
+  static fromJSON<T extends SerializableBase>(this: Buildable<T>, data: JsonValue): T {
     const params = this.schema.parse(data)
 
     return new this(params)
