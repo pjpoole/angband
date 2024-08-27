@@ -1,6 +1,10 @@
+import { isBrowser } from '../utilities/environment'
 import { JsonArray } from '../utilities/json'
+
 import { Registry } from '../core/Registry'
 import { Loadable, SerializableBase } from '../core/serializable'
+
+import { get } from './Constants'
 
 const _loading: Record<string, boolean> = {}
 
@@ -24,6 +28,10 @@ export function doInit<T extends SerializableBase>(
     registry.finalize()
 
     console.log(`... done loading ${name}.`)
+    if (isBrowser) {
+      window.angband ??= { constants: get(), registries: {} }
+      window.angband.registries[cls.name] = registry
+    }
   } catch(e) {
     console.error(`failed to load ${name}!`)
     console.error(e)

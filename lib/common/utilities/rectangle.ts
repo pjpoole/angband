@@ -31,7 +31,7 @@ export function initRectWith<T>(
 }
 
 type InitializerFn<T> = (pt: Coord) => T
-type IteratorFn<T> = (obj: T, pt: Coord) => void
+type IteratorFn<T> = (obj: T, pt: Coord, newRow?: boolean) => void
 
 export class Rectangle<T> {
   readonly height: number
@@ -50,19 +50,20 @@ export class Rectangle<T> {
     this.my = this.height - 1
 
     if (typeof initializer === 'function') {
-      this.rect = Array.from({ length: height }, (_, x) => {
-        return Array.from({ length: width }, (_, y) => {
+      this.rect = Array.from({ length: height }, (_, y) => {
+        return Array.from({ length: width }, (_, x) => {
           return (initializer as InitializerFn<T>)({ x, y })
         })
       })
     } else {
-      this.rect = Array.from({ length: height }, (_, x) => {
-        return Array.from({ length: width }, (_, y) => initializer as T)
+      this.rect = Array.from({ length: height }, () => {
+        return Array.from({ length: width }, () => initializer as T)
       })
     }
   }
 
-  get(pt: Coord): T | undefined {
+  get(pt: Coord): T {
+    this.assertIsInbounds(pt)
     return this.rect[pt.y][pt.x]
   }
 
@@ -81,20 +82,25 @@ export class Rectangle<T> {
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
 
+    let newRow = false
     for (let x = left; x <= right; x++) {
-      fn(this.rect[top][x], { x, y: top })
+      fn(this.rect[top][x], { x, y: top }, newRow)
     }
     // NB. If width === 0, we don't run twice on each cell
     const leftRight = left === right ? [left] : [left, right]
     for (let y = top + 1; y < bottom; y++) {
+      newRow = true
       for (const x of leftRight) {
         fn(this.rect[y][x], { x, y })
+        newRow = false
       }
     }
     // NB. If height === 0, we don't run twice on each cell
     if (top === bottom) return
+    newRow = true
     for (let x = left; x <= right; x++) {
-      fn(this.rect[bottom][x], { x, y: bottom })
+      fn(this.rect[bottom][x], { x, y: bottom }, newRow)
+      newRow = false
     }
   }
 
@@ -104,10 +110,13 @@ export class Rectangle<T> {
     const { x: left, y: top } = topLeft
     const { x: right, y: bottom } = bottomRight
 
+    let newRow = false
     for (let y = top; y <= bottom; y++) {
       for (let x = left; x <= right; x++) {
-        fn(this.rect[y][x], { x, y })
+        fn(this.rect[y][x], { x, y }, newRow)
+        newRow = false
       }
+      newRow = true
     }
   }
 

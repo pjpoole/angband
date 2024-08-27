@@ -2,10 +2,9 @@ import { loadTestRoom } from './testTerrain'
 import { GameMap } from '../common/game/Map'
 import { Entity } from '../common/game/Entity'
 import { CommandMap, COMMANDS } from './commands'
-import { loadConstants, loadGameObjects } from './game/loadData'
+import { loadGameObjects } from './game/loadData'
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadConstants()
   loadGameObjects()
   const mapData = loadTestRoom()
   const map = new GameMap(mapData)
@@ -31,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!player.isOnMap()) return
 
-    const { x, y } = player
+    // Hack; TODO: need val check
+    const { x, y } = player.pt ?? { x: -1, y: -1 }
 
     switch (command) {
       case COMMANDS.MOVE_EAST: {

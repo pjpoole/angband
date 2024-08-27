@@ -1,27 +1,25 @@
+import { Coord } from '../core/coordinate'
+import { Rectangle } from '../utilities/rectangle'
+
 import { Tile } from '../world/tile'
 import { FEAT, FeatureRegistry } from '../world/features'
 import { Entity } from './Entity'
-import { Coord } from '../core/coordinate'
 
 export class GameMap {
   private readonly width: number
   private readonly height: number
-  private readonly tiles: Tile[][]
+  private readonly tiles: Rectangle<Tile>
   private readonly entities: Set<Entity> = new Set()
 
   constructor(features: FEAT[][]) {
     this.height = features.length
     this.width = features[0].length
 
-    this.tiles = new Array(this.height)
-
-    for (let y = 0; y < this.height; y++) {
-      this.tiles[y] = new Array(this.width)
-      for (let x = 0; x < this.width; x++) {
-        this.tiles[y][x] = new Tile({ x, y })
-        this.tiles[y][x].feature = FeatureRegistry.get(features[y][x])
-      }
-    }
+    this.tiles = new Rectangle(this.height, this.width, (pt) => {
+      const tile = new Tile(pt)
+      tile.feature = FeatureRegistry.get(features[pt.y][pt.x])
+      return tile
+    })
   }
 
   addEntity(entity: Entity): boolean {
@@ -39,20 +37,21 @@ export class GameMap {
   }
 
   draw(): string {
-    const result = new Array(this.height)
-
-    for (let y = 0; y < this.height; y++) {
-      result[y] = new Array(this.width)
-      for (let x = 0; x < this.width; x++) {
-        result[y][x] = this.tiles[y][x].glyph
-      }
-    }
+    const rect = new Rectangle(this.height, this.width, (pt) => {
+      return this.tiles.get(pt).glyph
+    })
 
     for (const entity of this.entities) {
       if (entity.isOnMap()) {
-        result[entity.y][entity.x] = entity.glyph
+        rect.set(entity.pt!, entity.glyph)
       }
     }
+
+    const result: string[][] = [[]]
+    rect.eachCell((cell, pt, isNewRow) => {
+      if (isNewRow) result.push([])
+      result[result.length - 1].push(cell)
+    })
 
     return result.map(row => row.join('')).join('\n')
   }
@@ -61,8 +60,7 @@ export class GameMap {
     if (!this.isInbounds(pt)) {
       return undefined
     }
-    const { x, y } = pt
-    return this.tiles[y][x]
+    return this.tiles.get(pt)
   }
 
   isInbounds(pt: Coord): boolean {

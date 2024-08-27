@@ -1,5 +1,5 @@
-import type { Registry } from '../common/core/Registry'
-import { ConstantsParams } from '../common/core/constants'
+import type { ConstantsParams } from '../core/constants'
+import type { Registry } from '../core/Registry'
 
 declare global {
   interface Window {
