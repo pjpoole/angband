@@ -1,4 +1,4 @@
-import { Coord } from '../core/coordinate'
+import { cOffset, Coord, cToBox, cToWellOrdered } from '../core/coordinate'
 import { Rectangle } from '../utilities/rectangle'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
@@ -131,6 +131,19 @@ export class Cave {
         this.setMarkedGranite(pt1, SQUARE.WALL_OUTER)
       }
     })
+  }
+
+  generateBasicRoom(
+    p1: Coord,
+    p2: Coord,
+    light: boolean,
+  ): void {
+    const [topLeft, bottomRight] = cToWellOrdered(p1, p2)
+    const outerTopLeft = cOffset(topLeft, -1)
+    const outerBottomRight = cOffset(bottomRight, 1)
+    this.generateRoom(outerTopLeft, outerBottomRight, light)
+    this.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
+    this.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
   }
 
   // TODO: Check to see how this is used; if it's always used in conjunction

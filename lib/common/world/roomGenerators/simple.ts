@@ -5,7 +5,6 @@ import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
-import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
 export function build(
@@ -21,16 +20,11 @@ export function build(
     if (!findSpace(dungeon, center, height + 2, width + 2)) return false
   }
 
-  const [topLeft, bottomRight] = cToBox(center, height, width)
-  // wall boundaries
-  const outerTopLeft = cOffset(topLeft, -1)
-  const outerBottomRight = cOffset(bottomRight, 1)
-
   const light = chunk.depth <= randInt1(25)
 
-  chunk.generateRoom(outerTopLeft, outerBottomRight, light)
-  chunk.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
-  chunk.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
+  // wall boundaries
+  const [topLeft, bottomRight] = cToBox(center, height, width)
+  chunk.generateBasicRoom(topLeft, bottomRight, light)
 
   if (oneIn(20)) {
     // sometimes make a pillar room.
