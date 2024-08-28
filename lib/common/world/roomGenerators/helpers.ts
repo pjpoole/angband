@@ -5,6 +5,11 @@ import { Dungeon } from '../dungeon'
 
 const MAX_TRIES = 25
 
+/*
+ * MUTATES PT!
+ *
+ * TODO: See if there is a version of this that does not mutate
+ */
 export function findSpace(
   dungeon: Dungeon, pt: Coord, height: number, width: number
 ): boolean {
