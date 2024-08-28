@@ -1,7 +1,7 @@
 import { Coord, cToBox } from '../../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
-import { buildStarburstRoom } from './starburst'
+import { buildStarburstRoom } from './helpers/starburst'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
