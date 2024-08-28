@@ -5,11 +5,12 @@ import {
   Coord,
   cToWellOrdered
 } from '../core/coordinate'
-import { randInt0 } from '../core/rand'
+import { oneIn, randInt0, randInt1 } from '../core/rand'
 import { Rectangle } from '../utilities/rectangle'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
+import { RoomTemplate } from './roomTemplate'
 import { Tile } from './tile'
 
 interface CaveParams {
@@ -151,6 +152,29 @@ export class Cave {
     this.generateRoom(outerTopLeft, outerBottomRight, light)
     this.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
     this.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
+  }
+
+  buildRoomTemplate(
+    center: Coord,
+    template: RoomTemplate
+  ): boolean {
+
+    const light = this.depth <= randInt1(25)
+    // Which random doors will we generate
+    const randomDoor = randInt1(doors)
+    // Do we generate optional walls
+    const randomWalls = oneIn(2)
+
+
+    template.room.forEach((char, pt) => {
+      if (char === ' ') return
+
+      const dest = symmetryTransform(pt, center, height, width, rotate, reflect)
+      chunk.set(dest, FEAT.FLOOR)
+
+    })
+
+    return true
   }
 
   // TODO: Check to see how this is used; if it's always used in conjunction
