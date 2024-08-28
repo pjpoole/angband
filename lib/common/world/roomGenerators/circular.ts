@@ -1,4 +1,4 @@
-import { cOffset, Coord, cProd, cSum } from '../../core/coordinate'
+import { cOffset, Coord, cProd, cSum, cToBox } from '../../core/coordinate'
 import { randInt0, randInt1 } from '../../core/rand'
 
 import { randDirNSEW } from '../../utilities/directions'
@@ -17,19 +17,19 @@ export function build(
 ): boolean {
   // range 4-7; diameter 8-14
   const radius = 2 + randInt1(2) + randInt1(3)
+  const diameter = 2 * radius
 
   const light = chunk.depth <= randInt1(25)
 
-  if (pt.x >= chunk.width || pt.y >= chunk.height) {
+  if (!chunk.isInbounds(pt)) {
     // 5 spaces buffer around the edge of the circle
     // pt may have been mutated here
-    if (!findSpace(dungeon, pt, 2 * radius + 10, 2 * radius + 10)) return false
+    if (!findSpace(dungeon, pt, diameter + 10, diameter + 10)) return false
   }
 
   fillCircle(chunk, pt, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
-  const upperLeft = { x: pt.x - radius - 2, y: pt.y - radius - 2 }
-  const lowerRight = { x: pt.x + radius + 2, y: pt.y + radius + 2}
+  const [upperLeft, lowerRight] = cToBox(pt, radius + 2)
 
   chunk.setBorderingWalls(upperLeft, lowerRight)
 
@@ -37,7 +37,7 @@ export function build(
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
     const offset = cProd(randDirNSEW(), 2)
 
-    chunk.drawRectangle(cOffset(pt, -2), cOffset(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
+    chunk.drawRectangle(...cToBox(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
     chunk.placeClosedDoor(offset)
 
     // TODO: vault objects
