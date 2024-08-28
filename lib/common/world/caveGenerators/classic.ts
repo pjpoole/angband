@@ -7,7 +7,7 @@ import { Player } from '../../player/player'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
-import { FEAT, FeatureRegistry } from '../features'
+import { FEAT } from '../features'
 import { buildRoom } from '../roomGenerators'
 import { SQUARE } from '../square'
 
@@ -22,7 +22,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
     width: constants.world.dungeonWidth,
     depth: player.depth,
     // Fill the entire cave with granite to start
-    fill: FeatureRegistry.get(FEAT.GRANITE),
+    fill: FEAT.GRANITE,
     flag: SQUARE.NONE,
   })
 
@@ -55,7 +55,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   chunk.drawRectangle(
     { x: 0, y: 0 },
     { x: chunk.width - 1, y: chunk.height - 1},
-    FeatureRegistry.get(FEAT.PERM),
+    FEAT.PERM,
     SQUARE.NONE,
     true,
   )

@@ -9,7 +9,7 @@ interface CaveParams {
   height: number
   width: number
   depth: number
-  fill?: Feature
+  fill?: Feature | FEAT
   flag?: SQUARE
 }
 
@@ -33,8 +33,12 @@ export class Cave {
 
     this.featureCount = this.initFeatureCount()
 
+    const fill: Feature | undefined = params.fill !== null && typeof params.fill === 'number'
+      ? FeatureRegistry.get(params.fill)
+      : params.fill
+
     this.tiles = new Rectangle(this.width, this.height, (pt: Coord): Tile => {
-      const tile = new Tile(pt, params.fill, params.flag)
+      const tile = new Tile(pt, fill, params.flag)
       this.featureCount[tile.feature.code] += 1
       return tile
     })
@@ -120,7 +124,7 @@ export class Cave {
   fillRectangle(
     p1: Coord,
     p2: Coord,
-    feature: Feature,
+    feature: Feature | FEAT,
     flag?: SQUARE,
   ) {
     this.tiles.forEachInRange(p1, p2, (tile) => {
@@ -133,7 +137,7 @@ export class Cave {
     y: number,
     xStart: number,
     xEnd: number,
-    feature: Feature,
+    feature: Feature | FEAT,
     flag?: SQUARE,
     light?: boolean,
   ) {
@@ -149,7 +153,7 @@ export class Cave {
     x: number,
     yStart: number,
     yEnd: number,
-    feature: Feature,
+    feature: Feature | FEAT,
     flag?: SQUARE,
     light?: boolean,
   ) {
@@ -164,7 +168,7 @@ export class Cave {
   drawRectangle(
     p1: Coord,
     p2: Coord,
-    feature: Feature,
+    feature: Feature | FEAT,
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
@@ -191,7 +195,9 @@ export class Cave {
   }
 
   // this should be the only code setting features
-  setFeature(tile: Tile, feature: Feature) {
+  setFeature(tile: Tile, _feature: Feature | FEAT) {
+    const feature = typeof _feature === 'number' ? FeatureRegistry.get(_feature) : _feature
+
     this.featureCount[tile.feature.code]--
     this.featureCount[feature.code]++
 

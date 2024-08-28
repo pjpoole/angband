@@ -5,7 +5,7 @@ import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
-import { FEAT, Feature, FeatureRegistry } from '../features'
+import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
 export function build(
@@ -25,7 +25,7 @@ export function build(
     if (!findSpace(dungeon, pt, 2 * radius + 10, 2 * radius + 10)) return false
   }
 
-  fillCircle(chunk, pt, radius + 1, 0, FeatureRegistry.get(FEAT.FLOOR), SQUARE.NONE, light)
+  fillCircle(chunk, pt, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
   const upperLeft = { x: pt.x - radius - 2, y: pt.y - radius - 2 }
   const lowerRight = { x: pt.x + radius + 2, y: pt.y + radius + 2}
@@ -46,7 +46,7 @@ function fillCircle(
   center: Coord,
   radius: number,
   border: number,
-  feature: Feature,
+  feature: Feature | FEAT,
   flag: SQUARE,
   light: boolean
 ) {
