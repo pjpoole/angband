@@ -2,7 +2,7 @@ import { Coord, cToBox } from '../../core/coordinate'
 import { oneIn, randInRange, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
-import { Dungeon, findSpace } from '../dungeon'
+import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
@@ -21,7 +21,7 @@ export function build(
   const width = 2 * deltaX + 1
 
   if (!chunk.isInbounds(center)) {
-    if (!findSpace(dungeon, center, height + 2, width + 2)) return false
+    if (!dungeon.findSpace(center, height + 2, width + 2)) return false
   }
 
   // tall and skinny

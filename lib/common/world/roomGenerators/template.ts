@@ -4,7 +4,7 @@ import { clamp } from '../../utilities/number'
 import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
-import { Dungeon, findSpace } from '../dungeon'
+import { Dungeon } from '../dungeon'
 import { RoomTemplate, RoomTemplateRegistry } from '../roomTemplate'
 
 enum SYMTR {
@@ -57,7 +57,7 @@ function buildRoomTemplate(dungeon: Dungeon, chunk: Cave, center: Coord, templat
     tHeight = symmetryOp.height
     tWidth = symmetryOp.width
 
-    if (!findSpace(dungeon, center, tHeight + 2, tWidth + 2)) return false
+    if (!dungeon.findSpace(center, tHeight + 2, tWidth + 2)) return false
   } else {
     symmetryOp = getRandomSymmetryTransform(
       height,

@@ -2,7 +2,7 @@ import { cOffset, Coord, cSum, cToBox } from '../../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
-import { Dungeon, findSpace } from '../dungeon'
+import { Dungeon } from '../dungeon'
 import { SQUARE } from '../square'
 
 export function build(
@@ -15,7 +15,7 @@ export function build(
   const width = 1 + randInt1(11) + randInt1(11) // 3-23
 
   if (!chunk.isInbounds(center)) {
-    if (!findSpace(dungeon, center, height + 2, width + 2)) return false
+    if (!dungeon.findSpace(center, height + 2, width + 2)) return false
   }
 
   const light = chunk.depth <= randInt1(25)

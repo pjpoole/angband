@@ -4,7 +4,7 @@ import { oneIn, randInt0, randInt1 } from '../../core/rand'
 import { buildStarburstRoom } from './starburst'
 
 import { Cave } from '../cave'
-import { Dungeon, findSpace } from '../dungeon'
+import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 
 const MAX_TRIES = 1
@@ -24,7 +24,7 @@ export function build(
     [height, width] = randomizeRoomSize(tries)
 
     if (!chunk.isInbounds(center)) {
-      if (!findSpace(dungeon, center, height, width)) {
+      if (!dungeon.findSpace(center, height, width)) {
         if (tries < MAX_TRIES) continue
         if (tries === MAX_TRIES) return false
       }

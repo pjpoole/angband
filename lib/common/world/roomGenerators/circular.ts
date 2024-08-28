@@ -9,7 +9,7 @@ import { randInt0, randInt1 } from '../../core/rand'
 import { randDirNSEW } from '../../utilities/directions'
 
 import { Cave } from '../cave'
-import { Dungeon, findSpace } from '../dungeon'
+import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
@@ -28,7 +28,7 @@ export function build(
   if (!chunk.isInbounds(pt)) {
     // 5 spaces buffer around the edge of the circle
     // pt may have been mutated here
-    if (!findSpace(dungeon, pt, diameter + 10, diameter + 10)) return false
+    if (!dungeon.findSpace(pt, diameter + 10, diameter + 10)) return false
   }
 
   fillCircle(chunk, pt, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
