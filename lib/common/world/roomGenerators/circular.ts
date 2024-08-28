@@ -1,4 +1,9 @@
-import { cOffset, Coord, cProd, cSum, cToBox } from '../../core/coordinate'
+import {
+  Coord,
+  cProd,
+  cToBox,
+  cToRadius
+} from '../../core/coordinate'
 import { randInt0, randInt1 } from '../../core/rand'
 
 import { randDirNSEW } from '../../utilities/directions'
@@ -37,7 +42,7 @@ export function build(
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
     const offset = cProd(randDirNSEW(), 2)
 
-    chunk.drawRectangle(...cToBox(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
+    chunk.drawRectangle(...cToRadius(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
     chunk.placeClosedDoor(offset)
 
     // TODO: vault objects

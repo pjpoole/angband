@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 
-import { cEq, cOffset, cSum, cToBox } from '../core/coordinate'
+import { cEq, cOffset, cSum, cToBox, cToRadius } from '../core/coordinate'
 
 describe('Coord', () => {
   describe('cEq', () => {
@@ -107,11 +107,34 @@ describe('Coord', () => {
 
     test('square box', () => {
       const center = { x: 12, y: 15 }
+      const height = 5
+      const deltaX = Math.trunc(height / 2)
+      const deltaY = Math.trunc(height / 2)
+      const expected1 = { x: center.x - deltaX, y: center.y - deltaY }
+      const expected2 = { x: center.x + deltaX, y: center.y + deltaY }
+
+      const [actual1, actual2] = cToBox(center, height)
+
+      expect(actual2.x - actual1.x + 1).toEqual(height)
+      expect(actual2.y - actual1.y + 1).toEqual(height)
+
+      expect(cEq(actual1, expected1)).toBe(true)
+      expect(cEq(actual2, expected2)).toBe(true)
+    })
+  })
+
+  describe('cToRadius', () => {
+    test('square box', () => {
+      const center = { x: 12, y: 15 }
       const radius = 5
+      const height = radius * 2 + 1
       const expected1 = { x: center.x - radius, y: center.y - radius }
       const expected2 = { x: center.x + radius, y: center.y + radius }
 
-      const [actual1, actual2] = cToBox(center, radius)
+      const [actual1, actual2] = cToRadius(center, radius)
+
+      expect(actual2.x - actual1.x + 1).toEqual(height)
+      expect(actual2.y - actual1.y + 1).toEqual(height)
 
       expect(cEq(actual1, expected1)).toBe(true)
       expect(cEq(actual2, expected2)).toBe(true)
@@ -127,7 +150,7 @@ describe('Coord', () => {
         const original1 = { x: center.x - radius - 2, y: center.y - radius - 2 }
         const original2 = { x: center.x + radius + 2, y: center.y + radius + 2 }
 
-        const [actual1, actual2] = cToBox(center, radius + 2)
+        const [actual1, actual2] = cToRadius(center, radius + 2)
 
         expect(cEq(original1, actual1)).toBe(true)
         expect(cEq(original2, actual2)).toBe(true)
@@ -140,7 +163,7 @@ describe('Coord', () => {
         const original1 = { x: center.x - offset, y: center.y - offset }
         const original2 = { x: center.x + offset, y: center.y + offset }
 
-        const [actual1, actual2] = cToBox(center, offset)
+        const [actual1, actual2] = cToRadius(center, offset)
 
         expect(cEq(original1, actual1)).toBe(true)
         expect(cEq(original2, actual2)).toBe(true)

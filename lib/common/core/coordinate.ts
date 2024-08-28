@@ -27,13 +27,10 @@ export function cProd(pt: Coord, multiplicand: number) {
  * center 5, width 8: [1, 2, 3, 4, 5, 6, 7, 8]
  *                        center --^
  */
-export function cToBox(center: Coord, radius: number): [Coord, Coord]
+export function cToBox(center: Coord, height: number): [Coord, Coord]
 export function cToBox(center: Coord, height: number, width: number): [Coord, Coord]
 export function cToBox(center: Coord, height: number, width?: number): [Coord, Coord] {
-  if (width == null) {
-    width = height * 2 + 1
-    height = height * 2 + 1
-  }
+  width ??= height
 
   const pt1 = {
     x: center.x - Math.trunc(width / 2),
@@ -47,4 +44,8 @@ export function cToBox(center: Coord, height: number, width?: number): [Coord, C
   }
 
   return [pt1, pt2]
+}
+
+export function cToRadius(pt: Coord, radius: number) {
+  return cToBox(pt, radius * 2 + 1)
 }
