@@ -37,6 +37,10 @@ export class Tile {
     this.flags[flag] = false
   }
 
+  has(flag: SQUARE): boolean {
+    return this.flags[flag] === true
+  }
+
   isMark(): boolean {
     return this.flags[SQUARE.MARK] === true
   }

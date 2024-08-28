@@ -6,11 +6,17 @@ import {
   cToWellOrdered
 } from '../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
+import { getNeighbors } from '../utilities/directions'
+import { asInteger } from '../utilities/parsing/primitives'
 import { Rectangle } from '../utilities/rectangle'
+import {
+  SymmetryTransform,
+  symmetryTransform
+} from './roomGenerators/helpers/symmetry'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
-import { RoomTemplate } from './roomTemplate'
+import { ROOMF, RoomTemplate } from './roomTemplate'
 import { Tile } from './tile'
 
 interface CaveParams {
@@ -156,8 +162,11 @@ export class Cave {
 
   buildRoomTemplate(
     center: Coord,
-    template: RoomTemplate
+    template: RoomTemplate,
+    transform?: SymmetryTransform,
   ): boolean {
+    const { height, width, doors } = template
+    const { rotate = 0, reflect = false } = transform ?? {}
 
     const light = this.depth <= randInt1(25)
     // Which random doors will we generate
@@ -165,13 +174,95 @@ export class Cave {
     // Do we generate optional walls
     const randomWalls = oneIn(2)
 
-
-    template.room.forEach((char, pt) => {
+    template.room.forEach((char, ptPre) => {
       if (char === ' ') return
 
-      const dest = symmetryTransform(pt, center, height, width, rotate, reflect)
-      chunk.set(dest, FEAT.FLOOR)
+      const pt = symmetryTransform(ptPre, center, height, width, rotate, reflect)
+      const tile = this.tiles.get(pt)
+      this.setFeature(tile, FEAT.FLOOR)
+      assert(tile.isEmpty())
 
+      switch (char) {
+        case '%':
+          this.setMarkedGranite(pt, SQUARE.WALL_OUTER)
+          if (template.flags.has(ROOMF.FEW_ENTRANCES)) {
+            // TODO: append entrance
+          }
+          break
+        case '#':
+          this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          break
+        case '+':
+          this.placeClosedDoor(pt)
+          break
+        case '^':
+          if (oneIn(4)) {
+            // TODO: trap
+          }
+          break
+        case 'x':
+          if (randomWalls) this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          break
+        case '(':
+          if (randomWalls) this.placeSecretDoor(pt)
+          break
+        case ')':
+          if (!randomWalls) this.placeSecretDoor(pt)
+          else this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          break
+        case '8':
+          // TODO: or dungeon persist
+          if (randInt0(100) < 80) {
+            // TODO: place object
+          } else {
+            // TODO: place random stairs
+          }
+          break
+        case '9':
+          // handled in second pass
+          break
+        case '[':
+          // TODO: place object
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+          const doorNum = asInteger(char)
+          if (doorNum == randomDoor) this.placeSecretDoor(pt)
+          else this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          break
+      }
+
+      tile.turnOn(SQUARE.ROOM)
+      if (light) tile.turnOn(SQUARE.GLOW)
+    })
+
+    // Second pass to place items after first pass has completed
+    template.room.forEach((char, ptPre) => {
+      const pt = symmetryTransform(ptPre, center, height, width, rotate, reflect)
+      const tile = this.tiles.get(pt)
+
+      switch (char) {
+        case '#':
+          assert(tile.isRoom() && tile.isGranite() && tile.has(SQUARE.WALL_SOLID))
+
+          if ((this.countNeighbors(pt, false, (tile) => tile.isRoom()) === 8)) {
+            tile.turnOff(SQUARE.WALL_SOLID)
+            tile.turnOn(SQUARE.WALL_INNER)
+          }
+          break
+        case '8':
+          assert(tile.isRoom() && (tile.isFloor() || tile.isStair()))
+          // TODO: Monsters
+          break
+        case '9':
+          assert(tile.isRoom() && tile.isFloor())
+          // TODO: Monsters
+          // TODO: Object
+          break
+      }
     })
 
     return true
@@ -301,6 +392,11 @@ export class Cave {
     // TODO: traps: randomly set door lock strength
   }
 
+  placeSecretDoor(pt: Coord) {
+    const tile = this.tiles.get(pt)
+    this.setFeature(tile, FEAT.SECRET)
+  }
+
   setMarkedGranite(pt: Coord, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
     tile.feature = FeatureRegistry.get(FEAT.GRANITE)
@@ -321,7 +417,21 @@ export class Cave {
     // TODO: if character_dungeon (what's the alternative?)
     // TODO: traps
     // TODO: square_note_spot
-    // TOOD: square_light_spot
+    // TODO: square_light_spot
+  }
+
+  countNeighbors(pt: Coord, countSelf: boolean, fn: (tile: Tile, pt: Coord, chunk: this) => boolean) {
+    let count = 0
+
+    for (const neighbor of getNeighbors(pt, countSelf)) {
+      if (!this.isInbounds(neighbor)) continue
+      const tile = this.tiles.get(neighbor)
+      if (!fn(tile, neighbor, this)) continue
+
+      count++
+    }
+
+    return count
   }
 
   isInbounds(pt: Coord) {

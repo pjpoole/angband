@@ -12,7 +12,7 @@ export enum SYMTR {
 
 type NumberMod4 = 0 | 1 | 2 | 3
 
-interface SymmetryTransform {
+export interface SymmetryTransform {
   rotate: NumberMod4
   reflect: boolean
   height: number

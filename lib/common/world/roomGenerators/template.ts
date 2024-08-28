@@ -63,14 +63,10 @@ function buildRoomTemplate(
     assert(tHeight === height && tWidth === width)
   }
 
-  const { rotate, reflect } = symmetryOp
-
   center.x -= Math.trunc(tHeight / 2)
   center.y -= Math.trunc(tWidth / 2)
 
-  chunk.buildRoomTemplate(center, template)
-
-  return true
+  return chunk.buildRoomTemplate(center, template, symmetryOp)
 }
 
 // TODO: If we encounter this again, make abstract

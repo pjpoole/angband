@@ -27,6 +27,13 @@ export function dirToCoord(direction: DIR): Coord {
   return { x, y }
 }
 
+export function* getNeighbors(pt: Coord, includeSelf?: boolean) {
+  const limit = includeSelf ? 9 : 8
+  for (let i = 0; i < limit; i++) {
+    yield cSum(pt, dirToCoord(NP_KEYS[i]))
+  }
+}
+
 // S, N, E, W; SE, SW, NE, NW; rest
 export const NP_KEYS = [2, 8, 6, 4, 3, 1, 9, 7, 5] as const
 
