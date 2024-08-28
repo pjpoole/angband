@@ -57,6 +57,7 @@ export class Dungeon {
   }
 
   // QUESTION: Always a block coord?
+  // TODO: bounds checking against level_room_max
   addCenter(pt: Coord) {
     this.centers.push(pt)
   }

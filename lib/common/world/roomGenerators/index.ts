@@ -90,6 +90,7 @@ export function buildRoom(
       return false
     }
 
+    // actual point, not block point
     const center = {
       x: Math.trunc((bp1.x + bp2.x + 1) * dungeon.blockWidth / 2),
       y: Math.trunc((bp1.y + bp2.y + 1) * dungeon.blockHeight / 2)

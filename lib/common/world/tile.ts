@@ -6,6 +6,8 @@ import { SQUARE } from './square'
 
 export class Tile {
   private readonly pt: Coord
+  // TODO: Consider making feature setter optionally take a FEAT object, so we
+  //       don't have to sprinkle FeatureRegistry.get() calls everywhere
   feature: Feature
 
   light: number = 0
