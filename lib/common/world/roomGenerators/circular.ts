@@ -1,7 +1,12 @@
 import { Coord } from '../../core/coordinate'
-import { randInt1 } from '../../core/rand'
+import { randInt0, randInt1 } from '../../core/rand'
+
+import { findSpace } from './helpers'
+
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
+import { FEAT, Feature, FeatureRegistry } from '../features'
+import { SQUARE } from '../square'
 
 export function build(
   dungeon: Dungeon,
@@ -9,9 +14,66 @@ export function build(
   pt: Coord,
   rating: number,
 ): boolean {
+  // range 4-7; diameter 8-14
   const radius = 2 + randInt1(2) + randInt1(3)
 
   const light = chunk.depth <= randInt1(25)
 
+  if (pt.x >= chunk.width || pt.y >= chunk.height) {
+    // 5 spaces buffer around the edge of the circle
+    // pt may have been mutated here
+    if (!findSpace(dungeon, pt, 2 * radius + 10, 2 * radius + 10)) return false
+  }
+
+  fillCircle(chunk, pt, radius + 1, 0, FeatureRegistry.get(FEAT.FLOOR), SQUARE.NONE, light)
+
+  const upperLeft = { x: pt.x - radius - 2, y: pt.y - radius - 2 }
+  const lowerRight = { x: pt.x + radius + 2, y: pt.y + radius + 2}
+
+  chunk.setBorderingWalls(upperLeft, lowerRight)
+
+  // give large rooms an inner chamber
+  if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
+
+  }
+
   return false
+}
+
+// TODO: understand what this is doing
+function fillCircle(
+  chunk: Cave,
+  center: Coord,
+  radius: number,
+  border: number,
+  feature: Feature,
+  flag: SQUARE,
+  light: boolean
+) {
+  let last = 0
+  let r = radius
+  let c = center
+  let pythag = 0
+  // Fill progressively larger circles
+  for (let i = 0; i <= radius; i++) {
+    let b = border !== 0 && last > r ? border + 1 : border
+
+    // fill center cross outwards
+    // maybe lots of redundant writes?
+    chunk.fillHorizontal(c.y - i, c.x - r - b, c.x + r + b, feature, flag, light)
+    chunk.fillHorizontal(c.y + i, c.x - r - b, c.x + r + b, feature, flag, light)
+    chunk.fillVertical(c.x - i, c.y - r - b, c.x + r + b, feature, flag, light)
+    chunk.fillVertical(c.x + i, c.y - r - b, c.x + r + b, feature, flag, light)
+    last++
+
+    if (i < radius) {
+      pythag -= 2 * i + 1
+      while (true) {
+        const adjustment = 2 * r - 1
+        if (Math.abs(pythag + adjustment) >= Math.abs(pythag)) break
+        r--
+        pythag += adjustment
+      }
+    }
+  }
 }
