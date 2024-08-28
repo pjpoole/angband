@@ -8,6 +8,7 @@ import { z_enumValueParser } from '../utilities/zod/enums'
 import { z_tVal } from '../utilities/zod/tVal'
 
 import { objectValueToKey } from '../utilities/object'
+import { Rectangle, stringRectangleToRows } from '../utilities/rectangle'
 import { TV, TV_NAMES } from '../objects/tval'
 
 // list-room-flags.h
@@ -56,12 +57,12 @@ export class RoomTemplate extends SerializableBase {
   readonly name: string
   readonly type: 1
   readonly rating: number
-  readonly rows: number
-  readonly columns: number
+  readonly height: number
+  readonly width: number
   readonly doors: number
   readonly tval?: TV
   readonly flags: Set<ROOMF>
-  readonly room: string[][]
+  readonly room: Rectangle<string>
 
   constructor(params: RoomTemplateParams) {
     super(params)
@@ -69,12 +70,15 @@ export class RoomTemplate extends SerializableBase {
     this.name = params.name
     this.type = params.type
     this.rating = params.rating
-    this.rows = params.rows
-    this.columns = params.columns
+    this.height = params.rows
+    this.width = params.columns
     this.doors = params.doors
     this.tval = params.tval
     this.flags = new Set(params.flags)
-    this.room = params.room
+    // TODO: Bad input data
+    this.room = new Rectangle(params.room.length, params.room[0].length, ({ x, y}) => {
+      return params.room[y][x]
+    })
   }
 
   register() {
@@ -86,12 +90,12 @@ export class RoomTemplate extends SerializableBase {
       name: this.name,
       type: this.type,
       rating: this.rating,
-      rows: this.rows,
-      columns: this.columns,
+      rows: this.height,
+      columns: this.width,
       doors: this.doors,
       tval: objectValueToKey(this.tval, TV_NAMES)!,
       flags: enumValueSetToArray(this.flags, ROOMF),
-      room: this.room.map(row => row.join('')),
+      room: stringRectangleToRows(this.room),
     }
   }
 }

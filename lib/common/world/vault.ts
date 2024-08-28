@@ -6,6 +6,7 @@ import { enumValueSetToArray } from '../utilities/serializing/enum'
 
 import { z_enumValueParser } from '../utilities/zod/enums'
 
+import { Rectangle, stringRectangleToRows } from '../utilities/rectangle'
 import { ROOMF } from './roomTemplate'
 import { isValidRoomName } from './roomGenerators'
 
@@ -56,12 +57,12 @@ export class Vault extends SerializableBase {
   readonly name: string
   readonly type: string
   readonly rating: number
-  readonly rows: number
-  readonly columns: number
+  readonly height: number
+  readonly width: number
   readonly minDepth: number
   readonly maxDepth: number
   readonly flags: Set<ROOMF>
-  readonly room: string[][]
+  readonly room: Rectangle<string>
 
   constructor(params: VaultParams) {
     super(params)
@@ -69,12 +70,14 @@ export class Vault extends SerializableBase {
     this.name = params.name
     this.type = params.type
     this.rating = params.rating
-    this.rows = params.rows
-    this.columns = params.columns
+    this.height = params.rows
+    this.width = params.columns
     this.minDepth = params.minDepth
     this.maxDepth = params.maxDepth
     this.flags = new Set(params.flags)
-    this.room = params.room
+    this.room = new Rectangle(this.height, this.width, ({ x, y}) => {
+      return params.room[y][x]
+    })
   }
 
   register() {
@@ -86,12 +89,12 @@ export class Vault extends SerializableBase {
       name: this.name,
       type: this.type,
       rating: this.rating,
-      rows: this.rows,
-      columns: this.columns,
+      rows: this.height,
+      columns: this.width,
       minDepth: this.minDepth,
       maxDepth: this.maxDepth,
       flags: enumValueSetToArray(this.flags, ROOMF),
-      room: this.room.map(row => row.join('')),
+      room: stringRectangleToRows(this.room),
     }
   }
 }

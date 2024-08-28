@@ -1,5 +1,5 @@
 import { Coord } from '../core/coordinate'
-import { Rectangle } from '../utilities/rectangle'
+import { Rectangle, stringRectangleToRaster } from '../utilities/rectangle'
 
 import { Tile } from '../world/tile'
 import { FEAT, FeatureRegistry } from '../world/features'
@@ -47,13 +47,7 @@ export class GameMap {
       }
     }
 
-    const result: string[][] = [[]]
-    rect.forEach((cell, pt, isNewRow) => {
-      if (isNewRow) result.push([])
-      result[result.length - 1].push(cell)
-    })
-
-    return result.map(row => row.join('')).join('\n')
+    return stringRectangleToRaster(rect)
   }
 
   get(pt: Coord): Tile | undefined {

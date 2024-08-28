@@ -1,5 +1,19 @@
 import { Coord } from '../core/coordinate'
 
+export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): string {
+  return stringRectangleToRows(rect).join('\n')
+}
+
+export function stringRectangleToRows<T extends string>(rect: Rectangle<T>): string[] {
+  const results: string[][] = [[]]
+  rect.forEach((char, pt, newRow) => {
+    if (newRow) results.push([])
+    results[results.length - 1].push(char)
+  })
+
+  return results.map(row => row.join(''))
+}
+
 type InitializerFn<T> = (pt: Coord) => T
 type IteratorFn<T> = (obj: T, pt: Coord, newRow?: boolean) => void
 type IteratorTestFn<T> = (obj: T, pt: Coord, newRow?: boolean) => boolean
