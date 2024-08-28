@@ -12,6 +12,16 @@ export function oneIn(number: number): boolean {
 }
 
 /*
+ * rand between lower and upper, inclusive
+ */
+export function randInRange(lower: number, upper: number) {
+  if (lower === upper) return lower
+  const min = Math.min(lower, upper)
+  const max = Math.max(lower, upper)
+  return min + randInt0(1 + max - min)
+}
+
+/*
  * two-pass random object selector that is always guaranteed to return a value
  *
  * partition the objects into N buckets marked by the running sum; roll dice;

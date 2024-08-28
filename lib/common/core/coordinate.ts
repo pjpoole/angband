@@ -11,6 +11,13 @@ export function cSum(pt1: Coord, pt2: Coord): Coord {
   return { x: pt1.x + pt2.x, y: pt1.y + pt2.y }
 }
 
+export function cCenter(pt1: Coord, pt2: Coord): Coord {
+  return {
+    x: Math.trunc((pt1.x + pt2.x) / 2),
+    y: Math.trunc((pt1.y + pt2.y) / 2),
+  }
+}
+
 export function cOffset(pt: Coord, offset: number): Coord {
   return { x: pt.x + offset, y: pt.y + offset }
 }

@@ -1,4 +1,11 @@
-import { cOffset, Coord, cToBox, cToWellOrdered } from '../core/coordinate'
+import {
+  cCenter,
+  cEq,
+  cOffset,
+  Coord,
+  cToWellOrdered
+} from '../core/coordinate'
+import { randInt0 } from '../core/rand'
 import { Rectangle } from '../utilities/rectangle'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
@@ -160,6 +167,25 @@ export class Cave {
     })
   }
 
+  generatePlus(
+    p1: Coord,
+    p2: Coord,
+    feature: Feature | FEAT,
+    flag?: SQUARE,
+  ) {
+    const center = cCenter(p1, p2)
+
+    this.tiles.forEachInRange({ x: center.x, y: p1.y }, { x: center.x, y: p2.y }, (tile) => {
+      this.setFeature(tile, feature)
+      if (flag) tile.turnOn(flag)
+    })
+
+    this.tiles.forEachInRange({ x: p1.x, y: center.y }, { x: p2.x, y: center.y }, (tile) => {
+      this.setFeature(tile, feature)
+      if (flag) tile.turnOn(flag)
+    })
+  }
+
   fillRectangle(
     p1: Coord,
     p2: Coord,
@@ -225,6 +251,24 @@ export class Cave {
     flag: SQUARE,
   ) {
     this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
+  }
+
+  generateHole(pt1: Coord, pt2: Coord, feature: Feature | FEAT) {
+    const center = cCenter(pt1, pt2)
+
+    const point = { ...center }
+    // pick a random wall center
+    switch (randInt0(4)) {
+      case 0: point.y = pt1.y; break
+      case 1: point.x = pt1.x; break
+      case 2: point.y = pt2.y; break
+      case 3: point.y = pt2.y; break
+    }
+
+    // can only happen in degenerate cases
+    assert(!cEq(point, center))
+
+    this.setFeature(this.tiles.get(point), feature)
   }
 
   placeClosedDoor(pt: Coord) {
