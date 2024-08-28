@@ -1,4 +1,5 @@
 import { Coord, cSum } from '../core/coordinate'
+import { randInt0 } from '../core/rand'
 
 export enum DIR {
   SOUTHWEST = 1,
@@ -14,6 +15,11 @@ export enum DIR {
 
 export function moveDir(pt: Coord, direction: DIR) {
   return cSum(pt, dirToCoord(direction))
+}
+
+export function randDirNSEW(): Coord {
+  const [x, y] = M_NP_XY[randInt0(4)]
+  return { x, y }
 }
 
 export function dirToCoord(direction: DIR): Coord {

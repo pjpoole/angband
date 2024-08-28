@@ -188,6 +188,12 @@ export class Cave {
     this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
   }
 
+  placeClosedDoor(pt: Coord) {
+    const tile = this.tiles.get(pt)
+    this.setFeature(tile, FEAT.CLOSED)
+    // TODO: traps: randomly set door lock strength
+  }
+
   setMarkedGranite(pt: Coord, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
     tile.feature = FeatureRegistry.get(FEAT.GRANITE)

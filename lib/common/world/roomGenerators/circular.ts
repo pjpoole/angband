@@ -1,6 +1,7 @@
-import { Coord } from '../../core/coordinate'
+import { cOffset, Coord, cProd, cSum } from '../../core/coordinate'
 import { randInt0, randInt1 } from '../../core/rand'
 
+import { randDirNSEW } from '../../utilities/directions'
 import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
@@ -12,7 +13,7 @@ export function build(
   dungeon: Dungeon,
   chunk: Cave,
   pt: Coord,
-  rating: number,
+  rating: number, // not used
 ): boolean {
   // range 4-7; diameter 8-14
   const radius = 2 + randInt1(2) + randInt1(3)
@@ -34,13 +35,19 @@ export function build(
 
   // give large rooms an inner chamber
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
+    const offset = cProd(randDirNSEW(), 2)
 
+    chunk.drawRectangle(cOffset(pt, -2), cOffset(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
+    chunk.placeClosedDoor(offset)
+
+    // TODO: vault objects
+    // TODO: vault monsters
   }
 
-  return false
+  return true
 }
 
-// TODO: understand what this is doing
+// TODO: this code is opaque; understand what it is doing
 function fillCircle(
   chunk: Cave,
   center: Coord,
