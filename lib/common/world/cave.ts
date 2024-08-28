@@ -63,6 +63,38 @@ export class Cave {
     })
   }
 
+  fillHorizontal(
+    y: number,
+    xStart: number,
+    xEnd: number,
+    feature: Feature,
+    flag?: SQUARE,
+    light?: boolean,
+  ) {
+    this.tiles.forEachInRange({ x: xStart, y }, { x: xEnd, y }, (tile) => {
+      this.setFeature(tile, feature)
+      tile.turnOn(SQUARE.ROOM)
+      if (flag) tile.turnOn(flag)
+      if (light) tile.turnOn(SQUARE.GLOW)
+    })
+  }
+
+  fillVertical(
+    x: number,
+    yStart: number,
+    yEnd: number,
+    feature: Feature,
+    flag?: SQUARE,
+    light?: boolean,
+  ) {
+    this.tiles.forEachInRange({ x, y: yStart }, { x, y: yEnd }, (tile: Tile) => {
+      this.setFeature(tile, feature)
+      tile.turnOn(SQUARE.ROOM)
+      if (flag) tile.turnOn(flag)
+      if (light) tile.turnOn(SQUARE.GLOW)
+    })
+  }
+
   drawRectangle(
     p1: Coord,
     p2: Coord,
