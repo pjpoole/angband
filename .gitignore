@@ -7,3 +7,12 @@ node_modules
 
 # scratch files
 frob.*
+
+# temp notes files
+/tmp
+
+# esbuild output
+/build
+
+# while developing, ignore gamedata
+/lib/gamedata
