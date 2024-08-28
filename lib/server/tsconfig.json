@@ -9,6 +9,9 @@
     "moduleResolution": "node16",
     "noImplicitOverride": true,
     "outDir": "../../dist/server",
+    "paths": {
+      "assert": ["./global.d.ts"]
+    },
     "rootDir": ".",
     "skipLibCheck": true,
     "strict": true,

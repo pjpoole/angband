@@ -8,6 +8,9 @@
     ],
     "module": "commonjs",
     "outDir": "../../dist/browser",
+    "paths": {
+      "assert": ["./global.d.ts"]
+    },
     "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,

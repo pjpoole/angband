@@ -4,6 +4,9 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "outDir": "../../dist/common",
+    "paths": {
+      "assert": ["./global.d.ts"]
+    },
     "resolveJsonModule": true,
     "rootDir": ".",
     "strict": true,
