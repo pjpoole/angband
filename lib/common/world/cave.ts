@@ -1,7 +1,7 @@
 import { Coord } from '../core/coordinate'
 import { Rectangle } from '../utilities/rectangle'
 
-import { FEAT, Feature } from './features'
+import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
 import { Tile } from './tile'
 
@@ -51,13 +51,79 @@ export class Cave {
     return result as FeatureCount
   }
 
+  // generation
+  setBorderingWalls(p1: Coord, p2: Coord) {
+    const boundLeft = Math.max(0, Math.min(p1.x, p2.x))
+    const boundRight = Math.min(this.width - 1, Math.max(p1.x, p2.x))
+    const boundTop = Math.max(0, Math.min(p1.y, p2.y))
+    const boundBottom = Math.min(this.height - 1, Math.max(p1.y, p2.y))
+
+    const bp1 = { x: boundLeft, y: boundTop }
+    const bp2 = { x: boundRight, y: boundBottom }
+
+    const refToOffset = (pt: Coord) =>
+      ({ x: pt.x - boundLeft, y: pt.y - boundTop })
+    const offsetToRef = (pt: Coord) =>
+      ({ x: pt.x + boundLeft, y: pt.y + boundTop })
+
+    const wallWidth = Math.abs(p1.x - p2.x)
+    const wallHeight = Math.abs(p1.y - p2.y)
+    const walls = new Rectangle(wallHeight, wallWidth, true)
+
+    let yAbove = Math.max(0, bp1.y - 1)
+    let yBelow = Math.min(this.height - 1, bp1.y + 1)
+    let xLeft, xRight
+    // Edge detection
+    this.tiles.forEachInRange(bp1, bp2, (tile, pt, newRow) => {
+      if (newRow) {
+        yAbove = Math.max(0, pt.y - 1)
+        yBelow = Math.min(this.height - 1, pt.y + 1)
+      }
+
+      if (!tile.isFloor()) {
+        assert(!tile.isRoom())
+        return
+      }
+
+      xLeft = Math.max(0, pt.x - 1)
+      xRight = Math.min(this.width - 1, pt.x + 1)
+
+      assert(tile.isRoom())
+
+      if (yBelow - yAbove !== 2 || xRight - xLeft !== 2) {
+        // we hit the edge of the map
+        walls.set(refToOffset(pt), true)
+      } else {
+        let floorCount = 0
+        this.tiles.forEachInRange({ x: xLeft, y: yAbove }, { x: xRight, y: yBelow }, (tile) => {
+          const isFloor = tile.isFloor()
+          assert(isFloor === tile.isRoom())
+          if (isFloor) floorCount++
+        })
+
+        if (floorCount != 9) {
+          walls.set(refToOffset(pt), true)
+        }
+      }
+    })
+
+    walls.forEach((val, pt) => {
+      if (val) {
+        const pt1 = offsetToRef(pt)
+        const tile = this.tiles.get(pt1)
+        assert(tile.isFloor() && tile.isRoom())
+        this.setMarkedGranite(pt1, SQUARE.WALL_OUTER)
+      }
+    })
+  }
+
   fillRectangle(
     p1: Coord,
     p2: Coord,
     feature: Feature,
     flag?: SQUARE,
   ) {
-    this.tiles.forEachInRange(p1, p2, (tile: Tile) => {
+    this.tiles.forEachInRange(p1, p2, (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
@@ -87,7 +153,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange({ x, y: yStart }, { x, y: yEnd }, (tile: Tile) => {
+    this.tiles.forEachInRange({ x, y: yStart }, { x, y: yEnd }, (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -116,6 +182,12 @@ export class Cave {
     flag: SQUARE,
   ) {
     this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
+  }
+
+  setMarkedGranite(pt: Coord, flag?: SQUARE) {
+    const tile = this.tiles.get(pt)
+    tile.feature = FeatureRegistry.get(FEAT.GRANITE)
+    if (flag) tile.turnOn(flag)
   }
 
   // this should be the only code setting features
