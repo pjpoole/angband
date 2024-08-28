@@ -1,13 +1,16 @@
 // TODO: repeated seed; port z-rand
 export function randInt0(number: number): number {
+  if (number <= 0) throw new Error('range error')
   return Math.floor(Math.random() * number)
 }
 
 export function randInt1(number: number): number {
+  if (number <= 0) throw new Error('range error')
   return Math.floor(Math.random() * number) + 1
 }
 
 export function oneIn(number: number): boolean {
+  if (number <= 0) throw new Error('range error')
   return randInt0(number) === 0
 }
 
