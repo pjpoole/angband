@@ -1,8 +1,11 @@
-import { loadTestRoom } from './testTerrain'
-import { GameMap } from '../common/game/Map'
+import { DIR, moveDir } from '../common/utilities/directions'
+
 import { Entity } from '../common/game/Entity'
-import { CommandMap, COMMANDS } from './commands'
 import { loadGameObjects } from './game/loadData'
+import { GameMap } from '../common/game/Map'
+
+import { CommandMap, COMMANDS } from './commands'
+import { loadTestRoom } from './testTerrain'
 
 document.addEventListener('DOMContentLoaded', () => {
   loadGameObjects()
@@ -31,39 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!player.isOnMap()) return
 
     // Hack; TODO: need val check
-    const { x, y } = player.pt ?? { x: -1, y: -1 }
+    const pt = player.pt ?? { x: -1, y: -1 }
 
     switch (command) {
       case COMMANDS.MOVE_EAST: {
-        player.move({ x: x + 1, y })
+        player.move(moveDir(pt, DIR.EAST))
         break
       }
       case COMMANDS.MOVE_NORTHEAST: {
-        player.move({ x: x + 1, y: y - 1 })
+        player.move(moveDir(pt, DIR.NORTHEAST))
         break
       }
       case COMMANDS.MOVE_NORTH: {
-        player.move({ x, y: y - 1 })
+        player.move(moveDir(pt, DIR.NORTH))
         break
       }
       case COMMANDS.MOVE_NORTHWEST: {
-        player.move({ x: x - 1, y: y - 1 })
+        player.move(moveDir(pt, DIR.NORTHWEST))
         break
       }
       case COMMANDS.MOVE_WEST: {
-        player.move({ x: x - 1, y })
+        player.move(moveDir(pt, DIR.WEST))
         break
       }
       case COMMANDS.MOVE_SOUTHWEST: {
-        player.move({ x: x - 1, y: y + 1 })
+        player.move(moveDir(pt, DIR.SOUTHWEST))
         break
       }
       case COMMANDS.MOVE_SOUTH: {
-        player.move({ x, y: y + 1 })
+        player.move(moveDir(pt, DIR.SOUTH))
         break
       }
       case COMMANDS.MOVE_SOUTHEAST: {
-        player.move({ x: x + 1, y: y + 1 })
+        player.move(moveDir(pt, DIR.SOUTHEAST))
         break
       }
     }
