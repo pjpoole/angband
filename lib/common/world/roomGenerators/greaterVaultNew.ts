@@ -2,11 +2,13 @@ import { Coord } from '../../core/coordinate'
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 
+import { buildVaultType } from './helpers/vault'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  pt: Coord,
-  rating: number,
+  center: Coord,
+  rating: number, // not used
 ): boolean {
-  return false
+  return buildVaultType(dungeon, chunk, center, 'Greater vault (new)')
 }
