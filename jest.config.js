@@ -7,6 +7,11 @@ module.exports = {
     '<rootDir>/build/'
   ],
   transform: {
-    '^.+.tsx?$': ['ts-jest', {}],
+    '^.+.tsx?$': ['ts-jest', {
+      tsconfig: './lib/tsconfig.json',
+      diagnostics: {
+        ignoreCodes: [ 'TS151001' ],
+      },
+    }],
   },
 };
