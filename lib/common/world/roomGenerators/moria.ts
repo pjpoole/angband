@@ -1,11 +1,10 @@
 import { Coord, cToBox } from '../../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
-import { findSpace } from './helpers'
 import { buildStarburstRoom } from './starburst'
 
 import { Cave } from '../cave'
-import { Dungeon } from '../dungeon'
+import { Dungeon, findSpace } from '../dungeon'
 import { FEAT } from '../features'
 
 const MAX_TRIES = 1

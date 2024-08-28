@@ -7,10 +7,9 @@ import {
 import { randInt0, randInt1 } from '../../core/rand'
 
 import { randDirNSEW } from '../../utilities/directions'
-import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
-import { Dungeon } from '../dungeon'
+import { Dungeon, findSpace } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 

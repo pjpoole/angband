@@ -1,10 +1,8 @@
 import { cOffset, Coord, cSum, cToBox } from '../../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
-import { findSpace } from './helpers'
-
 import { Cave } from '../cave'
-import { Dungeon } from '../dungeon'
+import { Dungeon, findSpace } from '../dungeon'
 import { SQUARE } from '../square'
 
 export function build(

@@ -4,7 +4,7 @@ import { clamp } from '../../utilities/number'
 import { findSpace } from './helpers'
 
 import { Cave } from '../cave'
-import { Dungeon } from '../dungeon'
+import { Dungeon, findSpace } from '../dungeon'
 import { RoomTemplate, RoomTemplateRegistry } from '../roomTemplate'
 
 enum SYMTR {

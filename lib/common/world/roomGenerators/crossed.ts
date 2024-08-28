@@ -2,8 +2,7 @@ import { Coord, cToBox } from '../../core/coordinate'
 import { oneIn, randInRange, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
-import { Dungeon } from '../dungeon'
-import { findSpace } from './helpers'
+import { Dungeon, findSpace } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
