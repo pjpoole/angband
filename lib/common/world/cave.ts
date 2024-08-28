@@ -44,6 +44,14 @@ export class Cave {
     })
   }
 
+  turnOn(pt: Coord, flag: SQUARE) {
+    this.tiles.get(pt).turnOn(flag)
+  }
+
+  turnOff(pt: Coord, flag: SQUARE) {
+    this.tiles.get(pt).turnOff(flag)
+  }
+
   private initFeatureCount(): FeatureCount {
     const result: Partial<FeatureCount> = {}
     for (const code of Object.values(FEAT)) {
@@ -118,6 +126,20 @@ export class Cave {
         assert(tile.isFloor() && tile.isRoom())
         this.setMarkedGranite(pt1, SQUARE.WALL_OUTER)
       }
+    })
+  }
+
+  // TODO: Check to see how this is used; if it's always used in conjunction
+  //       with other functions (border, floor) it may be possible to roll all
+  //       of these up together
+  generateRoom(
+    p1: Coord,
+    p2: Coord,
+    light: boolean,
+  ) {
+    this.tiles.forEachInRange(p1, p2, (tile) => {
+      tile.turnOn(SQUARE.ROOM)
+      if (light) tile.turnOn(SQUARE.GLOW)
     })
   }
 
