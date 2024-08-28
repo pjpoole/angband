@@ -16,3 +16,6 @@ frob.*
 
 # while developing, ignore gamedata
 /lib/gamedata
+
+# Sometimes someone compiles in place in lib directly. Ignore these.
+/lib/**/*.js
