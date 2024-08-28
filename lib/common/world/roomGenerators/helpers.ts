@@ -1,7 +1,7 @@
 import { Coord } from '../../core/coordinate'
+import { randInt0 } from '../../core/rand'
 
 import { Dungeon } from '../dungeon'
-import { randInt0 } from '../../core/rand'
 
 const MAX_TRIES = 25
 
