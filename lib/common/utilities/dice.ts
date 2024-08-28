@@ -212,15 +212,15 @@ function getLastSeen(state: DS, lastSeen: DLS, token: string[]): [DLS, boolean] 
     case DS.FLUSH_DICE:
       lastSeen = DLS.DICE
       if (token.length === 0) token.push('1')
-      break;
+      break
 
     case DS.FLUSH_SIDE:
       lastSeen = DLS.SIDE
-      break;
+      break
 
     case DS.FLUSH_BONUS:
       lastSeen = DLS.BONUS
-      break;
+      break
 
     case DS.FLUSH_ALL:
       if (lastSeen < DLS.BONUS) lastSeen++

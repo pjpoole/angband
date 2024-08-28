@@ -29,7 +29,7 @@ export class SerializableBase implements Serializable {
     type HasId = {
       constructor: HasId
       _id: number
-    } & typeof that;
+    } & typeof that
 
     this.id = (this as HasId).constructor._id
     ;(this as HasId).constructor._id++
