@@ -1,4 +1,4 @@
-import { Coord } from '../core/coordinate'
+import { Coord, cToWellOrdered } from '../core/coordinate'
 
 export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): string {
   return stringRectangleToRows(rect).join('\n')
@@ -132,10 +132,7 @@ export class Rectangle<T> {
     this.assertIsInbounds(pt1)
     this.assertIsInbounds(pt2)
 
-    return [
-      { x: Math.min(pt1.x, pt2.x), y: Math.min(pt1.y, pt2.y) },
-      { x: Math.max(pt1.x, pt2.x), y: Math.max(pt1.y, pt2.y) },
-    ]
+    return cToWellOrdered(pt1, pt2)
   }
 
   assertIsInbounds(pt: Coord) {
