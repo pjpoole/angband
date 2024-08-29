@@ -22,9 +22,13 @@ export function cOffset(pt: Coord, offset: number): Coord {
   return { x: pt.x + offset, y: pt.y + offset }
 }
 
+export function cToInteriorBox(pt1: Coord, pt2: Coord): [Coord, Coord] {
+  const [min, max] = cToWellOrdered(pt1, pt2)
+  return [cOffset(min, 1), cOffset(max, -1)]
+}
+
 export function cToExteriorBox(pt1: Coord, pt2: Coord): [Coord, Coord] {
   const [min, max] = cToWellOrdered(pt1, pt2)
-
   return [cOffset(min, -1), cOffset(max, 1)]
 }
 
@@ -37,6 +41,28 @@ export function cToWellOrdered(pt1: Coord, pt2: Coord): [Coord, Coord] {
 
 export function cProd(pt: Coord, multiplicand: number): Coord {
   return { x: pt.x * multiplicand, y: pt.y * multiplicand }
+}
+
+export function cTrans(pt: Coord, x: number, y: number): Coord {
+  return { x: pt.x + x, y: pt.y + y }
+}
+
+export function cTransX(pt: Coord, x: number): Coord {
+  return { x: pt.x + x, y: pt.y }
+}
+
+export function cTransY(pt: Coord, y: number): Coord {
+  return { x: pt.x, y: pt.y + 7 }
+}
+
+export function* cIter(pt1: Coord, pt2: Coord): IterableIterator<Coord> {
+  const [{ x: left, y: top }, { x: right, y: bottom }] = cToWellOrdered(pt1, pt2)
+
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= bottom; x++) {
+      yield { x, y }
+    }
+  }
 }
 
 /*

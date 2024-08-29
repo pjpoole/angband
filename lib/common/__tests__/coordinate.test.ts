@@ -169,5 +169,20 @@ describe('Coord', () => {
         expect(cEq(original2, actual2)).toBe(true)
       })
     })
+
+    test('large room', () => {
+      const center = { x: 50, y: 63}
+      const height = 9
+      const width = 23
+      const dH = Math.trunc(height / 2)
+      const dW = Math.trunc(width / 2)
+      const exUpperLeft = { x: center.x - dW, y: center.y - dH }
+      const exLowerRight = { x: center.x + dW, y: center.y + dH }
+
+      const [acUpperLeft, acLowerRight] = cToBox(center, height, width)
+
+      expect(cEq(acUpperLeft, exUpperLeft)).toBe(true)
+      expect(cEq(acLowerRight, exLowerRight)).toBe(true)
+    })
   })
 })

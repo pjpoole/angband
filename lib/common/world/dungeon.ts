@@ -20,7 +20,7 @@ const MAX_TRIES = 25
 
 export class Dungeon {
   readonly profile: DungeonProfile
-  private readonly persist: boolean
+  readonly persist: boolean
   readonly quest: boolean
 
   numPits: number = 0
@@ -39,7 +39,7 @@ export class Dungeon {
 
   constructor(params: DungeonParams) {
     this.profile = params.profile
-    this.persist = params.persist
+    this.persist = false // TODO: implement params.persist
     this.quest = params.quest
 
     this.centers = []

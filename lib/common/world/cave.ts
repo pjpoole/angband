@@ -1,8 +1,8 @@
 import {
   cCenter,
   cEq,
-  cOffset,
   Coord,
+  cToExteriorBox,
   cToWellOrdered
 } from '../core/coordinate'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
@@ -153,8 +153,8 @@ export class Cave {
     light: boolean,
   ): void {
     const [topLeft, bottomRight] = cToWellOrdered(p1, p2)
-    const outerTopLeft = cOffset(topLeft, -1)
-    const outerBottomRight = cOffset(bottomRight, 1)
+
+    const [outerTopLeft, outerBottomRight] = cToExteriorBox(topLeft, bottomRight)
     this.generateRoom(outerTopLeft, outerBottomRight, light)
     this.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
     this.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
