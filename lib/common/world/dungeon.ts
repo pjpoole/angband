@@ -58,11 +58,6 @@ export class Dungeon {
     }
   }
 
-  /*
-   * MUTATES PT!
-   *
-   * TODO: See if there is a version of this that does not mutate
-   */
   findSpace(
     p: Loc, height: number, width: number
   ): Loc | undefined {
