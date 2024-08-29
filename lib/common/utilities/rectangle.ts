@@ -88,24 +88,13 @@ export class Rectangle<T> {
     const { left, top, right, bottom } = b
 
     let newRow = false
-    for (let x = left; x <= right; x++) {
-      fn(this.rect[top][x], loc(x, top), newRow)
-    }
-    // NB. If width === 0, we don't run twice on each cell
-    const leftRight = left === right ? [left] : [left, right]
-    for (let y = top + 1; y < bottom; y++) {
-      newRow = true
-      for (const x of leftRight) {
-        fn(this.rect[y][x], loc(x, y))
-        newRow = false
+    let prevY = b.top
+    for (const p of b.borders()) {
+      if (p.y !== prevY) {
+        newRow = true
+        prevY = p.y
       }
-    }
-    // NB. If height === 0, we don't run twice on each cell
-    if (top === bottom) return
-    newRow = true
-    for (let x = left; x <= right; x++) {
-      fn(this.rect[bottom][x], loc(x, bottom), newRow)
-      newRow = false
+      fn(this.rect[p.y][p.x], p, newRow)
     }
   }
 

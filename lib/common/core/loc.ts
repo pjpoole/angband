@@ -195,6 +195,24 @@ export class Box {
     return box(this.l - i, this.t - i, this.r + i, this.b + i)
   }
 
+  *borders(): IterableIterator<Loc> {
+    for (let x = this.l; x <= this.r; x++) {
+      yield loc(x, this.t)
+    }
+    // NB. If width === 0, we don't run twice on each cell
+    const leftRight = this.l === this.r ? [this.l] : [this.l, this.r]
+    for (let y = this.t + 1; y < this.b; y++) {
+      for (const x of leftRight) {
+        yield loc(x, y)
+      }
+    }
+    // NB. If height === 0, we don't run twice on each cell
+    if (this.t === this.b) return
+    for (let x = this.l; x <= this.r; x++) {
+      yield loc(x, this.b)
+    }
+  }
+
   *[Symbol.iterator](): IterableIterator<Loc> {
     for (let y = this.t; y <= this.b; y++) {
       for (let x = this.l; x <= this.r; x++) {
