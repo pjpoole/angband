@@ -1,5 +1,5 @@
-import { Coord } from '../../core/coordinate'
 import { getConstants } from '../../core/loading'
+import { Loc, loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 import { Rectangle } from '../../utilities/rectangle'
 
@@ -53,15 +53,15 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
 
   // Surround the map with permanent rock
   chunk.drawRectangle(
-    { x: 0, y: 0 },
-    { x: chunk.width - 1, y: chunk.height - 1},
+    loc(0, 0),
+    loc(chunk.width - 1, chunk.height - 1),
     FEAT.PERM,
     SQUARE.NONE,
     true,
   )
 }
 
-function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Coord): boolean {
+function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Loc): boolean {
   let builtRoom = false
   const cutoffThreshold = randInt0(100)
   const rarity = getRoomRarityCap(dungeon, chunk)
@@ -86,8 +86,8 @@ function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Coord): boolean {
  * block, which has equal probability of overwriting a choice from each of the
  * previous n-1 possible choice; thus each one has a chance of 1/n.
  */
-function pickRandomUntriedBlock(blocksTried: Rectangle<boolean>): Coord {
-  let tempBpt: Coord | null = null
+function pickRandomUntriedBlock(blocksTried: Rectangle<boolean>): Loc {
+  let tempBpt: Loc | null = null
   let count = 0
   blocksTried.forEach((cell, bpt) => {
     if (cell) return

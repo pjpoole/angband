@@ -1,4 +1,4 @@
-import { Coord, cToBox } from '../../core/coordinate'
+import { loc, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { buildStarburstRoom } from './helpers/starburst'
@@ -12,7 +12,7 @@ const MAX_TRIES = 1
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   rating: number, // not used
 ): boolean {
   const light = chunk.depth <= randInt1(35)
@@ -31,21 +31,21 @@ export function build(
     }
   }
 
-  const [topLeft, bottomRight] = cToBox(center, height, width)
+  const [topLeft, bottomRight] = center.boxCorners(height, width)
 
   if (!buildStarburstRoom(chunk, topLeft, bottomRight, light, FEAT.FLOOR, true)) {
     return false
   }
 
   if (oneIn(10)) {
-    const innerTopLeft = {
-      x: topLeft.x + randInt0(Math.trunc(height / 4)),
-      y: topLeft.y + randInt0(Math.trunc(width / 4)),
-    }
-    const innerBottomRight = {
-      x: bottomRight.x - randInt0(Math.trunc(height / 4)),
-      y: bottomRight.y - randInt0(Math.trunc(width / 4)),
-    }
+    const innerTopLeft = loc(
+      topLeft.x + randInt0(Math.trunc(height / 4)),
+      topLeft.y + randInt0(Math.trunc(width / 4)),
+    )
+    const innerBottomRight = loc(
+      bottomRight.x - randInt0(Math.trunc(height / 4)),
+      bottomRight.y - randInt0(Math.trunc(width / 4)),
+    )
 
     buildStarburstRoom(chunk, innerTopLeft, innerBottomRight, false, FEAT.PASS_RUBBLE, false)
   }

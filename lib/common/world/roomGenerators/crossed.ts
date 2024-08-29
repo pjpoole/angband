@@ -1,4 +1,4 @@
-import { Coord, cToBox } from '../../core/coordinate'
+import { loc, Loc } from '../../core/loc'
 import { oneIn, randInRange, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -9,7 +9,7 @@ import { SQUARE } from '../square'
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   rating: number, // not used
 ): boolean {
   const light = chunk.depth <= randInt1(25)
@@ -25,15 +25,15 @@ export function build(
   }
 
   // tall and skinny
-  const [roomATopLeft, roomABottomRight] = cToBox(center, height, 3)
+  const [roomATopLeft, roomABottomRight] = center.boxCorners(height, 3)
   chunk.generateBasicRoom(roomATopLeft, roomABottomRight, light)
 
   // short and wide
-  const [roomBTopLeft, roomBBottomRight] = cToBox(center, 3, width)
+  const [roomBTopLeft, roomBBottomRight] = center.boxCorners(3, width)
   chunk.generateBasicRoom(roomBTopLeft, roomBBottomRight, light)
 
-  const innerTopLeftCorner = { x: roomATopLeft.x, y: roomBTopLeft.y }
-  const innerBottomRightCorner = { x: roomABottomRight.x, y: roomBBottomRight.y }
+  const innerTopLeftCorner = loc(roomATopLeft.x, roomBTopLeft.y)
+  const innerBottomRightCorner = loc(roomABottomRight.x, roomBBottomRight.y)
 
   // Maybe modify the center
   switch (randInt1(4)) {
@@ -59,14 +59,14 @@ export function build(
         //                         of the wall
         for (let y = innerTopLeftCorner.y; y <= innerBottomRightCorner.y; y++) {
           if (y === center.y) continue
-          chunk.setMarkedGranite({ x: innerTopLeftCorner.x - 1, y }, SQUARE.WALL_INNER)
-          chunk.setMarkedGranite({ x: innerBottomRightCorner.x + 1, y }, SQUARE.WALL_INNER)
+          chunk.setMarkedGranite(loc(innerTopLeftCorner.x - 1, y), SQUARE.WALL_INNER)
+          chunk.setMarkedGranite(loc(innerBottomRightCorner.x + 1, y), SQUARE.WALL_INNER)
         }
 
         for (let x = innerTopLeftCorner.x; x <= innerBottomRightCorner.x; x++) {
           if (x === center.x) continue
-          chunk.setMarkedGranite({ x, y: innerTopLeftCorner.y - 1 }, SQUARE.WALL_INNER)
-          chunk.setMarkedGranite({ x, y: innerBottomRightCorner.y + 1 }, SQUARE.WALL_INNER)
+          chunk.setMarkedGranite(loc(x, innerTopLeftCorner.y - 1), SQUARE.WALL_INNER)
+          chunk.setMarkedGranite(loc(x, innerBottomRightCorner.y + 1), SQUARE.WALL_INNER)
         }
       } else if (oneIn(3)) {
         // 2/9 chance, plus

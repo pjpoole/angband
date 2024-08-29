@@ -1,4 +1,4 @@
-import { Coord } from '../../core/coordinate'
+import { Loc } from '../../core/loc'
 import { getRandom } from '../../utilities/iterator'
 
 import { Cave } from '../cave'
@@ -9,7 +9,7 @@ import { getRandomSymmetryTransform, SYMTR } from './helpers/symmetry'
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   rating: number,
 ): boolean {
   return buildRoomTemplateType(dungeon, chunk, center, 1, rating)
@@ -18,7 +18,7 @@ export function build(
 function buildRoomTemplateType(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   type: number,
   rating: number,
 ): boolean {
@@ -31,7 +31,7 @@ function buildRoomTemplateType(
 function buildRoomTemplate(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   template: RoomTemplate,
 ): boolean {
   const { height, width } = template
@@ -63,8 +63,7 @@ function buildRoomTemplate(
     assert(tHeight === height && tWidth === width)
   }
 
-  center.x -= Math.trunc(tHeight / 2)
-  center.y -= Math.trunc(tWidth / 2)
+  center = center.tr(-1 * Math.trunc(tHeight / 2), -1 * Math.trunc(tWidth / 2))
 
   return chunk.buildRoomTemplate(center, template, symmetryOp)
 }

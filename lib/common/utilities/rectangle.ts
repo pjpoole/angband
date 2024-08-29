@@ -1,4 +1,4 @@
-import { Coord, cToWellOrdered } from '../core/coordinate'
+import { Box, box, loc, Loc, wellOrdered } from '../core/loc'
 
 export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): string {
   return stringRectangleToRows(rect).join('\n')
@@ -6,7 +6,7 @@ export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): s
 
 export function stringRectangleToRows<T extends string>(rect: Rectangle<T>): string[] {
   const results: string[][] = [[]]
-  rect.forEach((char, pt, newRow) => {
+  rect.forEach((char, p, newRow) => {
     if (newRow) results.push([])
     results[results.length - 1].push(char)
   })
@@ -14,14 +14,15 @@ export function stringRectangleToRows<T extends string>(rect: Rectangle<T>): str
   return results.map(row => row.join(''))
 }
 
-type InitializerFn<T> = (pt: Coord) => T
-type IteratorFn<T> = (obj: T, pt: Coord, newRow?: boolean) => void
-type IteratorTestFn<T> = (obj: T, pt: Coord, newRow?: boolean) => boolean
+type InitializerFn<T> = (pt: Loc) => T
+type IteratorFn<T> = (obj: T, pt: Loc, newRow?: boolean) => void
+type IteratorTestFn<T> = (obj: T, pt: Loc, newRow?: boolean) => boolean
 
 export class Rectangle<T> {
   readonly height: number
   readonly width: number
   readonly rect: T[][]
+  readonly box: Box
 
   private readonly mx: number
   private readonly my: number
@@ -34,10 +35,12 @@ export class Rectangle<T> {
     this.mx = this.width - 1
     this.my = this.height - 1
 
+    this.box = box(0, 0, this.mx, this.my)
+
     if (typeof initializer === 'function') {
       this.rect = Array.from({ length: height }, (_, y) => {
         return Array.from({ length: width }, (_, x) => {
-          return (initializer as InitializerFn<T>)({ x, y })
+          return (initializer as InitializerFn<T>)(loc(x, y))
         })
       })
     } else {
@@ -47,17 +50,17 @@ export class Rectangle<T> {
     }
   }
 
-  get(pt: Coord): T {
+  get(pt: Loc): T {
     this.assertIsInbounds(pt)
     return this.rect[pt.y][pt.x]
   }
 
-  set(pt: Coord, value: T) {
+  set(pt: Loc, value: T) {
     this.assertIsInbounds(pt)
     this.rect[pt.y][pt.x] = value
   }
 
-  *coordinates(p1: Coord, p2: Coord): IterableIterator<Coord>  {
+  *coordinates(p1: Loc, p2: Loc): IterableIterator<Loc>  {
     const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
@@ -65,30 +68,30 @@ export class Rectangle<T> {
 
     for (let y = top; y <= bottom; y++) {
       for (let x = left; x <= right; x++) {
-        yield { x, y }
+        yield loc(x, y)
       }
     }
   }
 
   forEach(fn: IteratorFn<T>): void {
-    this.forEachInRange({ x: 0, y: 0}, { x: this.mx, y: this.my }, fn)
+    this.forEachInRange(...this.box.extents(), fn)
   }
 
-  every(p1: Coord, p2: Coord, fn: IteratorTestFn<T>): boolean {
+  every(p1: Loc, p2: Loc, fn: IteratorTestFn<T>): boolean {
     let prevY = 0
     let newRow = false
-    for (const { x, y } of this.coordinates(p1, p2)) {
-      if (y !== prevY) newRow = true
-      if (!fn(this.rect[y][x], { x, y }, newRow)) return false
+    for (const p of this.coordinates(p1, p2)) {
+      if (p.y !== prevY) newRow = true
+      if (!fn(this.rect[p.y][p.x], p, newRow)) return false
 
       newRow = false
-      prevY = y
+      prevY = p.y
     }
 
     return true
   }
 
-  forEachBorder(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
+  forEachBorder(p1: Loc, p2: Loc, fn: IteratorFn<T>): void {
     const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
 
     const { x: left, y: top } = topLeft
@@ -96,14 +99,14 @@ export class Rectangle<T> {
 
     let newRow = false
     for (let x = left; x <= right; x++) {
-      fn(this.rect[top][x], { x, y: top }, newRow)
+      fn(this.rect[top][x], loc(x, top), newRow)
     }
     // NB. If width === 0, we don't run twice on each cell
     const leftRight = left === right ? [left] : [left, right]
     for (let y = top + 1; y < bottom; y++) {
       newRow = true
       for (const x of leftRight) {
-        fn(this.rect[y][x], { x, y })
+        fn(this.rect[y][x], loc(x, y))
         newRow = false
       }
     }
@@ -111,42 +114,42 @@ export class Rectangle<T> {
     if (top === bottom) return
     newRow = true
     for (let x = left; x <= right; x++) {
-      fn(this.rect[bottom][x], { x, y: bottom }, newRow)
+      fn(this.rect[bottom][x], loc(x, bottom), newRow)
       newRow = false
     }
   }
 
-  forEachInRange(p1: Coord, p2: Coord, fn: IteratorFn<T>): void {
+  forEachInRange(p1: Loc, p2: Loc, fn: IteratorFn<T>): void {
     let prevY = 0
     let newRow = false
-    for (const { x, y } of this.coordinates(p1, p2)) {
-      if (y !== prevY) newRow = true
-      prevY = y
-      fn(this.rect[y][x], { x, y }, newRow)
+    for (const p of this.coordinates(p1, p2)) {
+      if (p.y !== prevY) newRow = true
+      prevY = p.y
+      fn(this.rect[p.y][p.x], p, newRow)
 
       newRow = false
     }
   }
 
-  private wellOrdered(pt1: Coord, pt2: Coord): [Coord, Coord] {
-    this.assertIsInbounds(pt1)
-    this.assertIsInbounds(pt2)
+  private wellOrdered(p1: Loc, p2: Loc): [Loc, Loc] {
+    this.assertIsInbounds(p1)
+    this.assertIsInbounds(p2)
 
-    return cToWellOrdered(pt1, pt2)
+    return wellOrdered(p1, p2)
   }
 
-  assertIsInbounds(pt: Coord) {
-    if (!this.isInbounds(pt)) throw new Error(
+  assertIsInbounds(p: Loc) {
+    if (!this.isInbounds(p)) throw new Error(
       'invalid coordinates',
-      { cause: { x: pt.x, y: pt.y }}
+      { cause: { x: p.x, y: p.y }}
     )
   }
 
-  isInbounds(pt: Coord): boolean {
-    return pt.x >= 0 && pt.x < this.width && pt.y >= 0 && pt.y < this.height
+  isInbounds(p: Loc): boolean {
+    return this.box.contains(p)
   }
 
-  isFullyInbounds(pt: Coord): boolean {
-    return pt.x > 0 && pt.x < this.mx && pt.y > 0 && pt.y < this.my
+  isFullyInbounds(p: Loc): boolean {
+    return this.box.fullyContains(p)
   }
 }

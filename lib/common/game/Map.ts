@@ -1,4 +1,4 @@
-import { Coord } from '../core/coordinate'
+import { Loc } from '../core/loc'
 import { Rectangle, stringRectangleToRaster } from '../utilities/rectangle'
 
 import { Tile } from '../world/tile'
@@ -50,14 +50,14 @@ export class GameMap {
     return stringRectangleToRaster(rect)
   }
 
-  get(pt: Coord): Tile | undefined {
+  get(pt: Loc): Tile | undefined {
     if (!this.isInbounds(pt)) {
       return undefined
     }
     return this.tiles.get(pt)
   }
 
-  isInbounds(pt: Coord): boolean {
+  isInbounds(pt: Loc): boolean {
     return pt.x >= 0 && pt.x < this.width && pt.y >= 0 && pt.y < this.height
   }
 }

@@ -1,9 +1,4 @@
-import {
-  Coord,
-  cProd,
-  cToBox,
-  cToRadius
-} from '../../core/coordinate'
+import { Loc } from '../../core/loc'
 import { randInt0, randInt1 } from '../../core/rand'
 
 import { randDirNSEW } from '../../utilities/directions'
@@ -16,7 +11,7 @@ import { SQUARE } from '../square'
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  pt: Coord,
+  center: Loc,
   rating: number, // not used
 ): boolean {
   // range 4-7; diameter 8-14
@@ -25,23 +20,24 @@ export function build(
 
   const light = chunk.depth <= randInt1(25)
 
-  if (!chunk.isInbounds(pt)) {
+  if (!chunk.isInbounds(center)) {
     // 5 spaces buffer around the edge of the circle
     // pt may have been mutated here
-    if (!dungeon.findSpace(pt, diameter + 10, diameter + 10)) return false
+    if (!dungeon.findSpace(center, diameter + 10, diameter + 10)) return false
   }
 
-  fillCircle(chunk, pt, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
+  fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
-  const [upperLeft, lowerRight] = cToBox(pt, radius + 2)
+  // TODO: Check; this might have been diameter before, or cToRadius
+  const [upperLeft, lowerRight] = center.boxCorners(radius + 2)
 
   chunk.setBorderingWalls(upperLeft, lowerRight)
 
   // give large rooms an inner chamber
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
-    const offset = cProd(randDirNSEW(), 2)
+    const offset = randDirNSEW().prod(2)
 
-    chunk.drawRectangle(...cToRadius(pt, 2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
+    chunk.drawRectangle(...center.boxToRadius(2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
     chunk.placeClosedDoor(offset)
 
     // TODO: vault objects
@@ -54,7 +50,7 @@ export function build(
 // TODO: this code is opaque; understand what it is doing
 function fillCircle(
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   radius: number,
   border: number,
   feature: Feature | FEAT,

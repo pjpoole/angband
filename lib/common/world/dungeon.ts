@@ -1,4 +1,4 @@
-import { Coord } from '../core/coordinate'
+import { loc, Loc } from '../core/loc'
 import { Rectangle } from '../utilities/rectangle'
 
 import { DungeonProfile } from './dungeonProfiles'
@@ -24,7 +24,6 @@ export class Dungeon {
   readonly quest: boolean
 
   numPits: number = 0
-  numCenters: number = 0
 
   // set externally in four cases: classic, modified, moria, lair
   blockHeight: number = 0
@@ -35,7 +34,7 @@ export class Dungeon {
 
   roomMap?: Rectangle<boolean>
 
-  centers: Coord[]
+  centers: Loc[]
 
   constructor(params: DungeonParams) {
     this.profile = params.profile
@@ -46,12 +45,12 @@ export class Dungeon {
   }
 
   // generation
-  checkForUnreservedBlocks(p1: Coord, p2: Coord): boolean {
+  checkForUnreservedBlocks(p1: Loc, p2: Loc): boolean {
     assertInitialized(this.roomMap)
     return this.roomMap.every(p1, p2, (cell) => !cell)
   }
 
-  reserveBlocks(p1: Coord, p2: Coord) {
+  reserveBlocks(p1: Loc, p2: Loc) {
     assertInitialized(this.roomMap)
 
     for (const p of this.roomMap.coordinates(p1, p2)) {
@@ -65,31 +64,26 @@ export class Dungeon {
    * TODO: See if there is a version of this that does not mutate
    */
   findSpace(
-    pt: Coord, height: number, width: number
+    p: Loc, height: number, width: number
   ): boolean {
     const blocksHigh = 1 + Math.trunc((height - 1) / this.blockHeight)
     const blocksWide = 1 + Math.trunc((width - 1) / this.blockWidth)
 
     for (let i = 0; i < MAX_TRIES; i++) {
       // random starting block in the dungeon
-      const p1 = {
-        x: randInt0(this.blockColumns),
-        y: randInt0(this.blockRows)
-      }
+      const p1 = loc(randInt0(this.blockColumns), randInt0(this.blockRows))
 
       // QUESTION: why -1 ?
-      const p2 = {
-        x: p1.x + blocksWide - 1,
-        y: p1.y + blocksHigh - 1
-      }
+      const p2 = loc(p1.x + blocksWide - 1, p1.y + blocksHigh - 1)
 
       if (!this.checkForUnreservedBlocks(p1, p2)) continue
 
       // mutating here percolates up through the chain
-      pt.x = Math.trunc(((p1.x + p2.x + 1) * this.blockHeight) / 2)
-      pt.y = Math.trunc(((p1.y + p2.y + 1) * this.blockWidth) / 2)
+      // TODO: change this and make Loc readonly again
+      p.x = Math.trunc(((p1.x + p2.x + 1) * this.blockHeight) / 2)
+      p.y = Math.trunc(((p1.y + p2.y + 1) * this.blockWidth) / 2)
 
-      this.addCenter(pt)
+      this.addCenter(p)
       this.reserveBlocks(p1, p2)
 
       return true
@@ -100,7 +94,7 @@ export class Dungeon {
 
   // QUESTION: Always a block coord?
   // TODO: bounds checking against level_room_max
-  addCenter(pt: Coord) {
+  addCenter(pt: Loc) {
     this.centers.push(pt)
   }
 

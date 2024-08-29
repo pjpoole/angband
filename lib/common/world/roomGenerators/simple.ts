@@ -1,4 +1,4 @@
-import { cOffset, Coord, cSum, cToBox } from '../../core/coordinate'
+import { loc, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -8,7 +8,7 @@ import { SQUARE } from '../square'
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Coord,
+  center: Loc,
   rating: number, // not used
 ): boolean {
   const height = 1 + randInt1(4) + randInt1(3) // 3-8
@@ -21,7 +21,7 @@ export function build(
   const light = chunk.depth <= randInt1(25)
 
   // wall boundaries
-  const [topLeft, bottomRight] = cToBox(center, height, width)
+  const [topLeft, bottomRight] = center.boxCorners(height, width)
   chunk.generateBasicRoom(topLeft, bottomRight, light)
 
   if (oneIn(20)) {
@@ -35,7 +35,7 @@ export function build(
   return true
 }
 
-function makePillarRoom(chunk: Cave, p1: Coord, p2: Coord) {
+function makePillarRoom(chunk: Cave, p1: Loc, p2: Loc) {
   /*
    *  if dimension is even, don't always put a pillar in the corners
    *
@@ -64,7 +64,7 @@ function makePillarRoom(chunk: Cave, p1: Coord, p2: Coord) {
 
   for (let y = p1.y + yOffset; y <= p2.y; y += 2) {
     for (let x = p1.x + xOffset; x <= p2.x; x += 2) {
-      chunk.setMarkedGranite({ x, y }, SQUARE.WALL_INNER)
+      chunk.setMarkedGranite(loc(x, y), SQUARE.WALL_INNER)
     }
   }
 
@@ -80,12 +80,12 @@ function makePillarRoom(chunk: Cave, p1: Coord, p2: Coord) {
      *    ##########
      */
     if (xOffset === 0) {
-      const outerTopLeft = cOffset(p1, -1)
+      const outerTopLeft = p1.offset(-1)
       chunk.turnOff(outerTopLeft, SQUARE.ROOM)
       chunk.turnOff(outerTopLeft, SQUARE.WALL_OUTER)
     }
     if ((p2.x - p1.x - xOffset) % 2 === 0) {
-      const outerBottomLeft = cSum(p1, { x: 1, y: -1 })
+      const outerBottomLeft = p1.tr(1, -1)
       chunk.turnOff(outerBottomLeft, SQUARE.ROOM)
       chunk.turnOff(outerBottomLeft, SQUARE.WALL_OUTER)
     }
@@ -93,12 +93,12 @@ function makePillarRoom(chunk: Cave, p1: Coord, p2: Coord) {
 
   if ((p2.y - p1.y - yOffset) % 2 === 0) {
     if (xOffset === 0) {
-      const outerTopRight = cSum(p1, { x: -1, y: 1 })
+      const outerTopRight = p1.tr(-1, 1)
       chunk.turnOff(outerTopRight, SQUARE.ROOM)
       chunk.turnOff(outerTopRight, SQUARE.WALL_OUTER)
     }
     if ((p2.x - p1.x - xOffset) % 2 === 0) {
-      const outerBottomRight = cOffset(p1, 1)
+      const outerBottomRight = p1.offset(1)
       chunk.turnOff(outerBottomRight, SQUARE.ROOM)
       chunk.turnOff(outerBottomRight, SQUARE.WALL_OUTER)
     }
@@ -106,16 +106,16 @@ function makePillarRoom(chunk: Cave, p1: Coord, p2: Coord) {
 }
 
 // i.e., columns around the outside
-function makeRaggedRoom(chunk: Cave, p1: Coord, p2: Coord) {
+function makeRaggedRoom(chunk: Cave, p1: Loc, p2: Loc) {
   const xOffset = (p2.x - p1.x) % 2 === 0 ? 0 : randInt0(2)
   const yOffset = (p2.y - p1.y) % 2 === 0 ? 0 : randInt0(2)
 
   for (let y = p1.y + 2 + yOffset; y <= p2.y - 2; y += 2) {
-    chunk.setMarkedGranite({ x: p1.x, y }, SQUARE.WALL_INNER)
-    chunk.setMarkedGranite({ x: p2.x, y }, SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(p1.x, y), SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(p2.x, y), SQUARE.WALL_INNER)
   }
   for (let x = p1.x + 2 + xOffset; x <= p2.x - 2; x += 2) {
-    chunk.setMarkedGranite({ x, y: p1.y }, SQUARE.WALL_INNER)
-    chunk.setMarkedGranite({ x, y: p2.y }, SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(x, p1.y), SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(x, p2.y), SQUARE.WALL_INNER)
   }
 }

@@ -1,9 +1,10 @@
+import { loc } from '../common/core/loc'
 import { DIR, moveDir } from '../common/utilities/directions'
 
 import { Entity } from '../common/game/Entity'
 import { loadGameObjects } from './game/loadData'
-import { GameMap } from '../common/game/Map'
 
+import { GameMap } from '../common/game/Map'
 import { CommandMap, COMMANDS } from './commands'
 import { loadTestRoom } from './testTerrain'
 
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const map = new GameMap(mapData)
   const player = new Entity()
 
-  player.add(map, { x: 40, y: 15 })
+  player.add(map, loc(40, 15))
 
   const gameWindow = document.getElementById('main')
 
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!player.isOnMap()) return
 
     // Hack; TODO: need val check
-    const pt = player.pt ?? { x: -1, y: -1 }
+    const pt = player.pt ?? loc(-1, -1)
 
     switch (command) {
       case COMMANDS.MOVE_EAST: {

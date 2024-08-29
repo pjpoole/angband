@@ -1,4 +1,4 @@
-import { Coord, cSum } from '../core/coordinate'
+import { loc, Loc } from '../core/loc'
 import { randInt0 } from '../core/rand'
 
 export enum DIR {
@@ -13,24 +13,22 @@ export enum DIR {
   NORTHEAST,
 }
 
-export function moveDir(pt: Coord, direction: DIR) {
-  return cSum(pt, dirToCoord(direction))
+export function moveDir(pt: Loc, direction: DIR) {
+  return pt.sum(dirToCoord(direction))
 }
 
-export function randDirNSEW(): Coord {
-  const [x, y] = M_NP_XY[randInt0(4)]
-  return { x, y }
+export function randDirNSEW(): Loc {
+  return loc(...M_NP_XY[randInt0(4)])
 }
 
-export function dirToCoord(direction: DIR): Coord {
-  const [x, y] = NP_XY[direction]
-  return { x, y }
+export function dirToCoord(direction: DIR): Loc {
+  return loc(...NP_XY[direction])
 }
 
-export function* getNeighbors(pt: Coord, includeSelf?: boolean) {
+export function* getNeighbors(pt: Loc, includeSelf?: boolean) {
   const limit = includeSelf ? 9 : 8
   for (let i = 0; i < limit; i++) {
-    yield cSum(pt, dirToCoord(NP_KEYS[i]))
+    yield pt.sum(dirToCoord(NP_KEYS[i]))
   }
 }
 
@@ -43,7 +41,7 @@ export const NP_X = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1] as const
 export const NP_Y = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1] as const
 
 // zip the two previous arrays to make coordinates
-export const NP_XY = [
+export const NP_XY: [number, number][] = [
   [0, 0], [-1, 1], [0, 1], [1, 1], [-1, 0],
   [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1],
 ] as const
@@ -53,7 +51,7 @@ export const M_NP_X = [0, 0, 1, -1, 1, -1, 1, -1, 0] as const
 export const M_NP_Y = [1, -1, 0, 0, 1, 1, -1, -1, 0] as const
 
 // zip the previous two to make coordinates
-export const M_NP_XY = [
+export const M_NP_XY: [number, number][] = [
   [0, 1], [0, -1], [1, 0], [-1, 0], [1, 1],
   [-1, 1], [1, -1], [-1, -1], [0, 0]
 ] as const

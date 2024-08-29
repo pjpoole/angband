@@ -1,11 +1,12 @@
+import { Loc } from '../core/loc'
+
 import { GameMap } from './Map'
-import { Coord } from '../core/coordinate'
 
 export class Entity {
   protected map?: GameMap
-  pt?: Coord
+  pt?: Loc
 
-  add(map: GameMap, pt: Coord): boolean {
+  add(map: GameMap, pt: Loc): boolean {
     this.map = map
 
     this.pt = pt
@@ -25,7 +26,7 @@ export class Entity {
     return (this.map != null && this.pt != null)
   }
 
-  move(pt: Coord): boolean {
+  move(pt: Loc): boolean {
     if (this.isOnMap()) {
       if (this.map.isInbounds(pt)) {
         const tile = this.map.get(pt)

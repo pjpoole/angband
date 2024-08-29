@@ -10,6 +10,29 @@ export function box(left: number, top: number, right: number, bottom: number): B
   return new Box(left, top, right, bottom)
 }
 
+export function wellOrdered(p1: Loc, p2: Loc): [Loc, Loc] {
+  const [left, top, right, bottom] = wellOrder(p1, p2)
+  return [loc(left, top), loc(right, bottom)]
+}
+
+// Temp functions for compatibility
+/*** BEGIN ***/
+export function toExteriorBox(p1: Loc, p2: Loc): [Loc, Loc] {
+  const [min, max] = wellOrdered(p1, p2)
+  return [min.offset(-1), max.offset(1)]
+}
+
+export function* locIterate(p1: Loc, p2: Loc): IterableIterator<Loc> {
+  const [left, top, right, bottom] = wellOrder(p1, p2)
+
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= bottom; x++) {
+      yield loc(x, y)
+    }
+  }
+}
+/***  END  ***/
+
 function wellOrder(p1: Loc, p2: Loc): [number, number, number, number] {
   return [
     Math.min(p1.x, p2.x),
@@ -19,7 +42,7 @@ function wellOrder(p1: Loc, p2: Loc): [number, number, number, number] {
   ]
 }
 
-class Loc {
+export class Loc {
   readonly x: number
   readonly y: number
 
@@ -32,12 +55,24 @@ class Loc {
     return loc(this.x + p.x, this.y + p.y)
   }
 
+  diff(p: Loc): Loc {
+    return loc(this.x - p.x, this.y - p.y)
+  }
+
   prod(n: number): Loc {
     return loc(this.x * n, this.y * n)
   }
 
   eq(p: Loc): boolean {
     return this.x === p.x && this.y === p.x
+  }
+
+  distX(p: Loc): number {
+    return Math.abs(this.x - p.x)
+  }
+
+  distY(p: Loc): number {
+    return Math.abs(this.y - p.y)
   }
 
   tr(x: number, y: number): Loc {
@@ -68,9 +103,22 @@ class Loc {
   boxR(radius: number) {
     return this.box(radius * 2 + 1)
   }
+
+  boxCorners(height: number, width?: number): [Loc, Loc] {
+    width ??= height
+    const l = this.x - Math.trunc(width / 2)
+    const t = this.y - Math.trunc(width / 2)
+    const r = l + width - 1
+    const b = t + height - 1
+    return [loc(l, t), loc(r, b)]
+  }
+
+  boxToRadius(radius: number): [Loc, Loc] {
+    return this.boxCorners(radius * 2 + 1)
+  }
 }
 
-class Box {
+export class Box {
   readonly l: number
   readonly t: number
   readonly r: number
@@ -90,13 +138,21 @@ class Box {
   get top() {
     return this.t
   }
-  
+
   get right() {
     return this.r
   }
 
   get bottom() {
     return this.b
+  }
+
+  get width() {
+    return this.r - this.l + 1
+  }
+
+  get height() {
+    return this.b - this.t + 1
   }
 
   extents(): [Loc, Loc] {
@@ -108,6 +164,14 @@ class Box {
       Math.trunc((this.l + this.r) / 2),
       Math.trunc((this.t + this.b) / 2),
     )
+  }
+
+  contains(p: Loc): boolean {
+    return p.x >= this.l && p.x <= this.r && p.y >= this.t && p.y <= this.b
+  }
+
+  fullyContains(p: Loc): boolean {
+    return p.x > this.l && p.x < this.r && p.y > this.t && p.y < this.b
   }
 
   interior(): Box {

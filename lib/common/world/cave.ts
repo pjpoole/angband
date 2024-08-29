@@ -1,10 +1,4 @@
-import {
-  cCenter,
-  cEq,
-  Coord,
-  cToExteriorBox,
-  cToWellOrdered
-} from '../core/coordinate'
+import { loc, Loc, locsToBox, wellOrdered } from '../core/loc'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
 import { getNeighbors } from '../utilities/directions'
 import { asInteger } from '../utilities/parsing/primitives'
@@ -55,19 +49,19 @@ export class Cave {
       ? FeatureRegistry.get(params.fill)
       : params.fill
 
-    this.tiles = new Rectangle(this.width, this.height, (pt: Coord): Tile => {
+    this.tiles = new Rectangle(this.width, this.height, (pt: Loc): Tile => {
       const tile = new Tile(pt, fill, params.flag)
       this.featureCount[tile.feature.code] += 1
       return tile
     })
   }
 
-  turnOn(pt: Coord, flag: SQUARE) {
-    this.tiles.get(pt).turnOn(flag)
+  turnOn(p: Loc, flag: SQUARE) {
+    this.tiles.get(p).turnOn(flag)
   }
 
-  turnOff(pt: Coord, flag: SQUARE) {
-    this.tiles.get(pt).turnOff(flag)
+  turnOff(p: Loc, flag: SQUARE) {
+    this.tiles.get(p).turnOff(flag)
   }
 
   private initFeatureCount(): FeatureCount {
@@ -82,19 +76,18 @@ export class Cave {
   }
 
   // generation
-  setBorderingWalls(p1: Coord, p2: Coord) {
+  setBorderingWalls(p1: Loc, p2: Loc) {
+    // TODO: We have better helpers for this
     const boundLeft = Math.max(0, Math.min(p1.x, p2.x))
     const boundRight = Math.min(this.width - 1, Math.max(p1.x, p2.x))
     const boundTop = Math.max(0, Math.min(p1.y, p2.y))
     const boundBottom = Math.min(this.height - 1, Math.max(p1.y, p2.y))
 
-    const bp1 = { x: boundLeft, y: boundTop }
-    const bp2 = { x: boundRight, y: boundBottom }
+    const bp1 = loc(boundLeft, boundTop)
+    const bp2 = loc(boundRight, boundBottom)
 
-    const refToOffset = (pt: Coord) =>
-      ({ x: pt.x - boundLeft, y: pt.y - boundTop })
-    const offsetToRef = (pt: Coord) =>
-      ({ x: pt.x + boundLeft, y: pt.y + boundTop })
+    const refToOffset = (p: Loc): Loc => p.diff(bp1)
+    const offsetToRef = (p: Loc): Loc => p.sum(bp1)
 
     const wallWidth = Math.abs(p1.x - p2.x)
     const wallHeight = Math.abs(p1.y - p2.y)
@@ -125,7 +118,7 @@ export class Cave {
         walls.set(refToOffset(pt), true)
       } else {
         let floorCount = 0
-        this.tiles.forEachInRange({ x: xLeft, y: yAbove }, { x: xRight, y: yBelow }, (tile) => {
+        this.tiles.forEachInRange(loc(xLeft, yAbove), loc(xRight, yBelow), (tile) => {
           const isFloor = tile.isFloor()
           assert(isFloor === tile.isRoom())
           if (isFloor) floorCount++
@@ -148,20 +141,21 @@ export class Cave {
   }
 
   generateBasicRoom(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     light: boolean,
   ): void {
-    const [topLeft, bottomRight] = cToWellOrdered(p1, p2)
+    const [topLeft, bottomRight] = wellOrdered(p1, p2)
 
-    const [outerTopLeft, outerBottomRight] = cToExteriorBox(topLeft, bottomRight)
+    const outerTopLeft = topLeft.offset(-1)
+    const outerBottomRight = bottomRight.offset(1)
     this.generateRoom(outerTopLeft, outerBottomRight, light)
     this.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
     this.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
   }
 
   buildRoomTemplate(
-    center: Coord,
+    center: Loc,
     template: RoomTemplate,
     transform?: SymmetryTransform,
   ): boolean {
@@ -177,23 +171,23 @@ export class Cave {
     template.room.forEach((char, ptPre) => {
       if (char === ' ') return
 
-      const pt = symmetryTransform(ptPre, center, height, width, rotate, reflect)
-      const tile = this.tiles.get(pt)
+      const p = symmetryTransform(ptPre, center, height, width, rotate, reflect)
+      const tile = this.tiles.get(p)
       this.setFeature(tile, FEAT.FLOOR)
       assert(tile.isEmpty())
 
       switch (char) {
         case '%':
-          this.setMarkedGranite(pt, SQUARE.WALL_OUTER)
+          this.setMarkedGranite(p, SQUARE.WALL_OUTER)
           if (template.flags.has(ROOMF.FEW_ENTRANCES)) {
             // TODO: append entrance
           }
           break
         case '#':
-          this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          this.setMarkedGranite(p, SQUARE.WALL_SOLID)
           break
         case '+':
-          this.placeClosedDoor(pt)
+          this.placeClosedDoor(p)
           break
         case '^':
           if (oneIn(4)) {
@@ -201,14 +195,14 @@ export class Cave {
           }
           break
         case 'x':
-          if (randomWalls) this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          if (randomWalls) this.setMarkedGranite(p, SQUARE.WALL_SOLID)
           break
         case '(':
-          if (randomWalls) this.placeSecretDoor(pt)
+          if (randomWalls) this.placeSecretDoor(p)
           break
         case ')':
-          if (!randomWalls) this.placeSecretDoor(pt)
-          else this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          if (!randomWalls) this.placeSecretDoor(p)
+          else this.setMarkedGranite(p, SQUARE.WALL_SOLID)
           break
         case '8':
           // TODO: or dungeon persist
@@ -230,8 +224,8 @@ export class Cave {
         case '5':
         case '6':
           const doorNum = asInteger(char)
-          if (doorNum == randomDoor) this.placeSecretDoor(pt)
-          else this.setMarkedGranite(pt, SQUARE.WALL_SOLID)
+          if (doorNum == randomDoor) this.placeSecretDoor(p)
+          else this.setMarkedGranite(p, SQUARE.WALL_SOLID)
           break
       }
 
@@ -272,8 +266,8 @@ export class Cave {
   //       with other functions (border, floor) it may be possible to roll all
   //       of these up together
   generateRoom(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     light: boolean,
   ) {
     this.tiles.forEachInRange(p1, p2, (tile) => {
@@ -283,27 +277,27 @@ export class Cave {
   }
 
   generatePlus(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     feature: Feature | FEAT,
     flag?: SQUARE,
   ) {
-    const center = cCenter(p1, p2)
+    const center = locsToBox(p1, p2).center()
 
-    this.tiles.forEachInRange({ x: center.x, y: p1.y }, { x: center.x, y: p2.y }, (tile) => {
+    this.tiles.forEachInRange(loc(center.x, p1.y), loc(center.x, p2.y), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
 
-    this.tiles.forEachInRange({ x: p1.x, y: center.y }, { x: p2.x, y: center.y }, (tile) => {
+    this.tiles.forEachInRange(loc(p1.x, center.y), loc(p2.x, center.y), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
   }
 
   fillRectangle(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     feature: Feature | FEAT,
     flag?: SQUARE,
   ) {
@@ -321,7 +315,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange({ x: xStart, y }, { x: xEnd, y }, (tile) => {
+    this.tiles.forEachInRange(loc(xStart, y), loc(xEnd, y), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -337,7 +331,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange({ x, y: yStart }, { x, y: yEnd }, (tile) => {
+    this.tiles.forEachInRange(loc(x, yStart), loc(x, yEnd), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -346,8 +340,8 @@ export class Cave {
   }
 
   drawRectangle(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     feature: Feature | FEAT,
     flag?: SQUARE,
     overwritePermanent?: boolean
@@ -363,44 +357,45 @@ export class Cave {
   // Unused; ugly function
   // Keeping it for discoverability reasons
   generateMark(
-    p1: Coord,
-    p2: Coord,
+    p1: Loc,
+    p2: Loc,
     flag: SQUARE,
   ) {
     this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
   }
 
   // TODO: Maybe return coord of hole
-  generateHole(pt1: Coord, pt2: Coord, feature: Feature | FEAT) {
-    const center = cCenter(pt1, pt2)
+  generateHole(p1: Loc, p2: Loc, feature: Feature | FEAT) {
+    const center = locsToBox(p1, p2).center()
 
-    const point = { ...center }
+    let { x, y } = center
     // pick a random wall center
     switch (randInt0(4)) {
-      case 0: point.y = pt1.y; break
-      case 1: point.x = pt1.x; break
-      case 2: point.y = pt2.y; break
-      case 3: point.y = pt2.y; break
+      case 0: y = p1.y; break
+      case 1: x = p1.x; break
+      case 2: y = p2.y; break
+      case 3: y = p2.y; break
     }
+    const point = loc(x, y)
 
     // can only happen in degenerate cases
-    assert(!cEq(point, center))
+    assert(!point.eq(center))
 
     this.setFeature(this.tiles.get(point), feature)
   }
 
-  placeClosedDoor(pt: Coord) {
+  placeClosedDoor(pt: Loc) {
     const tile = this.tiles.get(pt)
     this.setFeature(tile, FEAT.CLOSED)
     // TODO: traps: randomly set door lock strength
   }
 
-  placeSecretDoor(pt: Coord) {
+  placeSecretDoor(pt: Loc) {
     const tile = this.tiles.get(pt)
     this.setFeature(tile, FEAT.SECRET)
   }
 
-  setMarkedGranite(pt: Coord, flag?: SQUARE) {
+  setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
     tile.feature = FeatureRegistry.get(FEAT.GRANITE)
     if (flag) tile.turnOn(flag)
@@ -423,7 +418,7 @@ export class Cave {
     // TODO: square_light_spot
   }
 
-  countNeighbors(pt: Coord, countSelf: boolean, fn: (tile: Tile, pt: Coord, chunk: this) => boolean) {
+  countNeighbors(pt: Loc, countSelf: boolean, fn: (tile: Tile, pt: Loc, chunk: this) => boolean) {
     let count = 0
 
     for (const neighbor of getNeighbors(pt, countSelf)) {
@@ -437,11 +432,11 @@ export class Cave {
     return count
   }
 
-  isInbounds(pt: Coord) {
+  isInbounds(pt: Loc) {
     return this.tiles.isInbounds(pt)
   }
 
-  isFullyInbounds(pt: Coord) {
+  isFullyInbounds(pt: Loc) {
     return this.tiles.isFullyInbounds(pt)
   }
 }

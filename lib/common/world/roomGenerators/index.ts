@@ -1,4 +1,4 @@
-import { Coord } from '../../core/coordinate'
+import { loc, Loc } from '../../core/loc'
 import { getConstants } from '../../core/loading'
 
 import { Cave } from '../cave'
@@ -28,7 +28,7 @@ import { build as buildTemplate } from './template'
 type RoomBuilder = (
   dungeon: Dungeon,
   chunk: Cave,
-  pt: Coord,
+  pt: Loc,
   rating: number,
 ) => boolean
 
@@ -72,7 +72,7 @@ const ROOM: RoomEntry[] = [
 export function buildRoom(
   dungeon: Dungeon,
   chunk: Cave,
-  bpt: Coord,
+  bpt: Loc,
   profile: Room,
   findsOwnSpace: boolean
 ): boolean {
@@ -80,16 +80,17 @@ export function buildRoom(
   if (profile.pit && dungeon.numPits >= getConstants().dungeonGeneration.pitMax) return false
 
   const { x: bx0, y: by0 } = bpt
-  const bp1 = { ...bpt }
-  const bp2 = {
-    x: bx0 + Math.ceil(profile.width / dungeon.blockWidth),
-    y: by0 + Math.ceil(profile.height / dungeon.blockHeight)
-  }
+  // deliberate no-op clone until I figure out if this matters
+  const bp1 = bpt.offset(0)
+  const bp2 = loc(
+    bx0 + Math.ceil(profile.width / dungeon.blockWidth),
+    by0 + Math.ceil(profile.height / dungeon.blockHeight)
+  )
 
   const builder = findBuilder(profile.name)
 
   if (findsOwnSpace) {
-    if (!builder(dungeon, chunk, { x: chunk.width, y: chunk.height }, profile.rating)) {
+    if (!builder(dungeon, chunk, loc(chunk.width, chunk.height), profile.rating)) {
       return false
     }
   } else {
@@ -98,10 +99,10 @@ export function buildRoom(
     }
 
     // actual point, not block point
-    const center = {
-      x: Math.trunc((bp1.x + bp2.x + 1) * dungeon.blockWidth / 2),
-      y: Math.trunc((bp1.y + bp2.y + 1) * dungeon.blockHeight / 2)
-    }
+    const center = loc(
+      Math.trunc((bp1.x + bp2.x + 1) * dungeon.blockWidth / 2),
+      Math.trunc((bp1.y + bp2.y + 1) * dungeon.blockHeight / 2)
+    )
 
     // per C comments, this has to be available in the dungeon for proper
     // entrance calculation

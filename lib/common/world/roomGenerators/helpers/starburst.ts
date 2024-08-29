@@ -1,12 +1,12 @@
-import { Coord } from '../../../core/coordinate'
+import { Loc } from '../../../core/loc'
 
 import { Cave } from '../../cave'
 import { FEAT, Feature } from '../../features'
 
 export function buildStarburstRoom(
   chunk: Cave,
-  p1: Coord,
-  p2: Coord,
+  p1: Loc,
+  p2: Loc,
   light: boolean,
   feature: Feature | FEAT,
   specialOk: boolean
