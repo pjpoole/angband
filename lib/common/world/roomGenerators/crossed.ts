@@ -1,4 +1,4 @@
-import { loc, Loc } from '../../core/loc'
+import { Loc } from '../../core/loc'
 import { oneIn, randInRange, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -27,15 +27,14 @@ export function build(
   }
 
   // tall and skinny
-  const [roomATopLeft, roomABottomRight] = center.boxCorners(height, 3)
-  chunk.generateBasicRoom(roomATopLeft, roomABottomRight, light)
+  const boxA = center.box(height, 3)
+  chunk.generateBasicRoom(boxA, light)
 
   // short and wide
-  const [roomBTopLeft, roomBBottomRight] = center.boxCorners(3, width)
-  chunk.generateBasicRoom(roomBTopLeft, roomBBottomRight, light)
+  const boxB = center.box(3, width)
+  chunk.generateBasicRoom(boxB, light)
 
-  const innerTopLeftCorner = loc(roomATopLeft.x, roomBTopLeft.y)
-  const innerBottomRightCorner = loc(roomABottomRight.x, roomBBottomRight.y)
+  const innerBox = boxA.clip(boxB)
 
   // Maybe modify the center
   switch (randInt1(4)) {
@@ -44,12 +43,12 @@ export function build(
       break
     case 2:
       // Solid full-space column
-      chunk.fillRectangle(innerTopLeftCorner, innerBottomRightCorner, FEAT.GRANITE, SQUARE.WALL_INNER)
+      chunk.fillRectangle(innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
       break
     case 3:
       // Small secret room
-      chunk.drawRectangle(innerTopLeftCorner, innerBottomRightCorner, FEAT.GRANITE, SQUARE.WALL_INNER)
-      chunk.generateHole(innerTopLeftCorner, innerBottomRightCorner, FEAT.SECRET)
+      chunk.drawRectangle(innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
+      chunk.generateHole(innerBox, FEAT.SECRET)
 
       // TODO: treasure
       // TODO: monsters
@@ -59,20 +58,16 @@ export function build(
       if (oneIn(3)) {
         // 1/3 chance, "pinched" - five rooms with an open floor in the center
         //                         of the wall
-        for (let y = innerTopLeftCorner.y; y <= innerBottomRightCorner.y; y++) {
-          if (y === center.y) continue
-          chunk.setMarkedGranite(loc(innerTopLeftCorner.x - 1, y), SQUARE.WALL_INNER)
-          chunk.setMarkedGranite(loc(innerBottomRightCorner.x + 1, y), SQUARE.WALL_INNER)
-        }
-
-        for (let x = innerTopLeftCorner.x; x <= innerBottomRightCorner.x; x++) {
-          if (x === center.x) continue
-          chunk.setMarkedGranite(loc(x, innerTopLeftCorner.y - 1), SQUARE.WALL_INNER)
-          chunk.setMarkedGranite(loc(x, innerBottomRightCorner.y + 1), SQUARE.WALL_INNER)
+        const exterior = innerBox.exterior()
+        for (const p of exterior.borders()) {
+          if (p.isCorner(exterior)) continue
+          if (p.y === center.y) continue
+          if (p.x === center.x) continue
+          chunk.setMarkedGranite(p, SQUARE.WALL_INNER)
         }
       } else if (oneIn(3)) {
         // 2/9 chance, plus
-        chunk.generatePlus(innerTopLeftCorner, innerBottomRightCorner, FEAT.GRANITE, SQUARE.WALL_INNER)
+        chunk.generatePlus(innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
       } else if (oneIn(3)) {
         // 4/27 chance, single central pillar
         chunk.setMarkedGranite(center, SQUARE.WALL_INNER)

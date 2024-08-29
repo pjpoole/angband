@@ -116,6 +116,10 @@ export class Loc {
   isOnEdge(b: Box): boolean {
     return this.x === b.l || this.x === b.r || this.y === b.t || this.y === b.b
   }
+
+  isCorner(b: Box): boolean {
+    return (this.x === b.l || this.x === b.r) && (this.y === b.t || this.y === b.b)
+  }
 }
 
 export class Box {
