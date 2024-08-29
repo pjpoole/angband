@@ -135,6 +135,10 @@ export class Rectangle<T> {
     )
   }
 
+  clip(b: Box): Box {
+    return this.box.clip(b)
+  }
+
   surrounds(b: Box): boolean {
     return this.box.surrounds(b)
   }

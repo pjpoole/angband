@@ -1,4 +1,4 @@
-import { loc, Loc, locsToBox, wellOrdered } from '../core/loc'
+import { box, Box, loc, Loc } from '../core/loc'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
 import { getNeighbors } from '../utilities/directions'
 import { asInteger } from '../utilities/parsing/primitives'
@@ -9,8 +9,8 @@ import {
 } from './roomGenerators/helpers/symmetry'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
-import { SQUARE } from './square'
 import { ROOMF, RoomTemplate } from './roomTemplate'
+import { SQUARE } from './square'
 import { Tile } from './tile'
 
 interface CaveParams {
@@ -76,49 +76,31 @@ export class Cave {
   }
 
   // generation
-  setBorderingWalls(p1: Loc, p2: Loc) {
-    // TODO: We have better helpers for this
-    const boundLeft = Math.max(0, Math.min(p1.x, p2.x))
-    const boundRight = Math.min(this.width - 1, Math.max(p1.x, p2.x))
-    const boundTop = Math.max(0, Math.min(p1.y, p2.y))
-    const boundBottom = Math.min(this.height - 1, Math.max(p1.y, p2.y))
+  setBorderingWalls(b: Box) {
+    const clipped = this.tiles.clip(b)
+    const topLeft = loc(clipped.left, clipped.top)
 
-    const bp1 = loc(boundLeft, boundTop)
-    const bp2 = loc(boundRight, boundBottom)
+    const refToOffset = (p: Loc): Loc => p.diff(topLeft)
+    const offsetToRef = (p: Loc): Loc => p.sum(topLeft)
 
-    const refToOffset = (p: Loc): Loc => p.diff(bp1)
-    const offsetToRef = (p: Loc): Loc => p.sum(bp1)
+    const walls = new Rectangle(b.height, b.width, true)
 
-    const wallWidth = Math.abs(p1.x - p2.x)
-    const wallHeight = Math.abs(p1.y - p2.y)
-    const walls = new Rectangle(wallHeight, wallWidth, true)
-
-    let yAbove = Math.max(0, bp1.y - 1)
-    let yBelow = Math.min(this.height - 1, bp1.y + 1)
-    let xLeft, xRight
-    // Edge detection
-    this.tiles.forEachInRange(bp1, bp2, (tile, pt, newRow) => {
-      if (newRow) {
-        yAbove = Math.max(0, pt.y - 1)
-        yBelow = Math.min(this.height - 1, pt.y + 1)
-      }
-
+    this.tiles.forEachInRange(clipped, (tile, pt) => {
       if (!tile.isFloor()) {
         assert(!tile.isRoom())
         return
       }
 
-      xLeft = Math.max(0, pt.x - 1)
-      xRight = Math.min(this.width - 1, pt.x + 1)
-
       assert(tile.isRoom())
 
-      if (yBelow - yAbove !== 2 || xRight - xLeft !== 2) {
+      const neighbors = this.tiles.clip(pt.box(3))
+
+      if (neighbors.height !== 3 || neighbors.width !== 3) {
         // we hit the edge of the map
         walls.set(refToOffset(pt), true)
       } else {
         let floorCount = 0
-        this.tiles.forEachInRange(loc(xLeft, yAbove), loc(xRight, yBelow), (tile) => {
+        this.tiles.forEachInRange(neighbors, (tile) => {
           const isFloor = tile.isFloor()
           assert(isFloor === tile.isRoom())
           if (isFloor) floorCount++
@@ -132,26 +114,22 @@ export class Cave {
 
     walls.forEach((val, pt) => {
       if (val) {
-        const pt1 = offsetToRef(pt)
-        const tile = this.tiles.get(pt1)
+        const offset = offsetToRef(pt)
+        const tile = this.tiles.get(offset)
         assert(tile.isFloor() && tile.isRoom())
-        this.setMarkedGranite(pt1, SQUARE.WALL_OUTER)
+        this.setMarkedGranite(offset, SQUARE.WALL_OUTER)
       }
     })
   }
 
   generateBasicRoom(
-    p1: Loc,
-    p2: Loc,
+    b: Box,
     light: boolean,
   ): void {
-    const [topLeft, bottomRight] = wellOrdered(p1, p2)
-
-    const outerTopLeft = topLeft.offset(-1)
-    const outerBottomRight = bottomRight.offset(1)
-    this.generateRoom(outerTopLeft, outerBottomRight, light)
-    this.drawRectangle(outerTopLeft, outerBottomRight, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
-    this.fillRectangle(topLeft, bottomRight, FEAT.FLOOR, SQUARE.NONE)
+    const outerBox = b.exterior()
+    this.generateRoom(outerBox, light)
+    this.drawRectangle(outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
+    this.fillRectangle(b, FEAT.FLOOR, SQUARE.NONE)
   }
 
   buildRoomTemplate(
@@ -265,43 +243,29 @@ export class Cave {
   // TODO: Check to see how this is used; if it's always used in conjunction
   //       with other functions (border, floor) it may be possible to roll all
   //       of these up together
-  generateRoom(
-    p1: Loc,
-    p2: Loc,
-    light: boolean,
-  ) {
-    this.tiles.forEachInRange(p1, p2, (tile) => {
+  generateRoom(b: Box, light: boolean) {
+    this.tiles.forEachInRange(b, (tile) => {
       tile.turnOn(SQUARE.ROOM)
       if (light) tile.turnOn(SQUARE.GLOW)
     })
   }
 
-  generatePlus(
-    p1: Loc,
-    p2: Loc,
-    feature: Feature | FEAT,
-    flag?: SQUARE,
-  ) {
-    const center = locsToBox(p1, p2).center()
+  generatePlus(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
+    const center = b.center()
 
-    this.tiles.forEachInRange(loc(center.x, p1.y), loc(center.x, p2.y), (tile) => {
+    this.tiles.forEachInRange(box(center.x, b.top, center.x, b.bottom), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
 
-    this.tiles.forEachInRange(loc(p1.x, center.y), loc(p2.x, center.y), (tile) => {
+    this.tiles.forEachInRange(box(b.left, center.y, b.right, center.y), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
   }
 
-  fillRectangle(
-    p1: Loc,
-    p2: Loc,
-    feature: Feature | FEAT,
-    flag?: SQUARE,
-  ) {
-    this.tiles.forEachInRange(p1, p2, (tile) => {
+  fillRectangle(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
+    this.tiles.forEachInRange(b, (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
@@ -315,7 +279,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange(loc(xStart, y), loc(xEnd, y), (tile) => {
+    this.tiles.forEachInRange(box(xStart, y, xEnd, y), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -331,7 +295,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange(loc(x, yStart), loc(x, yEnd), (tile) => {
+    this.tiles.forEachInRange(box(x, yStart, x, yEnd), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -340,13 +304,12 @@ export class Cave {
   }
 
   drawRectangle(
-    p1: Loc,
-    p2: Loc,
+    b: Box,
     feature: Feature | FEAT,
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
-    this.tiles.forEachBorder(p1, p2, (tile) => {
+    this.tiles.forEachBorder(b, (tile) => {
       if (overwritePermanent || !tile.isPermanent()) {
         this.setFeature(tile, feature)
       }
@@ -357,24 +320,23 @@ export class Cave {
   // Unused; ugly function
   // Keeping it for discoverability reasons
   generateMark(
-    p1: Loc,
-    p2: Loc,
+    b: Box,
     flag: SQUARE,
   ) {
-    this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
+    this.tiles.forEachInRange(b, (tile) => { tile.turnOn(flag) })
   }
 
   // TODO: Maybe return coord of hole
-  generateHole(p1: Loc, p2: Loc, feature: Feature | FEAT) {
-    const center = locsToBox(p1, p2).center()
+  generateHole(b: Box, feature: Feature | FEAT) {
+    const center = b.center()
 
     let { x, y } = center
     // pick a random wall center
     switch (randInt0(4)) {
-      case 0: y = p1.y; break
-      case 1: x = p1.x; break
-      case 2: y = p2.y; break
-      case 3: y = p2.y; break
+      case 0: y = b.top; break
+      case 1: x = b.left; break
+      case 2: y = b.bottom; break
+      case 3: x = b.right; break
     }
     const point = loc(x, y)
 

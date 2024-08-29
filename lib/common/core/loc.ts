@@ -170,6 +170,15 @@ export class Box {
     return this.l <= b.l && b.r <= this.r && this.t <= b.t && b.b <= this.b
   }
 
+  clip(b: Box): Box {
+    return box(
+      Math.max(this.l, b.l),
+      Math.max(this.t, b.t),
+      Math.min(this.r, b.r),
+      Math.min(this.b, b.b),
+    )
+  }
+
   contains(p: Loc): boolean {
     return p.x >= this.l && p.x <= this.r && p.y >= this.t && p.y <= this.b
   }
