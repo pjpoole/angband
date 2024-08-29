@@ -21,7 +21,9 @@ export function build(
   const width = 2 * deltaX + 1
 
   if (!chunk.isInbounds(center)) {
-    if (!dungeon.findSpace(center, height + 2, width + 2)) return false
+    const newCenter = dungeon.findSpace(center, height + 2, width + 2)
+    if (newCenter == null) return false
+    center = newCenter
   }
 
   // tall and skinny

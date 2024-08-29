@@ -22,8 +22,9 @@ export function build(
 
   if (!chunk.isInbounds(center)) {
     // 5 spaces buffer around the edge of the circle
-    // pt may have been mutated here
-    if (!dungeon.findSpace(center, diameter + 10, diameter + 10)) return false
+    const newCenter = dungeon.findSpace(center, diameter + 10, diameter + 10)
+    if (newCenter == null) return false
+    center = newCenter
   }
 
   fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)

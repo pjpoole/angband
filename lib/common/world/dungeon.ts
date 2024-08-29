@@ -65,10 +65,11 @@ export class Dungeon {
    */
   findSpace(
     p: Loc, height: number, width: number
-  ): boolean {
+  ): Loc | undefined {
     const blocksHigh = 1 + Math.trunc((height - 1) / this.blockHeight)
     const blocksWide = 1 + Math.trunc((width - 1) / this.blockWidth)
 
+    let newCenter = p
     for (let i = 0; i < MAX_TRIES; i++) {
       // random starting block in the dungeon
       const p1 = loc(randInt0(this.blockColumns), randInt0(this.blockRows))
@@ -80,16 +81,18 @@ export class Dungeon {
 
       // mutating here percolates up through the chain
       // TODO: change this and make Loc readonly again
-      p.x = Math.trunc(((p1.x + p2.x + 1) * this.blockHeight) / 2)
-      p.y = Math.trunc(((p1.y + p2.y + 1) * this.blockWidth) / 2)
+      newCenter = loc(
+        Math.trunc(((p1.x + p2.x + 1) * this.blockHeight) / 2),
+        Math.trunc(((p1.y + p2.y + 1) * this.blockWidth) / 2)
+      )
 
-      this.addCenter(p)
+      this.addCenter(newCenter)
       this.reserveBlocks(p1, p2)
 
-      return true
+      return newCenter
     }
 
-    return false
+    return
   }
 
   // QUESTION: Always a block coord?

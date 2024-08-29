@@ -24,7 +24,10 @@ export function build(
     [height, width] = randomizeRoomSize(tries)
 
     if (!chunk.isInbounds(center)) {
-      if (!dungeon.findSpace(center, height, width)) {
+      const newCenter = dungeon.findSpace(center, height, width)
+      if (newCenter != null) {
+        center = newCenter
+      } else {
         if (tries < MAX_TRIES) continue
         if (tries === MAX_TRIES) return false
       }
