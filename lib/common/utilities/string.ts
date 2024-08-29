@@ -22,6 +22,14 @@ export function getPrefixAndSuffix(str: string, separator: string = '_') {
   return [str.substring(0, cutPoint), str.substring(cutPoint)]
 }
 
+// ctype.h-compatible digit testing
+const CODE_0 = '0'.charCodeAt(0)
+const CODE_9 = '9'.charCodeAt(0)
+const CODE_A = 'A'.charCodeAt(0)
+const CODE_Z = 'Z'.charCodeAt(0)
+const CODE_a = 'a'.charCodeAt(0)
+const CODE_z = 'z'.charCodeAt(0)
+
 // ctype.h-compatible space checker
 export function isSpace(char: string | undefined) {
   return char && char.length === 1 && (
@@ -34,26 +42,23 @@ export function isSpace(char: string | undefined) {
   )
 }
 
-// ctype.h-compatible digit testing
-const CODE_0 = '0'.charCodeAt(0)
-const CODE_9 = '9'.charCodeAt(0)
-
-export function isDigit(char: string) {
-  const charCode = char.charCodeAt(0)
-  return (
-    char.length === 1 &&
-    charCode >= CODE_0 &&
-    charCode <= CODE_9
-  )
+export function isDigit(char: string | undefined): boolean {
+  if (!(char && char.length === 1)) return false
+  const code = char.charCodeAt(0)
+  return (CODE_0 <= code && code <= CODE_9)
 }
 
-const CODE_A = 'A'.charCodeAt(0)
-const CODE_Z = 'Z'.charCodeAt(0)
+export function isUpper(char: string): boolean {
+  if (!(char && char.length === 1)) return false
+  const code = char.charCodeAt(0)
+  return (CODE_A <= code && code <= CODE_Z)
+}
 
-export function isUpper(char: string) {
+export function isAlpha(char: string | undefined): boolean {
+  if (!(char && char.length === 1)) return false
+  const code = char.charCodeAt(0)
   return (
-    char.length === 1 &&
-    char.charCodeAt(0) >= CODE_A &&
-    char.charCodeAt(0) <= CODE_Z
+    (CODE_a <= code && code <= CODE_z) ||
+    (CODE_A <= code && code <= CODE_Z)
   )
 }
