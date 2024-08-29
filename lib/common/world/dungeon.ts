@@ -1,4 +1,4 @@
-import { loc, Loc } from '../core/loc'
+import { box, Box, Loc } from '../core/loc'
 import { Rectangle } from '../utilities/rectangle'
 
 import { DungeonProfile } from './dungeonProfiles'
@@ -45,44 +45,39 @@ export class Dungeon {
   }
 
   // generation
-  checkForUnreservedBlocks(p1: Loc, p2: Loc): boolean {
+  checkForUnreservedBlocks(b: Box): boolean {
     assertInitialized(this.roomMap)
-    return this.roomMap.every(p1, p2, (cell) => !cell)
+    return this.roomMap.every(b, (cell) => !cell)
   }
 
-  reserveBlocks(p1: Loc, p2: Loc) {
+  reserveBlocks(b: Box) {
     assertInitialized(this.roomMap)
 
-    for (const p of this.roomMap.coordinates(p1, p2)) {
+    for (const p of this.roomMap.coordinates(b)) {
       this.roomMap.set(p, true)
     }
   }
 
-  findSpace(
-    p: Loc, height: number, width: number
-  ): Loc | undefined {
+  // TODO: Take a Box argument
+  findSpace(p: Loc, height: number, width: number): Loc | undefined {
     const blocksHigh = 1 + Math.trunc((height - 1) / this.blockHeight)
     const blocksWide = 1 + Math.trunc((width - 1) / this.blockWidth)
 
     let newCenter = p
     for (let i = 0; i < MAX_TRIES; i++) {
       // random starting block in the dungeon
-      const p1 = loc(randInt0(this.blockColumns), randInt0(this.blockRows))
+      const left = randInt0(this.blockColumns)
+      const top = randInt0(this.blockRows)
+      const b = box(left, top, left + blocksWide - 1, top + blocksHigh -1)
 
-      // QUESTION: why -1 ?
-      const p2 = loc(p1.x + blocksWide - 1, p1.y + blocksHigh - 1)
-
-      if (!this.checkForUnreservedBlocks(p1, p2)) continue
+      if (!this.checkForUnreservedBlocks(b)) continue
 
       // mutating here percolates up through the chain
       // TODO: change this and make Loc readonly again
-      newCenter = loc(
-        Math.trunc(((p1.x + p2.x + 1) * this.blockHeight) / 2),
-        Math.trunc(((p1.y + p2.y + 1) * this.blockWidth) / 2)
-      )
+      newCenter = b.center()
 
       this.addCenter(newCenter)
-      this.reserveBlocks(p1, p2)
+      this.reserveBlocks(b)
 
       return newCenter
     }
