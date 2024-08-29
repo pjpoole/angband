@@ -83,7 +83,7 @@ describe('Loc', () => {
       const expected1 = loc(center.x - deltaX, center.y - deltaY)
       const expected2 = loc(center.x + deltaX, center.y + deltaY)
 
-      const [actual1, actual2] = center.boxCorners(height, width)
+      const [actual1, actual2] = center.box(height, width).extents()
 
       expect(actual2.x - actual1.x + 1).toEqual(width)
       expect(actual2.y - actual1.y + 1).toEqual(height)
@@ -101,7 +101,7 @@ describe('Loc', () => {
       const expected1 = loc(center.x - deltaX, center.y - deltaY)
       const expected2 = loc(center.x + deltaX - 1, center.y + deltaY - 1)
 
-      const [actual1, actual2] = center.boxCorners(height, width)
+      const [actual1, actual2] = center.box(height, width).extents()
 
       expect(actual2.x - actual1.x + 1).toEqual(width)
       expect(actual2.y - actual1.y + 1).toEqual(height)
@@ -118,7 +118,7 @@ describe('Loc', () => {
       const expected1 = loc(center.x - deltaX, center.y - deltaY)
       const expected2 = loc(center.x + deltaX, center.y + deltaY)
 
-      const [actual1, actual2] = center.boxCorners(height)
+      const [actual1, actual2] = center.box(height).extents()
 
       expect(actual2.x - actual1.x + 1).toEqual(height)
       expect(actual2.y - actual1.y + 1).toEqual(height)
@@ -136,7 +136,7 @@ describe('Loc', () => {
       const expected1 = loc(center.x - radius, center.y - radius)
       const expected2 = loc(center.x + radius, center.y + radius)
 
-      const [actual1, actual2] = center.boxToRadius(radius)
+      const [actual1, actual2] = center.boxR(radius).extents()
 
       expect(actual2.x - actual1.x + 1).toEqual(height)
       expect(actual2.y - actual1.y + 1).toEqual(height)
@@ -155,7 +155,7 @@ describe('Loc', () => {
         const original1 = loc(center.x - radius - 2, center.y - radius - 2)
         const original2 = loc(center.x + radius + 2, center.y + radius + 2)
 
-        const [actual1, actual2] = center.boxToRadius(radius + 2)
+        const [actual1, actual2] = center.boxR(radius + 2).extents()
 
         expect(original1.eq(actual1)).toBe(true)
         expect(original2.eq(actual2)).toBe(true)
@@ -168,7 +168,7 @@ describe('Loc', () => {
         const original1 = loc(center.x - offset, center.y - offset)
         const original2 = loc(center.x + offset, center.y + offset)
 
-        const [actual1, actual2] = center.boxToRadius(offset)
+        const [actual1, actual2] = center.boxR(offset).extents()
 
         expect(original1.eq(actual1)).toBe(true)
         expect(original2.eq(actual2)).toBe(true)
@@ -184,7 +184,7 @@ describe('Loc', () => {
       const exUpperLeft = loc(center.x - dW, center.y - dH)
       const exLowerRight = loc(center.x + dW, center.y + dH)
 
-      const [acUpperLeft, acLowerRight] = center.boxCorners(height, width)
+      const [acUpperLeft, acLowerRight] = center.box(height, width).extents()
 
       expect(acUpperLeft.eq(exUpperLeft)).toBe(true)
       expect(acLowerRight.eq(exLowerRight)).toBe(true)

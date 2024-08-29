@@ -113,10 +113,6 @@ export class Loc {
     return [loc(l, t), loc(r, b)]
   }
 
-  boxToRadius(radius: number): [Loc, Loc] {
-    return this.boxCorners(radius * 2 + 1)
-  }
-
   isOnEdge(b: Box): boolean {
     return this.x === b.l || this.x === b.r || this.y === b.t || this.y === b.b
   }
