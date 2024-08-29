@@ -360,6 +360,8 @@ export class Cave {
     })
   }
 
+  // Unused; ugly function
+  // Keeping it for discoverability reasons
   generateMark(
     p1: Coord,
     p2: Coord,
@@ -368,6 +370,7 @@ export class Cave {
     this.tiles.forEachInRange(p1, p2, (tile) => { tile.turnOn(flag) })
   }
 
+  // TODO: Maybe return coord of hole
   generateHole(pt1: Coord, pt2: Coord, feature: Feature | FEAT) {
     const center = cCenter(pt1, pt2)
 
