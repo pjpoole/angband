@@ -1,17 +1,23 @@
 import { box, Box, loc, Loc } from '../core/loc'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
+
 import { getNeighbors } from '../utilities/directions'
 import { asInteger } from '../utilities/parsing/primitives'
 import { Rectangle } from '../utilities/rectangle'
+import { isAlpha } from '../utilities/string'
+
 import {
   SymmetryTransform,
   symmetryTransform
 } from './roomGenerators/helpers/symmetry'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
+import { ORIGIN } from '../objects/origin'
+import { TV } from '../objects/tval'
 import { ROOMF, RoomTemplate } from './roomTemplate'
 import { SQUARE } from './square'
 import { Tile } from './tile'
+import { Vault } from './vault'
 
 interface CaveParams {
   height: number
@@ -58,6 +64,14 @@ export class Cave {
 
   get box() {
     return this.tiles.box
+  }
+
+  // previously known as generateMark
+  turnOnBox(
+    b: Box,
+    flag: SQUARE,
+  ) {
+    this.tiles.forEachInRange(b, (tile) => { tile.turnOn(flag) })
   }
 
   turnOn(p: Loc, flag: SQUARE) {
@@ -134,6 +148,211 @@ export class Cave {
     this.generateRoom(outerBox, light)
     this.drawRectangle(outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
     this.fillRectangle(b, FEAT.FLOOR, SQUARE.NONE)
+  }
+
+  buildVault(
+    center: Loc,
+    vault: Vault,
+    transform?: SymmetryTransform,
+  ): boolean {
+    const { height, width } = vault
+    const { rotate = 0, reflect = false, height: tHeight, width: tWidth } = transform ?? {}
+
+    // porting kind of squirrelly logic
+    // TODO: trace variables and see if the ?? are required
+    const b = center.box(tHeight ?? height, tWidth ?? width)
+    this.turnOnBox(b, SQUARE.MON_RESTRICT)
+
+    vault.room.forEach((char, pt) => {
+      if (char === ' ') return
+
+      const p = symmetryTransform(pt, center, height, width, rotate, reflect)
+      assert(b.contains(p))
+
+      const tile = this.tiles.get(p)
+
+      this.setFeature(tile, FEAT.FLOOR)
+
+      let icky = true
+
+      switch (char) {
+        case '%':
+          // outer wall that the algorithm is allowed to connect to the tunnels
+          this.setMarkedGranite(p, SQUARE.WALL_OUTER)
+          if (vault.flags.has(ROOMF.FEW_ENTRANCES)) {
+            // TODO: append_entrance
+          }
+          icky = false
+          break
+        case '#': // inner or non-tunnelable outside granite wall
+          this.setMarkedGranite(p, SQUARE.WALL_SOLID)
+          break
+        case '@': // permanent wall
+          this.setFeature(tile, FEAT.PERM)
+          break
+        case '*': // gold seam
+          this.setFeature(tile, oneIn(2) ? FEAT.MAGMA_K : FEAT.QUARTZ_K)
+          break
+        case ':': // rubble
+          this.setFeature(tile, oneIn(2) ? FEAT.PASS_RUBBLE : FEAT.RUBBLE)
+          break
+        case '+': // secret door
+          this.placeSecretDoor(p)
+          break
+        case '^': // trap
+          if (oneIn(4)) this.placeTrap(p, -1, this.depth)
+          break
+        case '&': // treasure or trap
+          if (randInt0(4) < 3) {
+            this.placeObject(p, this.depth, false, false, ORIGIN.VAULT, 0)
+          } else if (oneIn(4)) {
+            this.placeTrap(p, -1, this.depth)
+          }
+          break
+        case '<': // up stairs
+          // if dungeon->persist break
+          this.setFeature(tile, FEAT.LESS)
+          break
+        case '>': // down stairs
+          // if dungeon->persist break
+          // if quest or we're already at max depth, upstairs instead
+          this.setFeature(tile, FEAT.MORE)
+          break
+        case '`': // lavel
+          this.setFeature(tile, FEAT.LAVA)
+          break
+        case '/': // water
+        case ';': // tree
+      }
+
+      tile.turnOn(SQUARE.ROOM)
+      if (icky) tile.turnOn(SQUARE.VAULT)
+    })
+
+    const foundRaces = new Set<string>()
+    vault.room.forEach((char, pt) => {
+      if (char === ' ') return
+
+      const p = symmetryTransform(pt, center, height, width, rotate, reflect)
+      assert(b.contains(p))
+
+      const tile = this.tiles.get(p)
+
+      if (isAlpha(char) && char !== 'x' && char !== 'X') {
+        foundRaces.add(char)
+      } else {
+        switch (char) {
+          case '1': // monster, (maybe good) object, or trap
+            if (oneIn(2)) {
+              this.pickAndPlaceMonster(p, this.depth, true, true, ORIGIN.DROP_VAULT)
+            } else if (oneIn(2)) {
+              this.placeObject(p, this.depth, oneIn(8), false, ORIGIN.VAULT, 0)
+            } else if (oneIn(4)) {
+              this.placeTrap(p, -1, this.depth)
+            }
+            break
+          case '2': // slightly OOD monster
+            this.pickAndPlaceMonster(p, this.depth + 5, true, true, ORIGIN.DROP_VAULT)
+            break
+          case '3': // slightly OOD object
+            this.placeObject(p, this.depth + 3, false, false, ORIGIN.VAULT, 0)
+            break
+          case '4': // monster and/or object
+            if (oneIn(2)) {
+              this.pickAndPlaceMonster(p, this.depth + 3, true, true, ORIGIN.DROP_VAULT)
+            }
+            if (oneIn(2)) {
+              this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
+            }
+            break
+          case '5': // OOD object
+            this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
+            break
+          case '6': // OOD monster
+            this.pickAndPlaceMonster(p, this.depth + 11, true, true, ORIGIN.DROP_VAULT)
+            break
+          case '7': // very OOD object
+            this.placeObject(p, this.depth + 15, false, false, ORIGIN.VAULT, 0)
+            break
+          case '8': // nasty monster, and treasure
+            this.pickAndPlaceMonster(p, this.depth + 40, true, true, ORIGIN.DROP_VAULT)
+            this.placeObject(p, this.depth + 20, true, true, ORIGIN.VAULT, 0)
+            break
+          case '9': // mean monster, and treasure
+            this.pickAndPlaceMonster(p, this.depth + 9, true, true, ORIGIN.DROP_VAULT)
+            this.placeObject(p, this.depth + 7, true, false, ORIGIN.VAULT, 0)
+            break
+          case '0': // very OOD monster
+            this.pickAndPlaceMonster(p, this.depth + 20, true, true, ORIGIN.DROP_VAULT)
+            break
+          case '~': // treasure chest
+            this.placeObject(p, this.depth + 5, false, false, ORIGIN.VAULT, TV.CHEST)
+            break
+          case '$': // treasure
+            this.placeGold(p, this.depth, ORIGIN.VAULT)
+          case ']': { // armor
+            const roll = randInt0(oneIn(3) ? 9 : 8)
+            const tval = [
+              TV.BOOTS, TV.GLOVES, TV.HELM, TV.CROWN, TV.SHIELD,
+              TV.CLOAK, TV.SOFT_ARMOR, TV.HARD_ARMOR, TV.DRAG_ARMOR
+            ][roll]
+            this.placeObject(p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
+            break
+          }
+          case '|': { // weapon
+            const roll = randInt0(4)
+            const tval = [TV.BOOTS, TV.GLOVES, TV.HELM, TV.CROWN][roll]
+            this.placeObject(p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
+            break
+          }
+          case '=': // ring
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.RING)
+            break
+          case '"': // amulet
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT,  TV.AMULET)
+            break
+          case '!': // potion
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.POTION)
+            break
+          case '?': // scroll
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.SCROLL)
+            break
+          case '_': // staff
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.STAFF)
+            break
+          case '-': { // wand or rod
+            const tval = oneIn(2) ? TV.WAND : TV.ROD
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, tval)
+          }
+          case ',': // Food or mushroom
+            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.FOOD)
+            break
+          case '#':
+            // Check consistency with first pass
+            assert(tile.isRoom() && tile.isVault() && tile.isGranite() && tile.has(SQUARE.WALL_SOLID))
+
+            // Convert to SQUARE.WALL_INNER if it does not touch the outside of
+            // the vault
+            if ((this.countNeighbors(pt, false, (tile) => tile.isRoom()) === 8)) {
+              tile.turnOff(SQUARE.WALL_SOLID)
+              tile.turnOn(SQUARE.WALL_INNER)
+            }
+            break
+          case '@': // permanent wall
+            // Check consistency with first pass
+            assert(tile.isRoom() && tile.isVault() && tile.isPermanent())
+
+            // Convert to SQUARE.WALL_INNER if it does not touch the outside of
+            // the vault
+            if ((this.countNeighbors(pt, false, (tile) => tile.isRoom()) === 8)) {
+              tile.turnOn(SQUARE.WALL_INNER)
+            }
+        }
+      }
+    })
+
+    this.placeVaultMonsters(b, vault, foundRaces)
+    return true
   }
 
   buildRoomTemplate(
@@ -322,15 +541,6 @@ export class Cave {
     })
   }
 
-  // Unused; ugly function
-  // Keeping it for discoverability reasons
-  generateMark(
-    b: Box,
-    flag: SQUARE,
-  ) {
-    this.tiles.forEachInRange(b, (tile) => { tile.turnOn(flag) })
-  }
-
   // TODO: Maybe return coord of hole
   generateHole(b: Box, feature: Feature | FEAT) {
     const center = b.center()
@@ -359,6 +569,12 @@ export class Cave {
     const tile = this.tiles.get(pt)
     this.setFeature(tile, FEAT.SECRET)
   }
+
+  pickAndPlaceMonster(pt: Loc, depth: number, sleep: boolean, groupOk: boolean, origin: ORIGIN) {}
+  placeVaultMonsters(b: Box, vault: Vault, races: Set<string>) {}
+  placeTrap(pt: Loc, idx: number, level: number) {}
+  placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
+  placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)

@@ -3,13 +3,53 @@ import { getRandom } from '../../../utilities/iterator'
 
 import { Cave } from '../../cave'
 import { Dungeon } from '../../dungeon'
-import { VaultRegistry } from '../../vault'
+import { SQUARE } from '../../square'
+import { Vault, VaultRegistry } from '../../vault'
+
 import { RoomName } from '../index'
+import {
+  getRandomSymmetryTransform,
+  symmetryTransform,
+  SYMTR
+} from './symmetry'
 
 export function buildVaultType(dungeon: Dungeon, chunk: Cave, center: Loc, type: RoomName): boolean {
   const vault = getRandomVault(chunk.depth, type)
   if (vault == null) return false
+
+  buildVault(dungeon, chunk, center, vault)
   return true
+}
+
+function buildVault(dungeon: Dungeon, chunk: Cave, center: Loc, vault: Vault) {
+  const { height, width } = vault
+
+  let symmetryOp, tHeight, tWidth
+  if (!chunk.isInbounds(center)) {
+    symmetryOp = getRandomSymmetryTransform(
+      height,
+      width,
+      SYMTR.FLAG_NONE,
+    )
+
+    tHeight = symmetryOp.height
+    tWidth = symmetryOp.width
+
+    const newCenter = dungeon.findSpace(center.box(tHeight + 2, tWidth + 2))
+    if (newCenter == null) return false
+    center = newCenter
+  } else {
+    symmetryOp = getRandomSymmetryTransform(height, width, SYMTR.FLAG_NONE, 0)
+
+    tHeight = symmetryOp.height
+    tWidth = symmetryOp.width
+
+    assert(height === symmetryOp.height && width === symmetryOp.width)
+  }
+
+  center = center.tr(-1 * Math.trunc(tHeight / 2), -1 * Math.trunc(tWidth / 2))
+
+  return chunk.buildVault(center, vault, symmetryOp)
 }
 
 function getRandomVault(depth: number, type: RoomName) {
