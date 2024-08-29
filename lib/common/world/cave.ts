@@ -132,7 +132,7 @@ export class Cave {
   ): void {
     const outerBox = b.exterior()
     this.generateRoom(outerBox, light)
-    this.drawRectangle(outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER, false)
+    this.drawRectangle(outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
     this.fillRectangle(b, FEAT.FLOOR, SQUARE.NONE)
   }
 
@@ -313,6 +313,7 @@ export class Cave {
     flag?: SQUARE,
     overwritePermanent?: boolean
   ) {
+    overwritePermanent ??= false
     this.tiles.forEachBorder(b, (tile) => {
       if (overwritePermanent || !tile.isPermanent()) {
         this.setFeature(tile, feature)
