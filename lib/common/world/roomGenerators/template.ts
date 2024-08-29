@@ -1,5 +1,5 @@
 import { Coord } from '../../core/coordinate'
-import { oneIn } from '../../core/rand'
+import { getRandom } from '../../utilities/iterator'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -69,20 +69,11 @@ function buildRoomTemplate(
   return chunk.buildRoomTemplate(center, template, symmetryOp)
 }
 
-// TODO: If we encounter this again, make abstract
 function getRandomRoomTemplate(
   type: number,
-  rating: number
+  rating: number,
 ): RoomTemplate | undefined {
-  let count = 0
-  let found: RoomTemplate | undefined = undefined
-  for (const template of RoomTemplateRegistry) {
-    count++
-    if (template.type === type && template.rating === rating) {
-      if (oneIn(count)) found = template
-      count++
-    }
-  }
-
-  return found
+  return getRandom(RoomTemplateRegistry, (template) => {
+    return template.type === type && template.rating === rating
+  })
 }
