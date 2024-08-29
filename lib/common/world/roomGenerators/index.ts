@@ -32,8 +32,15 @@ type RoomBuilder = (
   rating: number,
 ) => boolean
 
+export type RoomName = 'Greater vault (new)' | 'Greater vault' | 'Interesting room'
+  | 'Lesser vault (new)' | 'Lesser vault' | 'Medium vault (new)'
+  | 'Medium vault' | 'circular room' | 'crossed room' | 'huge room'
+  | 'large room' | 'monster nest' | 'monster pit' | 'moria room'
+  | 'overlap room' | 'room of chambers' | 'room template' | 'simple room'
+  | 'staircase room'
+
 interface RoomEntry {
-  name: string
+  name: RoomName
   rows: number
   cols: number
   fn: RoomBuilder
@@ -115,7 +122,7 @@ export function buildRoom(
   return true
 }
 
-export function isValidRoomName(name: string): boolean {
+export function isValidRoomName(name: string): name is RoomName {
   for (const room of ROOM) {
     if (room.name === name) return true
   }

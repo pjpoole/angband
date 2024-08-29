@@ -7,8 +7,8 @@ import { enumValueSetToArray } from '../utilities/serializing/enum'
 import { z_enumValueParser } from '../utilities/zod/enums'
 
 import { Rectangle, stringRectangleToRows } from '../utilities/rectangle'
+import { isValidRoomName, RoomName } from './roomGenerators'
 import { ROOMF } from './roomTemplate'
-import { isValidRoomName } from './roomGenerators'
 
 const VAULT_REGEX = /[ .%#@*:`/;&+^<>0-9~$\]|="!?_,A-Za-z-]/
 
@@ -55,7 +55,7 @@ export class Vault extends SerializableBase {
   static readonly schema = VaultSchema
 
   readonly name: string
-  readonly type: string
+  readonly type: RoomName
   readonly rating: number
   readonly height: number
   readonly width: number
