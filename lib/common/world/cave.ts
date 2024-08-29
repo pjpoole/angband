@@ -56,6 +56,10 @@ export class Cave {
     })
   }
 
+  get box() {
+    return this.tiles.box
+  }
+
   turnOn(p: Loc, flag: SQUARE) {
     this.tiles.get(p).turnOn(flag)
   }
@@ -339,9 +343,7 @@ export class Cave {
       case 3: x = b.right; break
     }
     const point = loc(x, y)
-
-    // can only happen in degenerate cases
-    assert(!point.eq(center))
+    assert(point.isOnEdge(b))
 
     this.setFeature(this.tiles.get(point), feature)
   }

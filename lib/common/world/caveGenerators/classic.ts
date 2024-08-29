@@ -1,5 +1,5 @@
 import { getConstants } from '../../core/loading'
-import { Loc, loc } from '../../core/loc'
+import { Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 import { Rectangle } from '../../utilities/rectangle'
 
@@ -53,8 +53,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
 
   // Surround the map with permanent rock
   chunk.drawRectangle(
-    loc(0, 0),
-    loc(chunk.width - 1, chunk.height - 1),
+    chunk.box,
     FEAT.PERM,
     SQUARE.NONE,
     true,

@@ -59,7 +59,7 @@ export class Loc {
     return loc(this.x - p.x, this.y - p.y)
   }
 
-  prod(n: number): Loc {
+  mult(n: number): Loc {
     return loc(this.x * n, this.y * n)
   }
 
@@ -115,6 +115,10 @@ export class Loc {
 
   boxToRadius(radius: number): [Loc, Loc] {
     return this.boxCorners(radius * 2 + 1)
+  }
+
+  isOnEdge(b: Box): boolean {
+    return this.x === b.l || this.x === b.r || this.y === b.t || this.y === b.b
   }
 }
 
@@ -187,12 +191,12 @@ export class Box {
     return p.x > this.l && p.x < this.r && p.y > this.t && p.y < this.b
   }
 
-  interior(): Box {
-    return box(this.l + 1, this.t + 1, this.r - 1, this.b - 1)
+  interior(i: number = 1): Box {
+    return box(this.l + i, this.t + i, this.r - i, this.b - i)
   }
 
-  exterior(): Box {
-    return box(this.l - 1, this.t - 1, this.r + 1, this.b + 1)
+  exterior(i: number = 1): Box {
+    return box(this.l - i, this.t - i, this.r + i, this.b + i)
   }
 
   *[Symbol.iterator](): IterableIterator<Loc> {

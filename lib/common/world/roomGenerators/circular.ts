@@ -29,17 +29,15 @@ export function build(
 
   fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
-  // TODO: Check; this might have been diameter before, or cToRadius
-  const [upperLeft, lowerRight] = center.boxCorners(radius + 2)
-
-  chunk.setBorderingWalls(upperLeft, lowerRight)
+  const b = center.boxR(radius + 2)
+  chunk.setBorderingWalls(b)
 
   // give large rooms an inner chamber
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
-    const offset = randDirNSEW().prod(2)
-
-    chunk.drawRectangle(...center.boxToRadius(2), FEAT.GRANITE, SQUARE.WALL_INNER, false)
-    chunk.placeClosedDoor(offset)
+    const inner = center.box(5)
+    chunk.drawRectangle(inner, FEAT.GRANITE, SQUARE.WALL_INNER, false)
+    // place a door on one of the walls at random
+    chunk.generateHole(inner, FEAT.CLOSED)
 
     // TODO: vault objects
     // TODO: vault monsters
@@ -49,6 +47,7 @@ export function build(
 }
 
 // TODO: this code is opaque; understand what it is doing
+// TODO: Take a Box argument
 function fillCircle(
   chunk: Cave,
   center: Loc,

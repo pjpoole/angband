@@ -1,4 +1,4 @@
-import { loc, Loc, locIterate, toExteriorBox } from '../../core/loc'
+import { Box, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -23,39 +23,38 @@ export function build(
     center = newCenter
   }
 
-  const [upperLeft, lowerRight] = center.boxCorners(height, width)
-  chunk.generateBasicRoom(upperLeft, lowerRight, light)
+  const b = center.box(height, width)
+
+  chunk.generateBasicRoom(b, light)
 
   // inner room
   // Wall boundaries
-  const iwUpperLeft = upperLeft.offset(1)
-  const iwLowerRight = lowerRight.offset(-1)
-  chunk.drawRectangle(iwUpperLeft, iwLowerRight, FEAT.GRANITE, SQUARE.WALL_INNER, false)
+  const innerWall = b.interior(1)
+  chunk.drawRectangle(innerWall, FEAT.GRANITE, SQUARE.WALL_INNER, false)
 
   // Floor boundaries
-  const irUpperLeft = iwUpperLeft.offset(1)
-  const irLowerRight = iwLowerRight.offset(-1)
+  const innerFloor = innerWall.interior(1)
 
   switch(randInt1(5)) {
     case 1:
       // Inner room
-      buildSimple(dungeon, chunk, center, irUpperLeft, irLowerRight)
+      buildSimple(dungeon, chunk, innerFloor)
       break
     case 2:
       // Inner room with small inner room
-      buildNested(dungeon, chunk, center, irUpperLeft, irLowerRight)
+      buildNested(dungeon, chunk, innerFloor)
       break
     case 3:
       // Inner room with pillars
-      buildPillars(dungeon, chunk, center, irUpperLeft, irLowerRight)
+      buildPillars(dungeon, chunk, innerFloor)
       break
     case 4:
       // Inner room with checkerboard
-      buildCheckerboard(dungeon, chunk, center, irUpperLeft, irLowerRight)
+      buildCheckerboard(dungeon, chunk, innerFloor)
       break
     case 5:
       // Four small rooms
-      buildQuad(dungeon, chunk, center, irUpperLeft, irLowerRight)
+      buildQuad(dungeon, chunk, innerFloor)
       break
   }
 
@@ -65,26 +64,22 @@ export function build(
 function buildSimple(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Loc,
-  upperLeft: Loc,
-  lowerRight: Loc,
+  b: Box,
 ) {
-  chunk.generateHole(...toExteriorBox(upperLeft, lowerRight), FEAT.CLOSED)
+  chunk.generateHole(b.exterior(), FEAT.CLOSED)
   // TODO: Monsters
 }
 
 function buildNested(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Loc,
-  upperLeft: Loc,
-  lowerRight: Loc,
+  b: Box,
 ) {
-  chunk.generateHole(...toExteriorBox(upperLeft, lowerRight), FEAT.CLOSED)
+  chunk.generateHole(b.exterior(), FEAT.CLOSED)
 
-  const [crUL, crLR] = center.boxToRadius(1)
-  chunk.drawRectangle(crUL, crLR, FEAT.GRANITE, SQUARE.WALL_INNER, false)
-  chunk.generateHole(crUL, crLR, FEAT.CLOSED)
+  const nested = b.center().box(3)
+  chunk.drawRectangle(nested, FEAT.GRANITE, SQUARE.WALL_INNER, false)
+  chunk.generateHole(nested, FEAT.CLOSED)
 
   // TODO: find door on inner room and lock it
   //       Could use neighbors function
@@ -104,55 +99,37 @@ function buildNested(
 function buildPillars(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Loc,
-  upperLeft: Loc,
-  lowerRight: Loc,
+  b: Box,
 ) {
-  chunk.generateHole(...toExteriorBox(upperLeft, lowerRight), FEAT.CLOSED)
+  const center = b.center()
+
+  chunk.generateHole(b.exterior(), FEAT.CLOSED)
 
   // central pillar
-  chunk.fillRectangle(...center.boxCorners(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+  chunk.fillRectangle(center.box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
 
   if (oneIn(2)) {
     // Occasionally, two more large pillars
     if (oneIn(2)) {
-      chunk.fillRectangle(
-        ...center.trX(-6).boxCorners(3),
-        FEAT.GRANITE,
-        SQUARE.WALL_INNER,
-      )
-
-      chunk.fillRectangle(
-        ...center.trX(6).boxCorners(3),
-        FEAT.GRANITE,
-        SQUARE.WALL_INNER,
-      )
+      chunk.fillRectangle(center.trX(-6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      chunk.fillRectangle(center.trX(6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
     } else {
-      chunk.fillRectangle(
-        ...center.trX(-5).boxCorners(3),
-        FEAT.GRANITE,
-        SQUARE.WALL_INNER,
-      )
-
-      chunk.fillRectangle(
-        ...center.trX(5).boxCorners(3),
-        FEAT.GRANITE,
-        SQUARE.WALL_INNER,
-      )
+      chunk.fillRectangle(center.trX(-5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      chunk.fillRectangle(center.trX(5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
     }
   }
 
   if (oneIn(3)) {
     // Inner rectangle
     chunk.drawRectangle(
-      ...center.boxCorners(3, 11),
+      center.box(3, 11),
       FEAT.GRANITE,
       SQUARE.WALL_INNER,
       false
     )
 
-    chunk.placeSecretDoor(center.tr(-3, -3 + (randInt1(2) * 2)))
-    chunk.placeSecretDoor(center.tr(3, -3 + (randInt1(2) * 2)))
+    chunk.placeSecretDoor(center.tr(-3, oneIn(2) ? -1 : 1))
+    chunk.placeSecretDoor(center.tr(3, oneIn(2) ? -1 : 1))
 
     // TODO: monsters
 
@@ -163,13 +140,11 @@ function buildPillars(
 function buildCheckerboard(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Loc,
-  upperLeft: Loc,
-  lowerRight: Loc,
+  b: Box,
 ) {
-  chunk.generateHole(...toExteriorBox(upperLeft, lowerRight), FEAT.CLOSED)
+  chunk.generateHole(b.exterior(), FEAT.CLOSED)
 
-  for (const pt of locIterate(upperLeft, lowerRight)) {
+  for (const pt of b) {
     if (((pt.x + pt.y) & 1) !== 0) chunk.setMarkedGranite(pt, SQUARE.WALL_INNER)
   }
 
@@ -181,24 +156,24 @@ function buildCheckerboard(
 function buildQuad(
   dungeon: Dungeon,
   chunk: Cave,
-  center: Loc,
-  upperLeft: Loc,
-  lowerRight: Loc,
+  b: Box,
 ) {
-  chunk.generatePlus(upperLeft, lowerRight, FEAT.GRANITE, SQUARE.WALL_INNER)
+  const center = b.center()
+  chunk.generatePlus(b, FEAT.GRANITE, SQUARE.WALL_INNER)
 
   if (oneIn(2)) {
     const i = randInt1(10)
-    chunk.placeClosedDoor(loc(center.x - i, upperLeft.y - 1))
-    chunk.placeClosedDoor(loc(center.x + i, upperLeft.y - 1))
-    chunk.placeClosedDoor(loc(center.x - i, lowerRight.y + 1))
-    chunk.placeClosedDoor(loc(center.x + i, lowerRight.y + 1))
+    chunk.placeClosedDoor(center.tr(i * -1, -1))
+    chunk.placeClosedDoor(center.tr(i, -1))
+    chunk.placeClosedDoor(center.tr(i * -1, 1))
+    chunk.placeClosedDoor(center.tr(i, 1))
+
   } else {
     const i = randInt1(3)
-    chunk.placeClosedDoor(loc(upperLeft.x - 1, center.y + i))
-    chunk.placeClosedDoor(loc(upperLeft.x - 1, center.y - i))
-    chunk.placeClosedDoor(loc(lowerRight.x + 1, center.y + i))
-    chunk.placeClosedDoor(loc(lowerRight.x + 1, center.y - i))
+    chunk.placeClosedDoor(center.tr(-1, i))
+    chunk.placeClosedDoor(center.tr(-1, i * -1))
+    chunk.placeClosedDoor(center.tr(1, i))
+    chunk.placeClosedDoor(center.tr(1, i * -1))
   }
 
   // TODO: object
