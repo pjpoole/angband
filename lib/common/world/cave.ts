@@ -351,7 +351,7 @@ export class Cave {
       }
     })
 
-    this.placeVaultMonsters(b, vault, foundRaces)
+    this.getVaultMonsters(b, vault, foundRaces)
     return true
   }
 
@@ -392,7 +392,7 @@ export class Cave {
           break
         case '^':
           if (oneIn(4)) {
-            // TODO: trap
+            this.placeTrap(p, -1, this.depth)
           }
           break
         case 'x':
@@ -407,17 +407,18 @@ export class Cave {
           break
         case '8':
           // TODO: or dungeon persist
-          if (randInt0(100) < 80) {
-            // TODO: place object
-          } else {
-            // TODO: place random stairs
-          }
+          oneIn(5)
+            // TODO: identify if this is a quest level
+            ? this.placeRandomStairs(p, false)
+            : this.placeObject(p, this.depth, false, false, ORIGIN.SPECIAL, 0)
           break
         case '9':
+
           // handled in second pass
           break
         case '[':
-          // TODO: place object
+          this.placeObject(p, this.depth, false, false, ORIGIN.SPECIAL, 0)
+          break
         case '1':
         case '2':
         case '3':
@@ -425,8 +426,9 @@ export class Cave {
         case '5':
         case '6':
           const doorNum = asInteger(char)
-          if (doorNum == randomDoor) this.placeSecretDoor(p)
-          else this.setMarkedGranite(p, SQUARE.WALL_SOLID)
+          doorNum === randomDoor
+            ? this.placeSecretDoor(p)
+            : this.setMarkedGranite(p, SQUARE.WALL_SOLID)
           break
       }
 
@@ -450,12 +452,23 @@ export class Cave {
           break
         case '8':
           assert(tile.isRoom() && (tile.isFloor() || tile.isStair()))
-          // TODO: Monsters
+          this.vaultMonsters(pt, this.depth + 2, randInt0(2) + 3)
           break
         case '9':
+          const offset1 = loc(2, -2)
+          const offset2 = loc(3, -3)
+
           assert(tile.isRoom() && tile.isFloor())
-          // TODO: Monsters
-          // TODO: Object
+
+          this.vaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+          this.vaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+
+          if (oneIn(2)) {
+            this.vaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+          }
+          if (oneIn(2)) {
+            this.vaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+          }
           break
       }
     })
@@ -570,11 +583,15 @@ export class Cave {
     this.setFeature(tile, FEAT.SECRET)
   }
 
+  placeRandomStairs(pt: Loc, isQuest: boolean) {}
+
   pickAndPlaceMonster(pt: Loc, depth: number, sleep: boolean, groupOk: boolean, origin: ORIGIN) {}
-  placeVaultMonsters(b: Box, vault: Vault, races: Set<string>) {}
+  getVaultMonsters(b: Box, vault: Vault, races: Set<string>) {}
+  vaultMonsters(pt: Loc, depth: number, number: number) {}
   placeTrap(pt: Loc, idx: number, level: number) {}
   placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
   placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
+  vaultObjects(pt: Loc, depth: number, number: number) {}
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
