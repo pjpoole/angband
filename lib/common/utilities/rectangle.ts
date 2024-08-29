@@ -1,4 +1,4 @@
-import { Box, box, loc, Loc, wellOrdered } from '../core/loc'
+import { Box, box, loc, Loc } from '../core/loc'
 
 export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): string {
   return stringRectangleToRows(rect).join('\n')
@@ -51,36 +51,28 @@ export class Rectangle<T> {
   }
 
   get(pt: Loc): T {
-    this.assertIsInbounds(pt)
+    this.assertContains(pt)
     return this.rect[pt.y][pt.x]
   }
 
   set(pt: Loc, value: T) {
-    this.assertIsInbounds(pt)
+    this.assertContains(pt)
     this.rect[pt.y][pt.x] = value
   }
 
-  *coordinates(p1: Loc, p2: Loc): IterableIterator<Loc>  {
-    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
-
-    const { x: left, y: top } = topLeft
-    const { x: right, y: bottom } = bottomRight
-
-    for (let y = top; y <= bottom; y++) {
-      for (let x = left; x <= right; x++) {
-        yield loc(x, y)
-      }
-    }
+  *coordinates(b: Box): IterableIterator<Loc>  {
+    this.assertSurrounds(b)
+    yield* b
   }
 
   forEach(fn: IteratorFn<T>): void {
-    this.forEachInRange(...this.box.extents(), fn)
+    this.forEachInRange(this.box, fn)
   }
 
-  every(p1: Loc, p2: Loc, fn: IteratorTestFn<T>): boolean {
+  every(b: Box, fn: IteratorTestFn<T>): boolean {
     let prevY = 0
     let newRow = false
-    for (const p of this.coordinates(p1, p2)) {
+    for (const p of this.coordinates(b)) {
       if (p.y !== prevY) newRow = true
       if (!fn(this.rect[p.y][p.x], p, newRow)) return false
 
@@ -91,11 +83,9 @@ export class Rectangle<T> {
     return true
   }
 
-  forEachBorder(p1: Loc, p2: Loc, fn: IteratorFn<T>): void {
-    const [topLeft, bottomRight] = this.wellOrdered(p1, p2)
-
-    const { x: left, y: top } = topLeft
-    const { x: right, y: bottom } = bottomRight
+  forEachBorder(b: Box, fn: IteratorFn<T>): void {
+    this.assertSurrounds(b)
+    const { left, top, right, bottom } = b
 
     let newRow = false
     for (let x = left; x <= right; x++) {
@@ -119,10 +109,10 @@ export class Rectangle<T> {
     }
   }
 
-  forEachInRange(p1: Loc, p2: Loc, fn: IteratorFn<T>): void {
+  forEachInRange(b: Box, fn: IteratorFn<T>): void {
     let prevY = 0
     let newRow = false
-    for (const p of this.coordinates(p1, p2)) {
+    for (const p of this.coordinates(b)) {
       if (p.y !== prevY) newRow = true
       prevY = p.y
       fn(this.rect[p.y][p.x], p, newRow)
@@ -131,25 +121,29 @@ export class Rectangle<T> {
     }
   }
 
-  private wellOrdered(p1: Loc, p2: Loc): [Loc, Loc] {
-    this.assertIsInbounds(p1)
-    this.assertIsInbounds(p2)
-
-    return wellOrdered(p1, p2)
-  }
-
-  assertIsInbounds(p: Loc) {
-    if (!this.isInbounds(p)) throw new Error(
+  assertContains(p: Loc) {
+    if (!this.contains(p)) throw new Error(
       'invalid coordinates',
-      { cause: { x: p.x, y: p.y }}
+      { cause: { x: p.x, y: p.y } }
     )
   }
 
-  isInbounds(p: Loc): boolean {
+  assertSurrounds(b: Box) {
+    if (!this.surrounds(b)) throw new Error(
+      'invalid coordinates',
+      { cause: { x1: b.left, y1: b.top, x2: b.right, y2: b.bottom } }
+    )
+  }
+
+  surrounds(b: Box): boolean {
+    return this.box.surrounds(b)
+  }
+
+  contains(p: Loc): boolean {
     return this.box.contains(p)
   }
 
-  isFullyInbounds(p: Loc): boolean {
+  fullyContains(p: Loc): boolean {
     return this.box.fullyContains(p)
   }
 }

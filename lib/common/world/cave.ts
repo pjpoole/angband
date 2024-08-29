@@ -433,10 +433,10 @@ export class Cave {
   }
 
   isInbounds(pt: Loc) {
-    return this.tiles.isInbounds(pt)
+    return this.tiles.contains(pt)
   }
 
   isFullyInbounds(pt: Loc) {
-    return this.tiles.isFullyInbounds(pt)
+    return this.tiles.fullyContains(pt)
   }
 }

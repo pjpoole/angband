@@ -166,6 +166,10 @@ export class Box {
     )
   }
 
+  surrounds(b: Box): boolean {
+    return this.l <= b.l && b.r <= this.r && this.t <= b.t && b.b <= this.b
+  }
+
   contains(p: Loc): boolean {
     return p.x >= this.l && p.x <= this.r && p.y >= this.t && p.y <= this.b
   }
