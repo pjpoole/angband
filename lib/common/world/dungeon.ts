@@ -58,26 +58,22 @@ export class Dungeon {
     }
   }
 
-  // TODO: Take a Box argument
-  findSpace(p: Loc, height: number, width: number): Loc | undefined {
-    const blocksHigh = 1 + Math.trunc((height - 1) / this.blockHeight)
-    const blocksWide = 1 + Math.trunc((width - 1) / this.blockWidth)
+  findSpace(b: Box): Loc | undefined {
+    const blocksHigh = 1 + Math.trunc((b.height - 1) / this.blockHeight)
+    const blocksWide = 1 + Math.trunc((b.width - 1) / this.blockWidth)
 
-    let newCenter = p
+    let newCenter = b.center()
     for (let i = 0; i < MAX_TRIES; i++) {
       // random starting block in the dungeon
       const left = randInt0(this.blockColumns)
       const top = randInt0(this.blockRows)
-      const b = box(left, top, left + blocksWide - 1, top + blocksHigh -1)
+      const newBox = box(left, top, left + blocksWide - 1, top + blocksHigh -1)
 
-      if (!this.checkForUnreservedBlocks(b)) continue
+      if (!this.checkForUnreservedBlocks(newBox)) continue
 
-      // mutating here percolates up through the chain
-      // TODO: change this and make Loc readonly again
-      newCenter = b.center()
-
+      newCenter = newBox.center()
       this.addCenter(newCenter)
-      this.reserveBlocks(b)
+      this.reserveBlocks(newBox)
 
       return newCenter
     }

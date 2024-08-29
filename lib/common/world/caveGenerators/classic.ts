@@ -52,12 +52,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   }
 
   // Surround the map with permanent rock
-  chunk.drawRectangle(
-    chunk.box,
-    FEAT.PERM,
-    SQUARE.NONE,
-    true,
-  )
+  chunk.drawRectangle(chunk.box, FEAT.PERM, SQUARE.NONE, true)
 }
 
 function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Loc): boolean {

@@ -1,4 +1,4 @@
-import { loc, Loc } from '../../core/loc'
+import { box, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { buildStarburstRoom } from './helpers/starburst'
@@ -24,7 +24,7 @@ export function build(
     [height, width] = randomizeRoomSize(tries)
 
     if (!chunk.isInbounds(center)) {
-      const newCenter = dungeon.findSpace(center, height, width)
+      const newCenter = dungeon.findSpace(center.box(height, width))
       if (newCenter != null) {
         center = newCenter
       } else {
@@ -34,23 +34,23 @@ export function build(
     }
   }
 
-  const [topLeft, bottomRight] = center.boxCorners(height, width)
+  const b = center.box(height, width)
 
-  if (!buildStarburstRoom(chunk, topLeft, bottomRight, light, FEAT.FLOOR, true)) {
+  if (!buildStarburstRoom(chunk, b, light, FEAT.FLOOR, true)) {
     return false
   }
 
   if (oneIn(10)) {
-    const innerTopLeft = loc(
-      topLeft.x + randInt0(Math.trunc(height / 4)),
-      topLeft.y + randInt0(Math.trunc(width / 4)),
-    )
-    const innerBottomRight = loc(
-      bottomRight.x - randInt0(Math.trunc(height / 4)),
-      bottomRight.y - randInt0(Math.trunc(width / 4)),
+    const innerWidth = Math.trunc(width / 4)
+    const innerHeight = Math.trunc(height / 4)
+    const innerBox = box(
+      b.l + randInt0(innerWidth),
+      b.t + randInt0(innerHeight),
+      b.r - randInt0(innerWidth),
+      b.b - randInt0(innerHeight),
     )
 
-    buildStarburstRoom(chunk, innerTopLeft, innerBottomRight, false, FEAT.PASS_RUBBLE, false)
+    buildStarburstRoom(chunk, innerBox, false, FEAT.PASS_RUBBLE, false)
   }
 
   return true

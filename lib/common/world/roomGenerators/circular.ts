@@ -22,7 +22,7 @@ export function build(
 
   if (!chunk.isInbounds(center)) {
     // 5 spaces buffer around the edge of the circle
-    const newCenter = dungeon.findSpace(center, diameter + 10, diameter + 10)
+    const newCenter = dungeon.findSpace(center.box(diameter + 10))
     if (newCenter == null) return false
     center = newCenter
   }

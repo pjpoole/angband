@@ -1,4 +1,4 @@
-import { loc, Loc } from '../../core/loc'
+import { Box, loc, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -15,7 +15,7 @@ export function build(
   const width = 1 + randInt1(11) + randInt1(11) // 3-23
 
   if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center, height + 2, width + 2)
+    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
     if (newCenter == null) return false
     center = newCenter
   }
@@ -23,21 +23,21 @@ export function build(
   const light = chunk.depth <= randInt1(25)
 
   // wall boundaries
-  const [topLeft, bottomRight] = center.boxCorners(height, width)
-  chunk.generateBasicRoom(topLeft, bottomRight, light)
+  const b = center.box(height, width)
+  chunk.generateBasicRoom(b, light)
 
   if (oneIn(20)) {
     // sometimes make a pillar room.
-    makePillarRoom(chunk, topLeft, bottomRight)
+    makePillarRoom(chunk, b)
   } else if (oneIn(50)) {
     // sometimes make a ragged-edge room
-    makeRaggedRoom(chunk, topLeft, bottomRight)
+    makeRaggedRoom(chunk, b)
   }
 
   return true
 }
 
-function makePillarRoom(chunk: Cave, p1: Loc, p2: Loc) {
+function makePillarRoom(chunk: Cave, b: Box) {
   /*
    *  if dimension is even, don't always put a pillar in the corners
    *
@@ -61,63 +61,58 @@ function makePillarRoom(chunk: Cave, p1: Loc, p2: Loc) {
    *     |      |
    *     +------+--------- x2 - x1 = 7
    */
-  const xOffset = (p2.x - p1.x) % 2 === 0 ? 0 : randInt0(2)
-  const yOffset = (p2.y - p1.y) % 2 === 0 ? 0 : randInt0(2)
+  const xOffset = (b.right - b.left) % 2 === 0 ? 0 : randInt0(2)
+  const yOffset = (b.bottom - b.top) % 2 === 0 ? 0 : randInt0(2)
 
-  for (let y = p1.y + yOffset; y <= p2.y; y += 2) {
-    for (let x = p1.x + xOffset; x <= p2.x; x += 2) {
+  for (let y = b.top + yOffset; y <= b.bottom; y += 2) {
+    for (let x = b.left + xOffset; x <= b.right; x += 2) {
       chunk.setMarkedGranite(loc(x, y), SQUARE.WALL_INNER)
     }
   }
 
-  if (yOffset === 0) {
-    /*
-     *    +--- marked unavailable to tunnels
-     *    |
-     *    |01234567
-     *    X#########
-     *  1 ## # # # #
-     *  2 #        #
-     *  3 ## # # # #
-     *    ##########
-     */
-    if (xOffset === 0) {
-      const outerTopLeft = p1.offset(-1)
-      chunk.turnOff(outerTopLeft, SQUARE.ROOM)
-      chunk.turnOff(outerTopLeft, SQUARE.WALL_OUTER)
-    }
-    if ((p2.x - p1.x - xOffset) % 2 === 0) {
-      const outerBottomLeft = p1.tr(1, -1)
-      chunk.turnOff(outerBottomLeft, SQUARE.ROOM)
-      chunk.turnOff(outerBottomLeft, SQUARE.WALL_OUTER)
-    }
+  /*
+   *    +--- marked unavailable to tunnels
+   *    |
+   *    |01234567
+   *    X#########
+   *  1 ## # # # #
+   *  2 #        #
+   *  3 ## # # # #
+   *    X#########
+   */
+  const outer = b.exterior()
+  const colsToLeft = xOffset === 0
+  const colsToTop = yOffset === 0
+  const colsToRight = ((b.right - b.left - xOffset) % 2) === 0
+  const colsToBottom = (b.bottom - b.top - yOffset) % 2 === 0
+
+  if (colsToTop) {
+    if (colsToLeft) markNoConnection(chunk, loc(outer.left, outer.top))
+    if (colsToRight) markNoConnection(chunk, loc(outer.right, outer.top))
   }
 
-  if ((p2.y - p1.y - yOffset) % 2 === 0) {
-    if (xOffset === 0) {
-      const outerTopRight = p1.tr(-1, 1)
-      chunk.turnOff(outerTopRight, SQUARE.ROOM)
-      chunk.turnOff(outerTopRight, SQUARE.WALL_OUTER)
-    }
-    if ((p2.x - p1.x - xOffset) % 2 === 0) {
-      const outerBottomRight = p1.offset(1)
-      chunk.turnOff(outerBottomRight, SQUARE.ROOM)
-      chunk.turnOff(outerBottomRight, SQUARE.WALL_OUTER)
-    }
+  if (colsToBottom) {
+    if (colsToLeft) markNoConnection(chunk, loc(outer.left, outer.bottom))
+    if (colsToRight) markNoConnection(chunk, loc(outer.right, outer.bottom))
   }
 }
 
-// i.e., columns around the outside
-function makeRaggedRoom(chunk: Cave, p1: Loc, p2: Loc) {
-  const xOffset = (p2.x - p1.x) % 2 === 0 ? 0 : randInt0(2)
-  const yOffset = (p2.y - p1.y) % 2 === 0 ? 0 : randInt0(2)
+function markNoConnection (chunk: Cave, p: Loc) {
+  chunk.turnOff(p, SQUARE.ROOM)
+  chunk.turnOff(p, SQUARE.WALL_OUTER)
+}
 
-  for (let y = p1.y + 2 + yOffset; y <= p2.y - 2; y += 2) {
-    chunk.setMarkedGranite(loc(p1.x, y), SQUARE.WALL_INNER)
-    chunk.setMarkedGranite(loc(p2.x, y), SQUARE.WALL_INNER)
+// i.e., columns around the outside
+function makeRaggedRoom(chunk: Cave, b: Box) {
+  const xOffset = (b.right - b.left) % 2 === 0 ? 0 : randInt0(2)
+  const yOffset = (b.bottom - b.top) % 2 === 0 ? 0 : randInt0(2)
+
+  for (let y = b.top + 2 + yOffset; y <= b.bottom - 2; y += 2) {
+    chunk.setMarkedGranite(loc(b.left, y), SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(b.right, y), SQUARE.WALL_INNER)
   }
-  for (let x = p1.x + 2 + xOffset; x <= p2.x - 2; x += 2) {
-    chunk.setMarkedGranite(loc(x, p1.y), SQUARE.WALL_INNER)
-    chunk.setMarkedGranite(loc(x, p2.y), SQUARE.WALL_INNER)
+  for (let x = b.left + 2 + xOffset; x <= b.right - 2; x += 2) {
+    chunk.setMarkedGranite(loc(x, b.top), SQUARE.WALL_INNER)
+    chunk.setMarkedGranite(loc(x, b.bottom), SQUARE.WALL_INNER)
   }
 }

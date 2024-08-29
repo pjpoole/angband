@@ -47,7 +47,7 @@ function buildRoomTemplate(
     tHeight = symmetryOp.height
     tWidth = symmetryOp.width
 
-    const newCenter = dungeon.findSpace(center, tHeight + 2, tWidth + 2)
+    const newCenter = dungeon.findSpace(center.box(tHeight + 2, tWidth + 2))
     if (newCenter == null) return false
     center = newCenter
   } else {

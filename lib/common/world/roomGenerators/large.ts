@@ -18,7 +18,7 @@ export function build(
   const light = chunk.depth <= randInt1(25)
 
   if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center, height + 2, width + 2)
+    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
     if (newCenter == null) return false
     center = newCenter
   }

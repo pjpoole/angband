@@ -1,4 +1,4 @@
-import { loc, Loc } from '../../core/loc'
+import { box, loc, Loc } from '../../core/loc'
 import { getConstants } from '../../core/loading'
 
 import { Cave } from '../cave'
@@ -79,12 +79,12 @@ export function buildRoom(
   if (chunk.depth < profile.level) return false
   if (profile.pit && dungeon.numPits >= getConstants().dungeonGeneration.pitMax) return false
 
-  const { x: bx0, y: by0 } = bpt
-  // deliberate no-op clone until I figure out if this matters
-  const bp1 = bpt.offset(0)
-  const bp2 = loc(
-    bx0 + Math.ceil(profile.width / dungeon.blockWidth),
-    by0 + Math.ceil(profile.height / dungeon.blockHeight)
+  // block box; scaled to block height / width
+  const bb = box(
+    bpt.x,
+    bpt.y,
+    bpt.x + Math.ceil(profile.width / dungeon.blockWidth),
+    bpt.y + Math.ceil(profile.height / dungeon.blockHeight),
   )
 
   const builder = findBuilder(profile.name)
@@ -94,14 +94,14 @@ export function buildRoom(
       return false
     }
   } else {
-    if (!dungeon.checkForUnreservedBlocks(bp1, bp2)) {
+    if (!dungeon.checkForUnreservedBlocks(bb)) {
       return false
     }
 
     // actual point, not block point
     const center = loc(
-      Math.trunc((bp1.x + bp2.x + 1) * dungeon.blockWidth / 2),
-      Math.trunc((bp1.y + bp2.y + 1) * dungeon.blockHeight / 2)
+      Math.trunc((bb.left + bb.right + 1) * dungeon.blockWidth / 2),
+      Math.trunc((bb.top + bb.bottom + 1) * dungeon.blockHeight / 2)
     )
 
     // per C comments, this has to be available in the dungeon for proper
@@ -114,7 +114,7 @@ export function buildRoom(
       return false
     }
 
-    dungeon.reserveBlocks(bp1, bp2)
+    dungeon.reserveBlocks(bb)
   }
 
   if (profile.pit) dungeon.numPits++
