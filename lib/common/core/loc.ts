@@ -64,7 +64,7 @@ export class Loc {
   }
 
   eq(p: Loc): boolean {
-    return this.x === p.x && this.y === p.x
+    return this.x === p.x && this.y === p.y
   }
 
   distX(p: Loc): number {
@@ -107,7 +107,7 @@ export class Loc {
   boxCorners(height: number, width?: number): [Loc, Loc] {
     width ??= height
     const l = this.x - Math.trunc(width / 2)
-    const t = this.y - Math.trunc(width / 2)
+    const t = this.y - Math.trunc(height / 2)
     const r = l + width - 1
     const b = t + height - 1
     return [loc(l, t), loc(r, b)]
