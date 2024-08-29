@@ -1,4 +1,5 @@
 import { Box, box, loc, Loc } from '../core/loc'
+import { randInRange } from '../core/rand'
 
 export function stringRectangleToRaster<T extends string>(rect: Rectangle<T>): string {
   return stringRectangleToRows(rect).join('\n')
@@ -60,9 +61,33 @@ export class Rectangle<T> {
     this.rect[pt.y][pt.x] = value
   }
 
-  *coordinates(b: Box): IterableIterator<Loc>  {
-    this.assertSurrounds(b)
+  *coordinates(b?: Box): IterableIterator<Loc>  {
+    b == null ? b = this.box : this.assertSurrounds(b)
     yield* b
+  }
+
+  *randomly(b?: Box): IterableIterator<Loc> {
+    b == null ? b = this.box : this.assertSurrounds(b)
+
+    const size = b.size
+    const width = b.width
+    let seen = 0
+    const permute = new Array(size)
+
+    while (seen !== size) {
+      // choose the index of an item to swap out of the remaining entries
+      const roll = randInRange(seen, size)
+      const farIdx = seen + roll
+      // grab the value there. If it hasn't been initialized, use the value
+      // itself
+      const value = permute[farIdx] ?? farIdx
+      // move the current value to the far index
+      permute[farIdx] = permute[seen] ?? seen
+      // and bring the value from the far index here
+      permute[seen] = value
+      seen++
+      yield loc((value % width) + b.left, Math.trunc(value / width) + b.top)
+    }
   }
 
   forEach(fn: IteratorFn<T>): void {

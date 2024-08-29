@@ -452,7 +452,7 @@ export class Cave {
           break
         case '8':
           assert(tile.isRoom() && (tile.isFloor() || tile.isStair()))
-          this.vaultMonsters(pt, this.depth + 2, randInt0(2) + 3)
+          this.placeNVaultMonsters(pt, this.depth + 2, randInt0(2) + 3)
           break
         case '9':
           const offset1 = loc(2, -2)
@@ -460,14 +460,14 @@ export class Cave {
 
           assert(tile.isRoom() && tile.isFloor())
 
-          this.vaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
-          this.vaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+          this.placeNVaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+          this.placeNVaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
 
           if (oneIn(2)) {
-            this.vaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+            this.placeNVaultObjects(pt.diff(offset1), this.depth, randInt1(2))
           }
           if (oneIn(2)) {
-            this.vaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+            this.placeNVaultObjects(pt.diff(offset1), this.depth, randInt1(2))
           }
           break
       }
@@ -587,11 +587,45 @@ export class Cave {
 
   pickAndPlaceMonster(pt: Loc, depth: number, sleep: boolean, groupOk: boolean, origin: ORIGIN) {}
   getVaultMonsters(b: Box, vault: Vault, races: Set<string>) {}
-  vaultMonsters(pt: Loc, depth: number, number: number) {}
+
+  placeNVaultMonsters(pt: Loc, depth: number, number: number) {
+    if (!this.isInbounds(pt)) return
+
+    for (let k = 0; k < number; k++) {
+      for (let i = 0; i < 9; i++) {
+        const p1 = pt
+        this.pickAndPlaceMonster(p1, depth, true, true, ORIGIN.DROP_SPECIAL)
+      }
+    }
+  }
   placeTrap(pt: Loc, idx: number, level: number) {}
   placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
   placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
-  vaultObjects(pt: Loc, depth: number, number: number) {}
+
+  // TODO: Can simplify algo here
+  placeNVaultObjects(pt: Loc, depth: number, number: number) {
+    const b = pt.box(5, 7)
+
+    while(number > 0) {
+      for (let i = 0; i < 11; i++) {
+        // these loops could be combined; we could just put a cap on find nearby
+        // grid
+        const p1 = this.findNearbyGrid(b)
+        if (p1 == null) throw new Error('could not place object')
+
+        if (!this.tiles.get(pt).canPutItem()) continue
+
+        if (oneIn(4)) {
+          this.placeGold(p1, depth, ORIGIN.VAULT)
+        } else {
+          this.placeObject(p1, depth, false, false, ORIGIN.SPECIAL, 0)
+        }
+
+        break
+      }
+      number--
+    }
+  }
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
@@ -614,6 +648,12 @@ export class Cave {
     // TODO: traps
     // TODO: square_note_spot
     // TODO: square_light_spot
+  }
+
+  findNearbyGrid(bounds: Box): Loc | undefined {
+    for (const p of this.tiles.randomly(bounds)) {
+      if (this.isFullyInbounds(p)) return p
+    }
   }
 
   countNeighbors(pt: Loc, countSelf: boolean, fn: (tile: Tile, pt: Loc, chunk: this) => boolean) {

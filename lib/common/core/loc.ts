@@ -114,6 +114,10 @@ export class Box {
     return this.b - this.t + 1
   }
 
+  get size() {
+    return this.width * this.height
+  }
+
   extents(): [Loc, Loc] {
     return [loc(this.l, this.t), loc(this.b, this.r)]
   }
