@@ -15,6 +15,14 @@ export class Loc {
     this.y = y
   }
 
+  // integer distance approximation
+  dist(p: Loc): number {
+    const dx = Math.abs(this.x - p.x)
+    const dy = Math.abs(this.y - p.y)
+
+    return dy > dx ? dy + (dx >> 1) : dx + (dy >> 1)
+  }
+
   sum(p: Loc): Loc {
     return loc(this.x + p.x, this.y + p.y)
   }

@@ -593,11 +593,16 @@ export class Cave {
 
     for (let k = 0; k < number; k++) {
       for (let i = 0; i < 9; i++) {
-        const p1 = pt
-        this.pickAndPlaceMonster(p1, depth, true, true, ORIGIN.DROP_SPECIAL)
+        const ps = this.findMonsterPlacements(pt, 1, 1, true, (p) => {
+          return this.tiles.get(p).isEmpty()
+        })
+        if (ps.length === 0) continue
+        this.pickAndPlaceMonster(ps[0], depth, true, true, ORIGIN.DROP_SPECIAL)
+        break
       }
     }
   }
+
   placeTrap(pt: Loc, idx: number, level: number) {}
   placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
   placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
@@ -648,6 +653,46 @@ export class Cave {
     // TODO: traps
     // TODO: square_note_spot
     // TODO: square_light_spot
+  }
+
+  hasLOS(p1: Loc, p2: Loc): boolean {
+    // TODO: Implement
+    return true
+  }
+
+  // scatter_ext
+  findMonsterPlacements(
+    center: Loc,
+    distance: number,
+    number: number,
+    needLos?: boolean,
+    fn?: (pt: Loc) => boolean
+  ): Loc[] {
+    const bounds = center.boxR(distance)
+    const possibilities = []
+
+    // all fully inbounds
+    const clipped = this.box.interior().clip(bounds)
+
+    for (const pt of clipped) {
+      if (distance > 1 && center.dist(pt) > distance) continue
+      if (needLos && !this.hasLOS(center, pt)) continue
+      if (fn && !fn(pt)) continue
+      possibilities.push(pt)
+    }
+
+    const results = []
+    let remaining = possibilities.length
+
+    while (results.length < number && remaining > 0) {
+      const choice = randInt0(remaining)
+      results.push(possibilities[choice])
+
+      remaining--
+      possibilities[choice] = possibilities[remaining]
+    }
+
+    return results
   }
 
   findNearbyGrid(bounds: Box): Loc | undefined {
