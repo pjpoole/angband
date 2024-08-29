@@ -37,58 +37,46 @@ export class DungeonProfileParser extends Parser<DungeonProfileFields, DungeonPr
 
   handleParams(values: ParserValues) {
     const current = this.current
-    const [blockSize, rooms, unusual, rarity] = asTokens(values, 4)
+    const [blockSize, rooms, unusual, rarity] = asTokens(values, 4).map(asInteger)
 
-    current.blockSize = asInteger(blockSize)
-    current.rooms = asInteger(rooms)
-    current.unusual = asInteger(unusual)
-    current.maxRarity = asInteger(rarity)
+    current.blockSize = blockSize
+    current.rooms = rooms
+    current.unusual = unusual
+    current.maxRarity = rarity
   }
 
   handleTunnel(values: ParserValues) {
     const current = this.current
-    const [rnd, chg, con, pen, jct] = asTokens(values, 5)
+    const [rnd, chg, con, pen, jct] = asTokens(values, 5).map(asInteger)
 
-    current.tunnel = {
-      rnd: asInteger(rnd),
-      chg: asInteger(chg),
-      con: asInteger(con),
-      pen: asInteger(pen),
-      jct: asInteger(jct)
-    }
+    current.tunnel = { rnd, chg, con, pen, jct, }
   }
 
   handleStreamer(values: ParserValues) {
     const current = this.current
-    const [den, rng, mag, mc, qua, qc] = asTokens(values, 6)
+    const [den, rng, mag, mc, qua, qc] = asTokens(values, 6).map(asInteger)
 
-    current.streamer = {
-      den: asInteger(den),
-      rng: asInteger(rng),
-      mag: asInteger(mag),
-      mc: asInteger(mc),
-      qua: asInteger(qua),
-      qc: asInteger(qc)
-    }
+    current.streamer = { den, rng, mag, mc, qua, qc }
   }
 
   handleRoom(values: ParserValues) {
     const current = this.current
     current.allowedRooms ??= []
 
-    const [name, rating, height, width, level, pit, rarity, cutoff] = asTokens(values, 8)
+    const [name, ...rest] = asTokens(values, 8)
+    const [rating, height, width, level, pit, rarity, cutoff] = rest.map(asInteger)
 
     if (!isValidRoomName(name)) throw new Error('invalid room name')
 
     const currentRoom = {
       name,
-      rating: asInteger(rating),
-      height: asInteger(height),
-      width: asInteger(width),
-      level: asInteger(level),
-      pit: asBoolean(pit),
-      rarity: asInteger(rarity),
-      cutoff: asInteger(cutoff)
+      rating,
+      height,
+      width,
+      level,
+      pit: pit === 1,
+      rarity,
+      cutoff,
     }
 
     current.allowedRooms.push(currentRoom)
