@@ -1,4 +1,4 @@
-import * as constants from '../../gamedata/constants.json'
+import constants from '../../gamedata/constants.json'
 import { Constants, ConstantsParams } from './constants'
 
 let _constants: ConstantsParams
