@@ -141,6 +141,15 @@ export class Box {
     return this.l <= b.l && b.r <= this.r && this.t <= b.t && b.b <= this.b
   }
 
+  union(b: Box): Box {
+    return box(
+      Math.min(this.l, b.l),
+      Math.min(this.t, b.t),
+      Math.max(this.r, b.r),
+      Math.max(this.b, b.b),
+    )
+  }
+
   clip(b: Box): Box {
     return box(
       Math.max(this.l, b.l),
