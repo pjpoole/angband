@@ -26,7 +26,6 @@ export class Cave {
 
   readonly tiles: Rectangle<Tile>
 
-  // TODO: not space efficient; bitflag
   private readonly featureCount: FeatureCount
 
   constructor(params: CaveParams) {
@@ -51,9 +50,7 @@ export class Cave {
         ? FeatureRegistry.get(params.border)
         : params.border
 
-      this.tiles.forEachBorder((tile) => {
-        this.setFeature(tile, border)
-      })
+      this.tiles.forEachBorder((tile) => { this.setFeature(tile, border) })
     }
   }
 
