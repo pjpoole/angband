@@ -1,4 +1,4 @@
-import { Loc } from '../../core/loc'
+import { box, Loc } from '../../core/loc'
 import { randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
@@ -7,7 +7,7 @@ import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
 import { drawRectangle } from './helpers/geometry'
-import { fillHorizontal, fillVertical } from './helpers/room'
+import { generateRoomFeature } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -66,12 +66,18 @@ function fillCircle(
   for (let i = 0; i <= radius; i++) {
     let b = border !== 0 && last > r ? border + 1 : border
 
+    const boxes = [
+      box(c.x - r - b, c.y - i, c.x + r + b, c.y - i),
+      box(c.x - r - b, c.y + i, c.x + r + b, c.y + i),
+      box(c.x - i, c.y - r - b, c.x - i, c.y + r + b),
+      box(c.x + i, c.y - r - b, c.y + r + b, c.x + i),
+    ]
+
     // fill center cross outwards
     // maybe lots of redundant writes?
-    fillHorizontal(chunk, c.y - i, c.x - r - b, c.x + r + b, feature, flag, light)
-    fillHorizontal(chunk, c.y + i, c.x - r - b, c.x + r + b, feature, flag, light)
-    fillVertical(chunk, c.x - i, c.y - r - b, c.y + r + b, feature, flag, light)
-    fillVertical(chunk, c.x + i, c.y - r - b, c.y + r + b, feature, flag, light)
+    for (const line of boxes) {
+      generateRoomFeature(chunk, line, feature, flag, light)
+    }
     last++
 
     if (i < radius) {
