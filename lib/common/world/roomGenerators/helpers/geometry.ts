@@ -19,3 +19,15 @@ export function drawRectangle(
     if (flag) tile.turnOn(flag)
   })
 }
+
+export function fillRectangle(
+  chunk: Cave,
+  b: Box,
+  feature: Feature | FEAT,
+  flag?: SQUARE
+) {
+  chunk.tiles.forEach(b, (tile) => {
+    chunk.setFeature(tile, feature)
+    if (flag) tile.turnOn(flag)
+  })
+}

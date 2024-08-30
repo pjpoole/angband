@@ -100,7 +100,7 @@ export function build(
 }
 
 function makeChamber(chunk: Cave, b: Box) {
-  chunk.fillRectangle(b.interior(), FEAT.MAGMA, SQUARE.NONE)
+  fillRectangle(chunk, b.interior(), FEAT.MAGMA, SQUARE.NONE)
 
   for (const pt of b.borders()) {
     makeInnerChamberWall(chunk, pt)

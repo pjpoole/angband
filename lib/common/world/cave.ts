@@ -19,7 +19,7 @@ import { SQUARE } from './square'
 import { Tile } from './tile'
 import { Vault } from './vault'
 
-import { drawRectangle } from './roomGenerators/helpers/geometry'
+import { drawRectangle, fillRectangle } from './roomGenerators/helpers/geometry'
 
 interface CaveParams {
   height: number
@@ -164,7 +164,7 @@ export class Cave {
     const outerBox = b.exterior()
     this.generateRoom(outerBox, light)
     drawRectangle(this, outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    this.fillRectangle(b, FEAT.FLOOR, SQUARE.NONE)
+    fillRectangle(this, b, FEAT.FLOOR, SQUARE.NONE)
   }
 
   buildVault(
@@ -517,13 +517,6 @@ export class Cave {
     })
 
     this.tiles.forEach(box(b.left, center.y, b.right, center.y), (tile) => {
-      this.setFeature(tile, feature)
-      if (flag) tile.turnOn(flag)
-    })
-  }
-
-  fillRectangle(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
-    this.tiles.forEach(b, (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })

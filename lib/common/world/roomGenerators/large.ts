@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle } from './helpers/geometry'
+import { drawRectangle, fillRectangle } from './helpers/geometry'
 
 export function build(
   dungeon: Dungeon,
@@ -108,16 +108,16 @@ function buildPillars(
   chunk.generateHole(b.exterior(), FEAT.CLOSED)
 
   // central pillar
-  chunk.fillRectangle(center.box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+  fillRectangle(chunk, center.box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
 
   if (oneIn(2)) {
     // Occasionally, two more large pillars
     if (oneIn(2)) {
-      chunk.fillRectangle(center.trX(-6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
-      chunk.fillRectangle(center.trX(6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      fillRectangle(chunk, center.trX(-6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      fillRectangle(chunk, center.trX(6).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
     } else {
-      chunk.fillRectangle(center.trX(-5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
-      chunk.fillRectangle(center.trX(5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      fillRectangle(chunk, center.trX(-5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
+      fillRectangle(chunk, center.trX(5).box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
     }
   }
 
