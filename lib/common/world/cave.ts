@@ -308,6 +308,7 @@ export class Cave {
             break
           case '$': // treasure
             this.placeGold(p, this.depth, ORIGIN.VAULT)
+            break
           case ']': { // armor
             const roll = randInt0(oneIn(3) ? 9 : 8)
             const tval = [
@@ -341,6 +342,7 @@ export class Cave {
           case '-': { // wand or rod
             const tval = oneIn(2) ? TV.WAND : TV.ROD
             this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, tval)
+            break
           }
           case ',': // Food or mushroom
             this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.FOOD)
