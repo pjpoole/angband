@@ -17,6 +17,9 @@ import {
   SymmetryTransform,
   SYMTR
 } from './helpers/symmetry'
+import { placeClosedDoor, placeSecretDoor } from './helpers/door'
+import { placeRandomStairs } from './helpers/stairs'
+import { placeTrap } from './helpers/trap'
 
 export function build(
   dungeon: Dungeon,
@@ -116,28 +119,28 @@ function doBuildRoomTemplate(
         chunk.setMarkedGranite(p, SQUARE.WALL_SOLID)
         break
       case '+':
-        chunk.placeClosedDoor(p)
+        placeClosedDoor(chunk, p)
         break
       case '^':
         if (oneIn(4)) {
-          chunk.placeTrap(p, -1, chunk.depth)
+          placeTrap(chunk, p, -1, chunk.depth)
         }
         break
       case 'x':
         if (randomWalls) chunk.setMarkedGranite(p, SQUARE.WALL_SOLID)
         break
       case '(':
-        if (randomWalls) chunk.placeSecretDoor(p)
+        if (randomWalls) placeSecretDoor(chunk, p)
         break
       case ')':
-        if (!randomWalls) chunk.placeSecretDoor(p)
+        if (!randomWalls) placeSecretDoor(chunk, p)
         else chunk.setMarkedGranite(p, SQUARE.WALL_SOLID)
         break
       case '8':
         // TODO: or dungeon persist
         oneIn(5)
           // TODO: identify if chunk is a quest level
-          ? chunk.placeRandomStairs(p, false)
+          ? placeRandomStairs(chunk, p, false)
           : placeObject(chunk, p, chunk.depth, false, false, ORIGIN.SPECIAL, 0)
         break
       case '9':
@@ -155,7 +158,7 @@ function doBuildRoomTemplate(
       case '6':
         const doorNum = asInteger(char)
         doorNum === randomDoor
-          ? chunk.placeSecretDoor(p)
+          ? placeSecretDoor(chunk, p)
           : chunk.setMarkedGranite(p, SQUARE.WALL_SOLID)
         break
     }

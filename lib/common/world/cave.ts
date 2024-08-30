@@ -178,16 +178,7 @@ export class Cave {
     this.setFeature(this.tiles.get(point), feature)
   }
 
-  placeClosedDoor(pt: Loc) {
-    const tile = this.tiles.get(pt)
-    this.setFeature(tile, FEAT.CLOSED)
-    // TODO: traps: randomly set door lock strength
-  }
 
-  placeSecretDoor(pt: Loc) {
-    const tile = this.tiles.get(pt)
-    this.setFeature(tile, FEAT.SECRET)
-  }
 
   hollowRoom(pt: Loc) {
     for (const p of pt.box(3)) {
@@ -202,9 +193,6 @@ export class Cave {
     }
   }
 
-  placeRandomStairs(pt: Loc, isQuest: boolean) {}
-  placeTrap(pt: Loc, idx: number, level: number) {}
-  placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)

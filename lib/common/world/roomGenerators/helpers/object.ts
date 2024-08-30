@@ -5,6 +5,8 @@ import { Cave } from '../../cave'
 import { ORIGIN } from '../../../objects/origin'
 import { TV } from '../../../objects/tval'
 
+import { placeGold } from './treasure'
+
 export function placeObject(
   chunk: Cave,
   pt: Loc,
@@ -35,7 +37,7 @@ export function placeNVaultObjects(
       if (!chunk.tiles.get(pt).canPutItem()) continue
 
       if (oneIn(4)) {
-        chunk.placeGold(p1, depth, ORIGIN.VAULT)
+        placeGold(chunk, p1, depth, ORIGIN.VAULT)
       } else {
         placeObject(chunk, p1, depth, false, false, ORIGIN.SPECIAL, 0)
       }

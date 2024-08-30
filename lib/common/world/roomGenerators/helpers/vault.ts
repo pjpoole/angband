@@ -13,12 +13,15 @@ import { ROOMF } from '../../roomTemplate'
 import { Vault, VaultRegistry } from '../../vault'
 
 import { RoomName } from '../index'
+import { placeSecretDoor } from './door'
 import { placeObject } from './object'
 import { getVaultMonsters, pickAndPlaceMonster } from './monster'
 import {
   getRandomSymmetryTransform, symmetryTransform, SymmetryTransform,
   SYMTR
 } from './symmetry'
+import { placeTrap } from './trap'
+import { placeGold } from './treasure'
 
 export function buildVaultType(
   dungeon: Dungeon,
@@ -120,16 +123,16 @@ function doBuildVault(
         chunk.setFeature(tile, oneIn(2) ? FEAT.PASS_RUBBLE : FEAT.RUBBLE)
         break
       case '+': // secret door
-        chunk.placeSecretDoor(p)
+        placeSecretDoor(chunk, p)
         break
       case '^': // trap
-        if (oneIn(4)) chunk.placeTrap(p, -1, chunk.depth)
+        if (oneIn(4)) placeTrap(chunk, p, -1, chunk.depth)
         break
       case '&': // treasure or trap
         if (randInt0(4) < 3) {
           placeObject(chunk, p, chunk.depth, false, false, ORIGIN.VAULT, 0)
         } else if (oneIn(4)) {
-          chunk.placeTrap(p, -1, chunk.depth)
+          placeTrap(chunk, p, -1, chunk.depth)
         }
         break
       case '<': // up stairs
@@ -178,7 +181,7 @@ function doBuildVault(
           } else if (oneIn(2)) {
             placeObject(chunk, p, chunk.depth, oneIn(8), false, ORIGIN.VAULT, 0)
           } else if (oneIn(4)) {
-            chunk.placeTrap(p, -1, chunk.depth)
+            placeTrap(chunk, p, -1, chunk.depth)
           }
           break
         case '2': // slightly OOD monster
@@ -269,7 +272,7 @@ function doBuildVault(
           )
           break
         case '$': // treasure
-          chunk.placeGold(p, chunk.depth, ORIGIN.VAULT)
+          placeGold(chunk, p, chunk.depth, ORIGIN.VAULT)
           break
         case ']': { // armor
           const roll = randInt0(oneIn(3) ? 9 : 8)
