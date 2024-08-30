@@ -1,14 +1,13 @@
 import { Loc } from '../../core/loc'
 import { randInt0, randInt1 } from '../../core/rand'
 
-import { randDirNSEW } from '../../utilities/directions'
-
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
 import { drawRectangle } from './helpers/geometry'
+import { fillHorizontal, fillVertical } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -69,10 +68,10 @@ function fillCircle(
 
     // fill center cross outwards
     // maybe lots of redundant writes?
-    chunk.fillHorizontal(c.y - i, c.x - r - b, c.x + r + b, feature, flag, light)
-    chunk.fillHorizontal(c.y + i, c.x - r - b, c.x + r + b, feature, flag, light)
-    chunk.fillVertical(c.x - i, c.y - r - b, c.y + r + b, feature, flag, light)
-    chunk.fillVertical(c.x + i, c.y - r - b, c.y + r + b, feature, flag, light)
+    fillHorizontal(chunk, c.y - i, c.x - r - b, c.x + r + b, feature, flag, light)
+    fillHorizontal(chunk, c.y + i, c.x - r - b, c.x + r + b, feature, flag, light)
+    fillVertical(chunk, c.x - i, c.y - r - b, c.y + r + b, feature, flag, light)
+    fillVertical(chunk, c.x + i, c.y - r - b, c.y + r + b, feature, flag, light)
     last++
 
     if (i < radius) {

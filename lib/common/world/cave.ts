@@ -1,4 +1,4 @@
-import { box, Box, loc, Loc } from '../core/loc'
+import { Box, loc, Loc } from '../core/loc'
 import { oneIn, randInt0, randInt1 } from '../core/rand'
 
 import { getNeighbors } from '../utilities/directions'
@@ -497,38 +497,6 @@ export class Cave {
     this.tiles.forEach(box(b.left, center.y, b.right, center.y), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
-    })
-  }
-
-  fillHorizontal(
-    y: number,
-    xStart: number,
-    xEnd: number,
-    feature: Feature | FEAT,
-    flag?: SQUARE,
-    light?: boolean,
-  ) {
-    this.tiles.forEach(box(xStart, y, xEnd, y), (tile) => {
-      this.setFeature(tile, feature)
-      tile.turnOn(SQUARE.ROOM)
-      if (flag) tile.turnOn(flag)
-      if (light) tile.turnOn(SQUARE.GLOW)
-    })
-  }
-
-  fillVertical(
-    x: number,
-    yStart: number,
-    yEnd: number,
-    feature: Feature | FEAT,
-    flag?: SQUARE,
-    light?: boolean,
-  ) {
-    this.tiles.forEach(box(x, yStart, x, yEnd), (tile) => {
-      this.setFeature(tile, feature)
-      tile.turnOn(SQUARE.ROOM)
-      if (flag) tile.turnOn(flag)
-      if (light) tile.turnOn(SQUARE.GLOW)
     })
   }
 

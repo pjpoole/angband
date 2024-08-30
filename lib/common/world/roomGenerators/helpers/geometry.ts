@@ -1,4 +1,4 @@
-import { Box } from '../../../core/loc'
+import { box, Box } from '../../../core/loc'
 
 import { Cave } from '../../cave'
 import { FEAT, Feature } from '../../features'
