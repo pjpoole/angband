@@ -1,28 +1,12 @@
 import { Box, loc, Loc } from '../core/loc'
-import { oneIn, randInt0, randInt1 } from '../core/rand'
+import { randInt0 } from '../core/rand'
 
 import { getNeighbors } from '../utilities/directions'
-import { asInteger } from '../utilities/parsing/primitives'
 import { Rectangle } from '../utilities/rectangle'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
-import { ORIGIN } from '../objects/origin'
-import { ROOMF, RoomTemplate } from './roomTemplate'
 import { SQUARE } from './square'
 import { Tile } from './tile'
-
-import {
-  placeNVaultMonsters
-} from './roomGenerators/helpers/monster'
-import {
-  placeNVaultObjects,
-  placeObject
-} from './roomGenerators/helpers/object'
-import {
-  SymmetryTransform,
-  symmetryTransform
-} from './roomGenerators/helpers/symmetry'
-
 
 interface CaveParams {
   height: number
