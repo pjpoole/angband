@@ -82,7 +82,6 @@ export class Vault extends SerializableBase {
   }
 
   get maxDepth() {
-    console.log(getConstants())
     return this._maxDepth !== 0
       ? this._maxDepth
       : getConstants().world.maxDepth
