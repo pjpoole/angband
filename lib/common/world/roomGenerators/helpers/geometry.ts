@@ -20,7 +20,7 @@ export function drawRectangle(
   })
 }
 
-export function fillRectangle(
+export function drawFilledRectangle(
   chunk: Cave,
   b: Box,
   feature: Feature | FEAT,

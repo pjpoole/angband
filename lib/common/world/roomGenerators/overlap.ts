@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle, fillRectangle } from './helpers/geometry'
+import { drawRectangle, drawFilledRectangle } from './helpers/geometry'
 import { generateRoom } from './helpers/room'
 
 export function build(
@@ -64,8 +64,8 @@ export function build(
   generateRoom(chunk, extRoomB, light)
   drawRectangle(chunk, extRoomA, FEAT.GRANITE, SQUARE.WALL_OUTER)
   drawRectangle(chunk, extRoomB, FEAT.GRANITE, SQUARE.WALL_OUTER)
-  fillRectangle(chunk, roomA, FEAT.FLOOR, SQUARE.NONE)
-  fillRectangle(chunk, roomB, FEAT.FLOOR, SQUARE.NONE)
+  drawFilledRectangle(chunk, roomA, FEAT.FLOOR, SQUARE.NONE)
+  drawFilledRectangle(chunk, roomB, FEAT.FLOOR, SQUARE.NONE)
 
   return true
 }
