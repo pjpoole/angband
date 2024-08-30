@@ -96,19 +96,6 @@ export class Cave {
     this.tiles.get(p).turnOff(flag)
   }
 
-  hollowRoom(pt: Loc) {
-    for (const p of pt.box(3)) {
-      const tile = this.tiles.get(p)
-      if (tile.is(FEAT.MAGMA)) {
-        this.setFeature(tile, FEAT.FLOOR)
-        this.hollowRoom(p)
-      } else if (tile.is(FEAT.OPEN)) {
-        this.setFeature(tile, FEAT.BROKEN)
-        this.hollowRoom(p)
-      }
-    }
-  }
-
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
     tile.feature = FeatureRegistry.get(FEAT.GRANITE)

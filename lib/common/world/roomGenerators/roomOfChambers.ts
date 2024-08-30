@@ -7,6 +7,9 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { hollowRoom } from './helpers/room'
+import { drawFilledRectangle } from './helpers/geometry'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
@@ -91,7 +94,7 @@ export function build(
 
   const tile = chunk.get(p1)
   chunk.setFeature(tile, FEAT.FLOOR)
-  chunk.hollowRoom(p1!)
+  hollowRoom(chunk, p1!)
 
 
 
@@ -100,7 +103,7 @@ export function build(
 }
 
 function makeChamber(chunk: Cave, b: Box) {
-  fillRectangle(chunk, b.interior(), FEAT.MAGMA, SQUARE.NONE)
+  drawFilledRectangle(chunk, b.interior(), FEAT.MAGMA, SQUARE.NONE)
 
   for (const pt of b.borders()) {
     makeInnerChamberWall(chunk, pt)

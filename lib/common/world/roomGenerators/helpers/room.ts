@@ -86,3 +86,16 @@ export function setBorderingWalls(chunk: Cave, b: Box) {
     }
   })
 }
+
+export function hollowRoom(chunk: Cave, pt: Loc) {
+  for (const p of pt.box(3)) {
+    const tile = chunk.tiles.get(p)
+    if (tile.is(FEAT.MAGMA)) {
+      chunk.setFeature(tile, FEAT.FLOOR)
+      hollowRoom(chunk, p)
+    } else if (tile.is(FEAT.OPEN)) {
+      chunk.setFeature(tile, FEAT.BROKEN)
+      hollowRoom(chunk, p)
+    }
+  }
+}
