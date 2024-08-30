@@ -44,8 +44,6 @@ function buildVault(dungeon: Dungeon, chunk: Cave, center: Loc, vault: Vault): b
     assert(height === symmetryOp.height && width === symmetryOp.width)
   }
 
-  center = center.tr(-1 * Math.trunc(tHeight / 2), -1 * Math.trunc(tWidth / 2))
-
   return chunk.buildVault(center, vault, symmetryOp)
 }
 

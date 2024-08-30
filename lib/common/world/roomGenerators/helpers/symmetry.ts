@@ -1,4 +1,4 @@
-import { loc, Loc } from '../../../core/loc'
+import { Box, loc, Loc } from '../../../core/loc'
 import { randInt0 } from '../../../core/rand'
 import { clamp } from '../../../utilities/number'
 
@@ -21,16 +21,14 @@ export interface SymmetryTransform {
 
 export function symmetryTransform(
   pt: Loc,
-  translate: Loc,
-  height: number, // height of chunk
-  width: number, // width of chunk
+  b: Box,
   rotate: number,
   reflect: boolean
 ): Loc {
   const rotations = rotate % 4
 
-  let rHeight = height
-  let rWidth = width
+  let rHeight = b.height
+  let rWidth = b.width
 
   // Rotate 90 degrees at a time
   // initial:               x 43, y  2, rW 100, rH  30
@@ -47,7 +45,7 @@ export function symmetryTransform(
 
   if (reflect) pt = loc(rWidth - 1 - pt.x, pt.y)
 
-  return pt.sum(translate)
+  return pt.sum(b.topLeft)
 }
 
 export function getRandomSymmetryTransform(

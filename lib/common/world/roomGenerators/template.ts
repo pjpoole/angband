@@ -65,8 +65,6 @@ function buildRoomTemplate(
     assert(tHeight === height && tWidth === width)
   }
 
-  center = center.tr(-1 * Math.trunc(tHeight / 2), -1 * Math.trunc(tWidth / 2))
-
   return chunk.buildRoomTemplate(center, template, symmetryOp)
 }
 

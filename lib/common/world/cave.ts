@@ -170,7 +170,8 @@ export class Cave {
     vault.room.forEach((char, pt) => {
       if (char === ' ') return
 
-      const p = symmetryTransform(pt, center, height, width, rotate, reflect)
+      const p = symmetryTransform(pt, b, rotate, reflect)
+
       assert(b.contains(p))
 
       const tile = this.tiles.get(p)
@@ -237,7 +238,7 @@ export class Cave {
     vault.room.forEach((char, pt) => {
       if (char === ' ') return
 
-      const p = symmetryTransform(pt, center, height, width, rotate, reflect)
+      const p = symmetryTransform(pt, b, rotate, reflect)
       assert(b.contains(p))
 
       const tile = this.tiles.get(p)
@@ -373,10 +374,12 @@ export class Cave {
     // Do we generate optional walls
     const randomWalls = oneIn(2)
 
+    const b = center.box(height, width)
+
     template.room.forEach((char, ptPre) => {
       if (char === ' ') return
 
-      const p = symmetryTransform(ptPre, center, height, width, rotate, reflect)
+      const p = symmetryTransform(ptPre, b, rotate, reflect)
       const tile = this.tiles.get(p)
       this.setFeature(tile, FEAT.FLOOR)
       assert(tile.isEmpty())
@@ -442,7 +445,7 @@ export class Cave {
 
     // Second pass to place items after first pass has completed
     template.room.forEach((char, ptPre) => {
-      const pt = symmetryTransform(ptPre, center, height, width, rotate, reflect)
+      const pt = symmetryTransform(ptPre, b, rotate, reflect)
       const tile = this.tiles.get(pt)
 
       switch (char) {
