@@ -6,7 +6,7 @@ import { loadGameObjects } from './game/loadData'
 
 import { GameMap } from '../common/game/Map'
 import { FEAT } from '../common/world/features'
-import { CommandMap, COMMANDS } from './commands'
+import { COMMANDS, getCommand } from './commands'
 
 import { getCave } from './testing/roomRaster'
 import { loadTestRoom } from './testing/testTerrain'
@@ -75,8 +75,8 @@ function run(cave?: Cave) {
 }
 
 function handleCommand(ev: KeyboardEvent) {
-  const command = CommandMap[ev.key]
-  console.log(ev.key, command)
+  const command = getCommand(ev.key, ev.ctrlKey, ev.altKey, ev.metaKey)
+
   if (command == null) return
 
   ev.preventDefault()

@@ -19,3 +19,8 @@ export const CommandMap: Record<string, COMMANDS> = {
   b: COMMANDS.MOVE_SOUTHWEST,
   n: COMMANDS.MOVE_SOUTHEAST
 }
+
+export function getCommand(key: string, ctrl: boolean, alt: boolean, meta: boolean): COMMANDS | undefined {
+  if (ctrl || alt || meta) return
+  return CommandMap[key]
+}
