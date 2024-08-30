@@ -20,6 +20,7 @@ import { Tile } from './tile'
 import { Vault } from './vault'
 
 import { drawRectangle, fillRectangle } from './roomGenerators/helpers/geometry'
+import { generateRoom } from './roomGenerators/helpers/room'
 
 interface CaveParams {
   height: number
@@ -162,7 +163,7 @@ export class Cave {
     light: boolean,
   ): void {
     const outerBox = b.exterior()
-    this.generateRoom(outerBox, light)
+    generateRoom(this, outerBox, light)
     drawRectangle(this, outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
     fillRectangle(this, b, FEAT.FLOOR, SQUARE.NONE)
   }
@@ -496,16 +497,6 @@ export class Cave {
     })
 
     return true
-  }
-
-  // TODO: Check to see how this is used; if it's always used in conjunction
-  //       with other functions (border, floor) it may be possible to roll all
-  //       of these up together
-  generateRoom(b: Box, light: boolean) {
-    this.tiles.forEach(b, (tile) => {
-      tile.turnOn(SQUARE.ROOM)
-      if (light) tile.turnOn(SQUARE.GLOW)
-    })
   }
 
   generatePlus(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
