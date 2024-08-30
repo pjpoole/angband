@@ -6,6 +6,8 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { drawRectangle } from './helpers/geometry'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
@@ -47,7 +49,7 @@ export function build(
       break
     case 3:
       // Small secret room
-      chunk.drawRectangle(innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
+      drawRectangle(chunk, innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
       chunk.generateHole(innerBox, FEAT.SECRET)
 
       // TODO: treasure

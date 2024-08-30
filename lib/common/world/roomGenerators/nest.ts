@@ -6,6 +6,8 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { drawRectangle } from './helpers/geometry'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
@@ -27,7 +29,7 @@ export function build(
   chunk.generateBasicRoom(b, false)
 
   const innerWall = b.interior()
-  chunk.drawRectangle(innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
+  drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
   chunk.generateHole(innerWall, FEAT.CLOSED)
 
   const innerRoom = b.interior(2)

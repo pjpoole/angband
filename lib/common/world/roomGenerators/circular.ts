@@ -8,6 +8,8 @@ import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
+import { drawRectangle } from './helpers/geometry'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
@@ -35,7 +37,7 @@ export function build(
   // give large rooms an inner chamber
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
     const inner = center.box(5)
-    chunk.drawRectangle(inner, FEAT.GRANITE, SQUARE.WALL_INNER)
+    drawRectangle(chunk, inner, FEAT.GRANITE, SQUARE.WALL_INNER)
     // place a door on one of the walls at random
     chunk.generateHole(inner, FEAT.CLOSED)
 

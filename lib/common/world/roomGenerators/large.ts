@@ -6,6 +6,8 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { drawRectangle } from './helpers/geometry'
+
 export function build(
   dungeon: Dungeon,
   chunk: Cave,
@@ -30,7 +32,7 @@ export function build(
   // inner room
   // Wall boundaries
   const innerWall = b.interior(1)
-  chunk.drawRectangle(innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
+  drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
 
   // Floor boundaries
   const innerFloor = innerWall.interior(1)
@@ -78,7 +80,7 @@ function buildNested(
   chunk.generateHole(b.exterior(), FEAT.CLOSED)
 
   const nested = b.center().box(3)
-  chunk.drawRectangle(nested, FEAT.GRANITE, SQUARE.WALL_INNER)
+  drawRectangle(chunk, nested, FEAT.GRANITE, SQUARE.WALL_INNER)
   chunk.generateHole(nested, FEAT.CLOSED)
 
   // TODO: find door on inner room and lock it
@@ -121,7 +123,7 @@ function buildPillars(
 
   if (oneIn(3)) {
     // Inner rectangle
-    chunk.drawRectangle(center.box(3, 11), FEAT.GRANITE, SQUARE.WALL_INNER)
+    drawRectangle(chunk, center.box(3, 11), FEAT.GRANITE, SQUARE.WALL_INNER)
 
     chunk.placeSecretDoor(center.tr(-3, oneIn(2) ? -1 : 1))
     chunk.placeSecretDoor(center.tr(3, oneIn(2) ? -1 : 1))

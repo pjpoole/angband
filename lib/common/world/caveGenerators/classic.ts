@@ -11,6 +11,8 @@ import { FEAT } from '../features'
 import { buildRoom } from '../roomGenerators'
 import { SQUARE } from '../square'
 
+import { drawRectangle } from '../roomGenerators/helpers/geometry'
+
 export function generate(dungeon: Dungeon, player: Player, minHeight: number, minWidth: number) {
   const constants = getConstants()
   const sizePercent = getScaleFactor(dungeon, player)
@@ -52,7 +54,7 @@ export function generate(dungeon: Dungeon, player: Player, minHeight: number, mi
   }
 
   // Surround the map with permanent rock
-  chunk.drawRectangle(chunk.box, FEAT.PERM, SQUARE.NONE, true)
+  drawRectangle(chunk, chunk.box, FEAT.PERM, SQUARE.NONE, true)
 }
 
 function buildRandomRoom(dungeon: Dungeon, chunk: Cave, bpt: Loc): boolean {
