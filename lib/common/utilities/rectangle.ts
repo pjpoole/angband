@@ -19,6 +19,11 @@ type InitializerFn<T> = (pt: Loc) => T
 type IteratorFn<T> = (obj: T, pt: Loc, newRow?: boolean) => void
 type IteratorTestFn<T> = (obj: T, pt: Loc, newRow?: boolean) => boolean
 
+interface TransformParams {
+  reflect?: boolean
+  rotate?: number
+}
+
 export class Rectangle<T> {
   readonly height: number
   readonly width: number
@@ -87,6 +92,51 @@ export class Rectangle<T> {
       permute[seen] = value
       seen++
       yield loc((value % width) + b.left, Math.trunc(value / width) + b.top)
+    }
+  }
+
+  transform(bx: Box, fn: IteratorFn<T>): void
+  transform(bx: Box, options: TransformParams, fn: IteratorFn<T>): void
+  transform(bx: Box, p1: TransformParams | IteratorFn<T>, p2?: IteratorFn<T>): void {
+    this.assertSurrounds(bx)
+    const options = typeof p1 === 'function' ? {} : p1 as TransformParams
+    const fn = typeof p1 === 'function' ? p1 : p2 as IteratorFn<T>
+
+    const rotate = (options.rotate ?? 0) % 4
+    const reflect = options.reflect ?? false
+    const { top, left} = bx
+
+    const r = this.mx
+    const b = this.my
+
+    let xMinT = 0, xMaxT = r, yMin = 0, yMax = b
+    switch (rotate) {
+      case 0:
+        [xMinT, xMaxT, yMin, yMax] = [0, r, 0, b]
+        break
+      case 1:
+        [xMinT, xMaxT, yMin, yMax] = [b, 0, 0, r]
+        break
+      case 2:
+        [xMinT, xMaxT, yMin, yMax] = [r, 0, b, 0]
+        break
+      case 3:
+        [xMinT, xMaxT, yMin, yMax] = [0, b, r, 0]
+        break
+    }
+
+    const xMin = reflect ? xMaxT : xMinT
+    const xMax = reflect ? xMinT : xMaxT
+    const xd = xMin <= xMax ? 1 : -1
+    const yd = yMin <= yMax ? 1 : -1
+
+    let newRow = false
+    for (let y = yMin; y !== yMax + yd; y += yd) {
+      for (let x = xMin; x !== xMax + xd; x += xd) {
+        fn(this.rect[y][x], loc(x + left, y + top), newRow)
+        newRow = false
+      }
+      newRow = true
     }
   }
 
