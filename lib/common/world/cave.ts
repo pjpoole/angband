@@ -113,53 +113,6 @@ export class Cave {
     this.tiles.get(p).turnOff(flag)
   }
 
-  // generation
-  setBorderingWalls(b: Box) {
-    const clipped = this.tiles.intersect(b)
-    const topLeft = loc(clipped.left, clipped.top)
-
-    const refToOffset = (p: Loc): Loc => p.diff(topLeft)
-    const offsetToRef = (p: Loc): Loc => p.sum(topLeft)
-
-    const walls = new Rectangle(b.height, b.width, true)
-
-    this.tiles.forEach(clipped, (tile, pt) => {
-      if (!tile.isFloor()) {
-        assert(!tile.isRoom())
-        return
-      }
-
-      assert(tile.isRoom())
-
-      const neighbors = this.tiles.intersect(pt.box(3))
-
-      if (neighbors.height !== 3 || neighbors.width !== 3) {
-        // we hit the edge of the map
-        walls.set(refToOffset(pt), true)
-      } else {
-        let floorCount = 0
-        this.tiles.forEach(neighbors, (tile) => {
-          const isFloor = tile.isFloor()
-          assert(isFloor === tile.isRoom())
-          if (isFloor) floorCount++
-        })
-
-        if (floorCount != 9) {
-          walls.set(refToOffset(pt), true)
-        }
-      }
-    })
-
-    walls.forEach((val, pt) => {
-      if (val) {
-        const offset = offsetToRef(pt)
-        const tile = this.tiles.get(offset)
-        assert(tile.isFloor() && tile.isRoom())
-        this.setMarkedGranite(offset, SQUARE.WALL_OUTER)
-      }
-    })
-  }
-
   // TODO: Maybe return coord of hole
   generateHole(b: Box, feature: Feature | FEAT) {
     const center = b.center()
@@ -178,8 +131,6 @@ export class Cave {
     this.setFeature(this.tiles.get(point), feature)
   }
 
-
-
   hollowRoom(pt: Loc) {
     for (const p of pt.box(3)) {
       const tile = this.tiles.get(p)
@@ -192,7 +143,6 @@ export class Cave {
       }
     }
   }
-
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)

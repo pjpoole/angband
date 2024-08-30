@@ -7,7 +7,7 @@ import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
 import { drawRectangle } from './helpers/geometry'
-import { generateRoomFeature } from './helpers/room'
+import { generateRoomFeature, setBorderingWalls } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -31,7 +31,7 @@ export function build(
   fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
   const b = center.boxR(radius + 2)
-  chunk.setBorderingWalls(b)
+  setBorderingWalls(chunk, b)
 
   // give large rooms an inner chamber
   if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
