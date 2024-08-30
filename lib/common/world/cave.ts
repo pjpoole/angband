@@ -75,6 +75,17 @@ export class Cave {
     }
   }
 
+  private initFeatureCount(): FeatureCount {
+    const result: Partial<FeatureCount> = {}
+    for (const code of Object.values(FEAT)) {
+      if (typeof code === 'number') {
+        result[code] = 0
+      }
+    }
+
+    return result as FeatureCount
+  }
+
   get box() {
     return this.tiles.box
   }
@@ -97,17 +108,6 @@ export class Cave {
 
   turnOff(p: Loc, flag: SQUARE) {
     this.tiles.get(p).turnOff(flag)
-  }
-
-  private initFeatureCount(): FeatureCount {
-    const result: Partial<FeatureCount> = {}
-    for (const code of Object.values(FEAT)) {
-      if (typeof code === 'number') {
-        result[code] = 0
-      }
-    }
-
-    return result as FeatureCount
   }
 
   // generation
