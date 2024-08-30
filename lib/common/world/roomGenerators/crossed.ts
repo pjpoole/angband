@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle, fillRectangle } from './helpers/geometry'
+import { drawPlus, drawRectangle, fillRectangle } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
 
 export function build(
@@ -70,7 +70,7 @@ export function build(
         }
       } else if (oneIn(3)) {
         // 2/9 chance, plus
-        chunk.generatePlus(innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
+        drawPlus(chunk, innerBox, FEAT.GRANITE, SQUARE.WALL_INNER)
       } else if (oneIn(3)) {
         // 4/27 chance, single central pillar
         chunk.setMarkedGranite(center, SQUARE.WALL_INNER)

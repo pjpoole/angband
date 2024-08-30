@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle, fillRectangle } from './helpers/geometry'
+import { drawPlus, drawRectangle, fillRectangle } from './helpers/geometry'
 
 export function build(
   dungeon: Dungeon,
@@ -156,7 +156,7 @@ function buildQuad(
   b: Box,
 ) {
   const center = b.center()
-  chunk.generatePlus(b, FEAT.GRANITE, SQUARE.WALL_INNER)
+  drawPlus(chunk, b, FEAT.GRANITE, SQUARE.WALL_INNER)
 
   if (oneIn(2)) {
     const i = randInt1(10)

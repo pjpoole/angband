@@ -486,19 +486,7 @@ export class Cave {
     return true
   }
 
-  generatePlus(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
-    const center = b.center()
 
-    this.tiles.forEach(box(center.x, b.top, center.x, b.bottom), (tile) => {
-      this.setFeature(tile, feature)
-      if (flag) tile.turnOn(flag)
-    })
-
-    this.tiles.forEach(box(b.left, center.y, b.right, center.y), (tile) => {
-      this.setFeature(tile, feature)
-      if (flag) tile.turnOn(flag)
-    })
-  }
 
   // TODO: Maybe return coord of hole
   generateHole(b: Box, feature: Feature | FEAT) {
