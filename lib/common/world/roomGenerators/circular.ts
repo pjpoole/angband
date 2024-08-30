@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle } from './helpers/geometry'
+import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateRoomFeature, setBorderingWalls } from './helpers/room'
 
 export function build(
@@ -38,7 +38,7 @@ export function build(
     const inner = center.box(5)
     drawRectangle(chunk, inner, FEAT.GRANITE, SQUARE.WALL_INNER)
     // place a door on one of the walls at random
-    chunk.generateHole(inner, FEAT.CLOSED)
+    drawRandomHole(chunk, inner, FEAT.CLOSED)
 
     // TODO: vault objects
     // TODO: vault monsters

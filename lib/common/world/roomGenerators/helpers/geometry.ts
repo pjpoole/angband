@@ -1,4 +1,5 @@
-import { box, Box } from '../../../core/loc'
+import { box, Box, loc } from '../../../core/loc'
+import { randInt0 } from '../../../core/rand'
 
 import { Cave } from '../../cave'
 import { FEAT, Feature } from '../../features'
@@ -44,4 +45,23 @@ export function drawPlus(chunk: Cave, b: Box, feature: Feature | FEAT, flag?: SQ
     chunk.setFeature(tile, feature)
     if (flag) tile.turnOn(flag)
   })
+}
+
+// TODO: Maybe return coord of hole
+// generate_hole
+export function drawRandomHole(chunk: Cave, b: Box, feature: Feature | FEAT) {
+  const center = b.center()
+
+  let { x, y } = center
+  // pick a random wall center
+  switch (randInt0(4)) {
+    case 0: y = b.top; break
+    case 1: x = b.left; break
+    case 2: y = b.bottom; break
+    case 3: x = b.right; break
+  }
+  const point = loc(x, y)
+  assert(point.isOnEdge(b))
+
+  chunk.setFeature(chunk.tiles.get(point), feature)
 }

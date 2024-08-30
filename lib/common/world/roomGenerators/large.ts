@@ -6,7 +6,12 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawPlus, drawRectangle, drawFilledRectangle } from './helpers/geometry'
+import {
+  drawPlus,
+  drawRectangle,
+  drawFilledRectangle,
+  drawRandomHole
+} from './helpers/geometry'
 
 export function build(
   dungeon: Dungeon,
@@ -68,7 +73,7 @@ function buildSimple(
   chunk: Cave,
   b: Box,
 ) {
-  chunk.generateHole(b.exterior(), FEAT.CLOSED)
+  drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
   // TODO: Monsters
 }
 
@@ -77,11 +82,11 @@ function buildNested(
   chunk: Cave,
   b: Box,
 ) {
-  chunk.generateHole(b.exterior(), FEAT.CLOSED)
+  drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
 
   const nested = b.center().box(3)
   drawRectangle(chunk, nested, FEAT.GRANITE, SQUARE.WALL_INNER)
-  chunk.generateHole(nested, FEAT.CLOSED)
+  drawRandomHole(chunk, nested, FEAT.CLOSED)
 
   // TODO: find door on inner room and lock it
   //       Could use neighbors function
@@ -105,7 +110,7 @@ function buildPillars(
 ) {
   const center = b.center()
 
-  chunk.generateHole(b.exterior(), FEAT.CLOSED)
+  drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
 
   // central pillar
   drawFilledRectangle(chunk, center.box(3), FEAT.GRANITE, SQUARE.WALL_INNER)
@@ -139,7 +144,7 @@ function buildCheckerboard(
   chunk: Cave,
   b: Box,
 ) {
-  chunk.generateHole(b.exterior(), FEAT.CLOSED)
+  drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
 
   for (const pt of b) {
     if (((pt.x + pt.y) & 1) !== 0) chunk.setMarkedGranite(pt, SQUARE.WALL_INNER)

@@ -6,7 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { drawRectangle } from './helpers/geometry'
+import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
 
 export function build(
@@ -31,7 +31,7 @@ export function build(
 
   const innerWall = b.interior()
   drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
-  chunk.generateHole(innerWall, FEAT.CLOSED)
+  drawRandomHole(chunk, innerWall, FEAT.CLOSED)
 
   const innerRoom = b.interior(2)
   // TODO: Monster logic

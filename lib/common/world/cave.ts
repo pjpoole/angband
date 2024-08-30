@@ -1,5 +1,4 @@
-import { Box, loc, Loc } from '../core/loc'
-import { randInt0 } from '../core/rand'
+import { Box, Loc } from '../core/loc'
 
 import { getNeighbors } from '../utilities/directions'
 import { Rectangle } from '../utilities/rectangle'
@@ -95,24 +94,6 @@ export class Cave {
 
   turnOff(p: Loc, flag: SQUARE) {
     this.tiles.get(p).turnOff(flag)
-  }
-
-  // TODO: Maybe return coord of hole
-  generateHole(b: Box, feature: Feature | FEAT) {
-    const center = b.center()
-
-    let { x, y } = center
-    // pick a random wall center
-    switch (randInt0(4)) {
-      case 0: y = b.top; break
-      case 1: x = b.left; break
-      case 2: y = b.bottom; break
-      case 3: x = b.right; break
-    }
-    const point = loc(x, y)
-    assert(point.isOnEdge(b))
-
-    this.setFeature(this.tiles.get(point), feature)
   }
 
   hollowRoom(pt: Loc) {
