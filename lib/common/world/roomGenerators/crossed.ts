@@ -34,7 +34,7 @@ export function build(
   const boxB = center.box(3, width)
   chunk.generateBasicRoom(boxB, light)
 
-  const innerBox = boxA.clip(boxB)
+  const innerBox = boxA.intersect(boxB)
 
   // Maybe modify the center
   switch (randInt1(4)) {

@@ -166,7 +166,7 @@ export class Box {
     )
   }
 
-  clip(b: Box): Box {
+  intersect(b: Box): Box {
     return box(
       Math.max(this.l, b.l),
       Math.max(this.t, b.t),

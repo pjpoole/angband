@@ -75,7 +75,7 @@ export class Cave {
     b: Box,
     flag: SQUARE,
   ) {
-    this.tiles.forEachInRange(b, (tile) => { tile.turnOn(flag) })
+    this.tiles.forEach(b, (tile) => { tile.turnOn(flag) })
   }
 
   turnOn(p: Loc, flag: SQUARE) {
@@ -99,7 +99,7 @@ export class Cave {
 
   // generation
   setBorderingWalls(b: Box) {
-    const clipped = this.tiles.clip(b)
+    const clipped = this.tiles.intersect(b)
     const topLeft = loc(clipped.left, clipped.top)
 
     const refToOffset = (p: Loc): Loc => p.diff(topLeft)
@@ -107,7 +107,7 @@ export class Cave {
 
     const walls = new Rectangle(b.height, b.width, true)
 
-    this.tiles.forEachInRange(clipped, (tile, pt) => {
+    this.tiles.forEach(clipped, (tile, pt) => {
       if (!tile.isFloor()) {
         assert(!tile.isRoom())
         return
@@ -115,14 +115,14 @@ export class Cave {
 
       assert(tile.isRoom())
 
-      const neighbors = this.tiles.clip(pt.box(3))
+      const neighbors = this.tiles.intersect(pt.box(3))
 
       if (neighbors.height !== 3 || neighbors.width !== 3) {
         // we hit the edge of the map
         walls.set(refToOffset(pt), true)
       } else {
         let floorCount = 0
-        this.tiles.forEachInRange(neighbors, (tile) => {
+        this.tiles.forEach(neighbors, (tile) => {
           const isFloor = tile.isFloor()
           assert(isFloor === tile.isRoom())
           if (isFloor) floorCount++
@@ -487,7 +487,7 @@ export class Cave {
   //       with other functions (border, floor) it may be possible to roll all
   //       of these up together
   generateRoom(b: Box, light: boolean) {
-    this.tiles.forEachInRange(b, (tile) => {
+    this.tiles.forEach(b, (tile) => {
       tile.turnOn(SQUARE.ROOM)
       if (light) tile.turnOn(SQUARE.GLOW)
     })
@@ -496,19 +496,19 @@ export class Cave {
   generatePlus(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
     const center = b.center()
 
-    this.tiles.forEachInRange(box(center.x, b.top, center.x, b.bottom), (tile) => {
+    this.tiles.forEach(box(center.x, b.top, center.x, b.bottom), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
 
-    this.tiles.forEachInRange(box(b.left, center.y, b.right, center.y), (tile) => {
+    this.tiles.forEach(box(b.left, center.y, b.right, center.y), (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
   }
 
   fillRectangle(b: Box, feature: Feature | FEAT, flag?: SQUARE) {
-    this.tiles.forEachInRange(b, (tile) => {
+    this.tiles.forEach(b, (tile) => {
       this.setFeature(tile, feature)
       if (flag) tile.turnOn(flag)
     })
@@ -522,7 +522,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange(box(xStart, y, xEnd, y), (tile) => {
+    this.tiles.forEach(box(xStart, y, xEnd, y), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -538,7 +538,7 @@ export class Cave {
     flag?: SQUARE,
     light?: boolean,
   ) {
-    this.tiles.forEachInRange(box(x, yStart, x, yEnd), (tile) => {
+    this.tiles.forEach(box(x, yStart, x, yEnd), (tile) => {
       this.setFeature(tile, feature)
       tile.turnOn(SQUARE.ROOM)
       if (flag) tile.turnOn(flag)
@@ -692,7 +692,7 @@ export class Cave {
     const possibilities = []
 
     // all fully inbounds
-    const clipped = this.box.interior().clip(bounds)
+    const clipped = this.box.interior().intersect(bounds)
 
     for (const pt of clipped) {
       if (distance > 1 && center.dist(pt) > distance) continue

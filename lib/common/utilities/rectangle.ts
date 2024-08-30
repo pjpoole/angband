@@ -90,8 +90,21 @@ export class Rectangle<T> {
     }
   }
 
-  forEach(fn: IteratorFn<T>): void {
-    this.forEachInRange(this.box, fn)
+  forEach(fn: IteratorFn<T>): void
+  forEach(b: Box, fn: IteratorFn<T>): void
+  forEach(fnOrBox: Box | IteratorFn<T>, maybeFn?: IteratorFn<T>): void {
+    const b = maybeFn == null ? this.box : fnOrBox as Box
+    const fn = maybeFn ?? fnOrBox as IteratorFn<T>
+
+    let prevY = 0
+    let newRow = false
+    for (const p of this.coordinates(b)) {
+      if (p.y !== prevY) newRow = true
+      prevY = p.y
+      fn(this.rect[p.y][p.x], p, newRow)
+
+      newRow = false
+    }
   }
 
   every(b: Box, fn: IteratorTestFn<T>): boolean {
@@ -108,9 +121,13 @@ export class Rectangle<T> {
     return true
   }
 
-  forEachBorder(b: Box, fn: IteratorFn<T>): void {
+  forEachBorder(fn: IteratorFn<T>): void
+  forEachBorder(b: Box, fn: IteratorFn<T>): void
+  forEachBorder(fnOrBox: Box | IteratorFn<T>, maybeFn?: IteratorFn<T>): void {
+    const b = maybeFn == null ? this.box : fnOrBox as Box
+    const fn = maybeFn ?? fnOrBox as IteratorFn<T>
+
     this.assertSurrounds(b)
-    const { left, top, right, bottom } = b
 
     let newRow = false
     let prevY = b.top
@@ -120,18 +137,6 @@ export class Rectangle<T> {
         prevY = p.y
       }
       fn(this.rect[p.y][p.x], p, newRow)
-    }
-  }
-
-  forEachInRange(b: Box, fn: IteratorFn<T>): void {
-    let prevY = 0
-    let newRow = false
-    for (const p of this.coordinates(b)) {
-      if (p.y !== prevY) newRow = true
-      prevY = p.y
-      fn(this.rect[p.y][p.x], p, newRow)
-
-      newRow = false
     }
   }
 
@@ -149,8 +154,8 @@ export class Rectangle<T> {
     )
   }
 
-  clip(b: Box): Box {
-    return this.box.clip(b)
+  intersect(b: Box): Box {
+    return this.box.intersect(b)
   }
 
   surrounds(b: Box): boolean {
