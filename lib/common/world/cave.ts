@@ -20,6 +20,10 @@ import {
   placeNVaultMonsters
 } from './roomGenerators/helpers/monster'
 import {
+  placeNVaultObjects,
+  placeObject
+} from './roomGenerators/helpers/object'
+import {
   SymmetryTransform,
   symmetryTransform
 } from './roomGenerators/helpers/symmetry'
@@ -216,7 +220,7 @@ export class Cave {
           break
         case '&': // treasure or trap
           if (randInt0(4) < 3) {
-            this.placeObject(p, this.depth, false, false, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth, false, false, ORIGIN.VAULT, 0)
           } else if (oneIn(4)) {
             this.placeTrap(p, -1, this.depth)
           }
@@ -258,7 +262,7 @@ export class Cave {
             if (oneIn(2)) {
               pickAndPlaceMonster(this, p, this.depth, true, true, ORIGIN.DROP_VAULT)
             } else if (oneIn(2)) {
-              this.placeObject(p, this.depth, oneIn(8), false, ORIGIN.VAULT, 0)
+              placeObject(this, p, this.depth, oneIn(8), false, ORIGIN.VAULT, 0)
             } else if (oneIn(4)) {
               this.placeTrap(p, -1, this.depth)
             }
@@ -267,38 +271,38 @@ export class Cave {
             pickAndPlaceMonster(this, p, this.depth + 5, true, true, ORIGIN.DROP_VAULT)
             break
           case '3': // slightly OOD object
-            this.placeObject(p, this.depth + 3, false, false, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth + 3, false, false, ORIGIN.VAULT, 0)
             break
           case '4': // monster and/or object
             if (oneIn(2)) {
               pickAndPlaceMonster(this, p, this.depth + 3, true, true, ORIGIN.DROP_VAULT)
             }
             if (oneIn(2)) {
-              this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
+              placeObject(this, p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
             }
             break
           case '5': // OOD object
-            this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
             break
           case '6': // OOD monster
             pickAndPlaceMonster(this, p, this.depth + 11, true, true, ORIGIN.DROP_VAULT)
             break
           case '7': // very OOD object
-            this.placeObject(p, this.depth + 15, false, false, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth + 15, false, false, ORIGIN.VAULT, 0)
             break
           case '8': // nasty monster, and treasure
             pickAndPlaceMonster(this, p, this.depth + 40, true, true, ORIGIN.DROP_VAULT)
-            this.placeObject(p, this.depth + 20, true, true, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth + 20, true, true, ORIGIN.VAULT, 0)
             break
           case '9': // mean monster, and treasure
             pickAndPlaceMonster(this, p, this.depth + 9, true, true, ORIGIN.DROP_VAULT)
-            this.placeObject(p, this.depth + 7, true, false, ORIGIN.VAULT, 0)
+            placeObject(this, p, this.depth + 7, true, false, ORIGIN.VAULT, 0)
             break
           case '0': // very OOD monster
             pickAndPlaceMonster(this, p, this.depth + 20, true, true, ORIGIN.DROP_VAULT)
             break
           case '~': // treasure chest
-            this.placeObject(p, this.depth + 5, false, false, ORIGIN.VAULT, TV.CHEST)
+            placeObject(this, p, this.depth + 5, false, false, ORIGIN.VAULT, TV.CHEST)
             break
           case '$': // treasure
             this.placeGold(p, this.depth, ORIGIN.VAULT)
@@ -309,37 +313,37 @@ export class Cave {
               TV.BOOTS, TV.GLOVES, TV.HELM, TV.CROWN, TV.SHIELD,
               TV.CLOAK, TV.SOFT_ARMOR, TV.HARD_ARMOR, TV.DRAG_ARMOR
             ][roll]
-            this.placeObject(p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
+            placeObject(this, p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
             break
           }
           case '|': { // weapon
             const roll = randInt0(4)
             const tval = [TV.BOOTS, TV.GLOVES, TV.HELM, TV.CROWN][roll]
-            this.placeObject(p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
+            placeObject(this, p, this.depth + 3, true, false, ORIGIN.VAULT, tval)
             break
           }
           case '=': // ring
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.RING)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.RING)
             break
           case '"': // amulet
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT,  TV.AMULET)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT,  TV.AMULET)
             break
           case '!': // potion
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.POTION)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.POTION)
             break
           case '?': // scroll
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.SCROLL)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.SCROLL)
             break
           case '_': // staff
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.STAFF)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.STAFF)
             break
           case '-': { // wand or rod
             const tval = oneIn(2) ? TV.WAND : TV.ROD
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, tval)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, tval)
             break
           }
           case ',': // Food or mushroom
-            this.placeObject(p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.FOOD)
+            placeObject(this, p, this.depth + 3, oneIn(4), false, ORIGIN.VAULT, TV.FOOD)
             break
           case '#':
             // Check consistency with first pass
@@ -426,14 +430,14 @@ export class Cave {
           oneIn(5)
             // TODO: identify if this is a quest level
             ? this.placeRandomStairs(p, false)
-            : this.placeObject(p, this.depth, false, false, ORIGIN.SPECIAL, 0)
+            : placeObject(this, p, this.depth, false, false, ORIGIN.SPECIAL, 0)
           break
         case '9':
 
           // handled in second pass
           break
         case '[':
-          this.placeObject(p, this.depth, false, false, ORIGIN.SPECIAL, 0)
+          placeObject(this, p, this.depth, false, false, ORIGIN.SPECIAL, 0)
           break
         case '1':
         case '2':
@@ -480,10 +484,10 @@ export class Cave {
           placeNVaultMonsters(this, pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
 
           if (oneIn(2)) {
-            this.placeNVaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+            placeNVaultObjects(this, pt.diff(offset1), this.depth, randInt1(2))
           }
           if (oneIn(2)) {
-            this.placeNVaultObjects(pt.diff(offset1), this.depth, randInt1(2))
+            placeNVaultObjects(this, pt.diff(offset1), this.depth, randInt1(2))
           }
           break
       }
@@ -539,32 +543,6 @@ export class Cave {
   placeRandomStairs(pt: Loc, isQuest: boolean) {}
   placeTrap(pt: Loc, idx: number, level: number) {}
   placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
-  placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
-
-  // TODO: Can simplify algo here
-  placeNVaultObjects(pt: Loc, depth: number, number: number) {
-    const b = pt.box(5, 7)
-
-    while(number > 0) {
-      for (let i = 0; i < 11; i++) {
-        // these loops could be combined; we could just put a cap on find nearby
-        // grid
-        const p1 = this.findNearbyGrid(b)
-        if (p1 == null) throw new Error('could not place object')
-
-        if (!this.tiles.get(pt).canPutItem()) continue
-
-        if (oneIn(4)) {
-          this.placeGold(p1, depth, ORIGIN.VAULT)
-        } else {
-          this.placeObject(p1, depth, false, false, ORIGIN.SPECIAL, 0)
-        }
-
-        break
-      }
-      number--
-    }
-  }
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
