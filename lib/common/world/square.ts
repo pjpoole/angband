@@ -22,6 +22,7 @@ export enum SQUARE {
   DTRAP,
   NO_STAIRS,
   CLOSE_PLAYER,
+  MAX,
 }
 
 const SQUARE_DESCRIPTIONS = {

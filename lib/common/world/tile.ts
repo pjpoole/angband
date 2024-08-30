@@ -1,3 +1,4 @@
+import { Flags } from '../core/flags'
 import { Loc } from '../core/loc'
 
 import { Monster } from '../monsters/monster'
@@ -12,7 +13,7 @@ export class Tile {
   monster?: Monster
 
   // TODO: Not space-efficient; bitflag
-  private readonly flags: Partial<Record<SQUARE, boolean>> = {}
+  private readonly flags: Flags
   readonly objects: any[] = [] // TODO: Type
   // trap
   // noise
@@ -20,9 +21,22 @@ export class Tile {
 
   constructor(pt: Loc, feature?: Feature, flag?: SQUARE) {
     this.pt = pt
+    this.flags = new Flags(SQUARE.MAX)
 
     this.feature = feature ?? FeatureRegistry.get(FEAT.NONE)
     if (flag) this.turnOn(flag)
+  }
+
+  turnOn(flag: SQUARE) {
+    this.flags.turnOn(flag)
+  }
+
+  turnOff(flag: SQUARE) {
+    this.flags.turnOff(flag)
+  }
+
+  has(flag: SQUARE): boolean {
+    return this.flags.has(flag)
   }
 
   get glyph(): string {
@@ -33,48 +47,53 @@ export class Tile {
     return this.feature.code === feature
   }
 
-  turnOn(flag: SQUARE) {
-    this.flags[flag] = true
-  }
-
-  turnOff(flag: SQUARE) {
-    this.flags[flag] = false
-  }
-
-  has(flag: SQUARE): boolean {
-    return this.flags[flag] === true
-  }
-
+  // TODO: figure out what "mark" means
   isMark(): boolean {
-    return this.flags[SQUARE.MARK] === true
+    return this.flags.has(SQUARE.MARK)
   }
 
+  /**
+   * Is the square self-lit
+   */
   isGlow(): boolean {
-    return this.flags[SQUARE.GLOW] === true
+    return this.flags.has(SQUARE.GLOW)
   }
 
+  /**
+   * Is the square part of a vault. Vaults cannot be teleportation destinations.
+   */
   isVault(): boolean {
-    return this.flags[SQUARE.VAULT] === true
+    return this.flags.has(SQUARE.VAULT)
   }
 
+  /**
+   * Is the square part of a room, for generation and illumination purposes.
+   */
   isRoom(): boolean {
-    return this.flags[SQUARE.ROOM] === true
+    return this.flags.has(SQUARE.ROOM)
   }
 
+  /**
+   * Is the square currently in the player's line of sight and illuminated? This
+   * is a strict subset of isView
+   */
   isSeen(): boolean {
-    return this.flags[SQUARE.SEEN] === true
+    return this.flags.has(SQUARE.SEEN)
   }
 
+  /**
+   * Is the square currently in the player's line of sight
+   */
   isView(): boolean {
-    return this.flags[SQUARE.VIEW] === true
+    return this.flags.has(SQUARE.VIEW)
   }
 
   wasSeen(): boolean {
-    return this.flags[SQUARE.WASSEEN] === true
+    return this.flags.has(SQUARE.WASSEEN)
   }
 
   isFeel(): boolean {
-    return this.flags[SQUARE.FEEL] === true
+    return this.flags.has(SQUARE.FEEL)
   }
 
   // Potentially allows other sources of damage than magma
@@ -92,52 +111,55 @@ export class Tile {
   }
 
   isTrap(): boolean {
-    return this.flags[SQUARE.TRAP] === true
+    return this.flags.has(SQUARE.TRAP)
   }
 
   // generation
   isWallInner(): boolean {
-    return this.flags[SQUARE.WALL_INNER] === true
+    return this.flags.has(SQUARE.WALL_INNER)
   }
 
   // generation
   isWallOuter(): boolean {
-    return this.flags[SQUARE.WALL_OUTER] === true
+    return this.flags.has(SQUARE.WALL_OUTER)
   }
 
   // generation
   isWallSolid(): boolean {
-    return this.flags[SQUARE.WALL_SOLID] === true
+    return this.flags.has(SQUARE.WALL_SOLID)
   }
 
   // generation
   isMonsterRestricted(): boolean {
-    return this.flags[SQUARE.MON_RESTRICT] === true
+    return this.flags.has(SQUARE.MON_RESTRICT)
   }
 
   isNoTeleport(): boolean {
-    return this.flags[SQUARE.NO_TELEPORT] === true
+    return this.flags.has(SQUARE.NO_TELEPORT)
   }
 
   isNoMap(): boolean {
-    return this.flags[SQUARE.NO_MAP] === true
+    return this.flags.has(SQUARE.NO_MAP)
   }
 
   isNoEsp(): boolean {
-    return this.flags[SQUARE.NO_ESP] === true
+    return this.flags.has(SQUARE.NO_ESP)
   }
 
   isProject(): boolean {
-    return this.flags[SQUARE.PROJECT] === true
+    return this.flags.has(SQUARE.PROJECT)
   }
 
+  /**
+   * Has the player cast detect traps in a way that affects this square?
+   */
   isTrapDetected(): boolean {
-    return this.flags[SQUARE.DTRAP] === true
+    return this.flags.has(SQUARE.DTRAP)
   }
 
   // generation
   isNoStairs(): boolean {
-    return this.flags[SQUARE.NO_STAIRS] === true
+    return this.flags.has(SQUARE.NO_STAIRS)
   }
 
   isOpen(): boolean {
