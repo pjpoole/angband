@@ -1,3 +1,5 @@
+import { timed } from '../utilities/diagnostic'
+
 import { init as initActivation } from './Activation'
 import { init as initArtifact } from './Artifact'
 import { init as initBlow } from './Blow'
@@ -57,7 +59,9 @@ const INITIALIZERS = [
 ]
 
 export function init() {
-  for (const initializer of INITIALIZERS) {
-    initializer()
-  }
+  timed(() => {
+    for (const initializer of INITIALIZERS) {
+      initializer()
+    }
+  },`loaded all initializers in %d ms`)
 }

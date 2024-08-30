@@ -1,5 +1,7 @@
+import { timed } from '../utilities/diagnostic'
 import { isBrowser } from '../utilities/environment'
 import { JsonArray } from '../utilities/json'
+import { pascalWords, pluralize } from '../utilities/localize'
 
 import { Registry } from '../core/Registry'
 import { Loadable, SerializableBase } from '../core/serializable'
@@ -20,22 +22,22 @@ export function doInit<T extends SerializableBase>(
   )
   _loading[name] = true
 
-  console.log(`Loading ${name}...`)
-  try {
-    for (const entry of ary) {
-      cls.fromJSON(entry).register()
-    }
-    registry.finalize()
+  timed(() => {
+    try {
+      for (const entry of ary) {
+        cls.fromJSON(entry).register()
+      }
+      registry.finalize()
 
-    console.log(`... done loading ${name}.`)
-    if (isBrowser) {
-      window.angband ??= { constants: get(), registries: {} }
-      window.angband.registries[cls.name] = registry
+      if (isBrowser) {
+        window.angband ??= { constants: get(), registries: {} }
+        window.angband.registries[cls.name] = registry
+      }
+    } catch (e) {
+      console.error(`failed to load ${name}!`)
+      console.error(e)
+      throw e
     }
-  } catch(e) {
-    console.error(`failed to load ${name}!`)
-    console.error(e)
-    throw e
-  }
-  _loading[name] = false
+    _loading[name] = false
+  }, `loaded ${pascalWords(pluralize(name))} in %d ms`)
 }
