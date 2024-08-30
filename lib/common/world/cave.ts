@@ -92,10 +92,26 @@ export class Cave {
     this.tiles.get(p).turnOff(flag)
   }
 
+  composite(chunk: Cave, b: Box, rotate?: number, reflect?: boolean) {
+    chunk.tiles.transform(b, { rotate, reflect }, (tile, pt) => {
+      // empty spaces don't get written onto our map; we treat them as undefined
+      if (tile.is(FEAT.NONE)) return
+      this.copyTile(tile, pt)
+    })
+  }
+
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
     tile.feature = FeatureRegistry.get(FEAT.GRANITE)
     if (flag) tile.turnOn(flag)
+  }
+
+  copyTile(tile: Tile, pt: Loc) {
+    const current = this.tiles.get(pt)
+    this.featureCount[current.feature.code]--
+    this.featureCount[tile.feature.code]++
+
+    this.tiles.set(pt, tile)
   }
 
   // this should be the only code setting features
