@@ -24,6 +24,7 @@ interface CaveParams {
   width: number
   depth: number
   fill?: Feature | FEAT
+  border?: Feature | FEAT
   flag?: SQUARE
 }
 
@@ -60,6 +61,16 @@ export class Cave {
       this.featureCount[tile.feature.code] += 1
       return tile
     })
+
+    if (params.border) {
+      const border = typeof params.border === 'number'
+        ? FeatureRegistry.get(params.border)
+        : params.border
+
+      this.tiles.forEachBorder((tile) => {
+        this.setFeature(tile, border)
+      })
+    }
   }
 
   get box() {
