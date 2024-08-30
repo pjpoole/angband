@@ -6,11 +6,6 @@ import { asInteger } from '../utilities/parsing/primitives'
 import { Rectangle } from '../utilities/rectangle'
 import { isAlpha } from '../utilities/string'
 
-import {
-  SymmetryTransform,
-  symmetryTransform
-} from './roomGenerators/helpers/symmetry'
-
 import { FEAT, Feature, FeatureRegistry } from './features'
 import { ORIGIN } from '../objects/origin'
 import { TV } from '../objects/tval'
@@ -18,6 +13,17 @@ import { ROOMF, RoomTemplate } from './roomTemplate'
 import { SQUARE } from './square'
 import { Tile } from './tile'
 import { Vault } from './vault'
+
+import {
+  getVaultMonsters,
+  pickAndPlaceMonster,
+  placeNVaultMonsters
+} from './roomGenerators/helpers/monster'
+import {
+  SymmetryTransform,
+  symmetryTransform
+} from './roomGenerators/helpers/symmetry'
+
 
 interface CaveParams {
   height: number
@@ -250,7 +256,7 @@ export class Cave {
         switch (char) {
           case '1': // monster, (maybe good) object, or trap
             if (oneIn(2)) {
-              this.pickAndPlaceMonster(p, this.depth, true, true, ORIGIN.DROP_VAULT)
+              pickAndPlaceMonster(this, p, this.depth, true, true, ORIGIN.DROP_VAULT)
             } else if (oneIn(2)) {
               this.placeObject(p, this.depth, oneIn(8), false, ORIGIN.VAULT, 0)
             } else if (oneIn(4)) {
@@ -258,14 +264,14 @@ export class Cave {
             }
             break
           case '2': // slightly OOD monster
-            this.pickAndPlaceMonster(p, this.depth + 5, true, true, ORIGIN.DROP_VAULT)
+            pickAndPlaceMonster(this, p, this.depth + 5, true, true, ORIGIN.DROP_VAULT)
             break
           case '3': // slightly OOD object
             this.placeObject(p, this.depth + 3, false, false, ORIGIN.VAULT, 0)
             break
           case '4': // monster and/or object
             if (oneIn(2)) {
-              this.pickAndPlaceMonster(p, this.depth + 3, true, true, ORIGIN.DROP_VAULT)
+              pickAndPlaceMonster(this, p, this.depth + 3, true, true, ORIGIN.DROP_VAULT)
             }
             if (oneIn(2)) {
               this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
@@ -275,21 +281,21 @@ export class Cave {
             this.placeObject(p, this.depth + 7, false, false, ORIGIN.VAULT, 0)
             break
           case '6': // OOD monster
-            this.pickAndPlaceMonster(p, this.depth + 11, true, true, ORIGIN.DROP_VAULT)
+            pickAndPlaceMonster(this, p, this.depth + 11, true, true, ORIGIN.DROP_VAULT)
             break
           case '7': // very OOD object
             this.placeObject(p, this.depth + 15, false, false, ORIGIN.VAULT, 0)
             break
           case '8': // nasty monster, and treasure
-            this.pickAndPlaceMonster(p, this.depth + 40, true, true, ORIGIN.DROP_VAULT)
+            pickAndPlaceMonster(this, p, this.depth + 40, true, true, ORIGIN.DROP_VAULT)
             this.placeObject(p, this.depth + 20, true, true, ORIGIN.VAULT, 0)
             break
           case '9': // mean monster, and treasure
-            this.pickAndPlaceMonster(p, this.depth + 9, true, true, ORIGIN.DROP_VAULT)
+            pickAndPlaceMonster(this, p, this.depth + 9, true, true, ORIGIN.DROP_VAULT)
             this.placeObject(p, this.depth + 7, true, false, ORIGIN.VAULT, 0)
             break
           case '0': // very OOD monster
-            this.pickAndPlaceMonster(p, this.depth + 20, true, true, ORIGIN.DROP_VAULT)
+            pickAndPlaceMonster(this, p, this.depth + 20, true, true, ORIGIN.DROP_VAULT)
             break
           case '~': // treasure chest
             this.placeObject(p, this.depth + 5, false, false, ORIGIN.VAULT, TV.CHEST)
@@ -359,7 +365,7 @@ export class Cave {
       }
     })
 
-    this.getVaultMonsters(b, vault, foundRaces)
+    getVaultMonsters(this, b, vault, foundRaces)
     return true
   }
 
@@ -462,7 +468,7 @@ export class Cave {
           break
         case '8':
           assert(tile.isRoom() && (tile.isFloor() || tile.isStair()))
-          this.placeNVaultMonsters(pt, this.depth + 2, randInt0(2) + 3)
+          placeNVaultMonsters(this, pt, this.depth + 2, randInt0(2) + 3)
           break
         case '9':
           const offset1 = loc(2, -2)
@@ -470,8 +476,8 @@ export class Cave {
 
           assert(tile.isRoom() && tile.isFloor())
 
-          this.placeNVaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
-          this.placeNVaultMonsters(pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+          placeNVaultMonsters(this, pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
+          placeNVaultMonsters(this, pt.diff(offset2), this.depth + randInt0(2), randInt1(2))
 
           if (oneIn(2)) {
             this.placeNVaultObjects(pt.diff(offset1), this.depth, randInt1(2))
@@ -531,25 +537,6 @@ export class Cave {
   }
 
   placeRandomStairs(pt: Loc, isQuest: boolean) {}
-
-  pickAndPlaceMonster(pt: Loc, depth: number, sleep: boolean, groupOk: boolean, origin: ORIGIN) {}
-  getVaultMonsters(b: Box, vault: Vault, races: Set<string>) {}
-
-  placeNVaultMonsters(pt: Loc, depth: number, number: number) {
-    if (!this.isInbounds(pt)) return
-
-    for (let k = 0; k < number; k++) {
-      for (let i = 0; i < 9; i++) {
-        const ps = this.findMonsterPlacements(pt, 1, 1, true, (p) => {
-          return this.tiles.get(p).isEmpty()
-        })
-        if (ps.length === 0) continue
-        this.pickAndPlaceMonster(ps[0], depth, true, true, ORIGIN.DROP_SPECIAL)
-        break
-      }
-    }
-  }
-
   placeTrap(pt: Loc, idx: number, level: number) {}
   placeGold(pt: Loc, depth: number, origin: ORIGIN) {}
   placeObject(pt: Loc, level: number, good: boolean, great: boolean, origin: ORIGIN, type: TV) {}
@@ -605,41 +592,6 @@ export class Cave {
   hasLOS(p1: Loc, p2: Loc): boolean {
     // TODO: Implement
     return true
-  }
-
-  // scatter_ext
-  findMonsterPlacements(
-    center: Loc,
-    distance: number,
-    number: number,
-    needLos?: boolean,
-    pred?: (pt: Loc) => boolean
-  ): Loc[] {
-    const bounds = center.boxR(distance)
-    const possibilities = []
-
-    // all fully inbounds
-    const clipped = this.box.interior().intersect(bounds)
-
-    for (const pt of clipped) {
-      if (distance > 1 && center.dist(pt) > distance) continue
-      if (needLos && !this.hasLOS(center, pt)) continue
-      if (pred && !pred(pt)) continue
-      possibilities.push(pt)
-    }
-
-    const results = []
-    let remaining = possibilities.length
-
-    while (results.length < number && remaining > 0) {
-      const choice = randInt0(remaining)
-      results.push(possibilities[choice])
-
-      remaining--
-      possibilities[choice] = possibilities[remaining]
-    }
-
-    return results
   }
 
   findNearbyGrid(bounds: Box): Loc | undefined {
