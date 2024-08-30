@@ -90,7 +90,8 @@ export class Cave {
   }
 
   composite(chunk: Cave, b: Box, rotate?: number, reflect?: boolean) {
-    chunk.tiles.transform(b, { rotate, reflect }, (tile, pt) => {
+    this.tiles.assertSurrounds(b)
+    chunk.tiles.transform({ translate: b.topLeft, rotate, reflect }, (tile, pt) => {
       // empty spaces don't get written onto our map; we treat them as undefined
       if (tile.is(FEAT.NONE)) return
       this.copyTile(tile, pt)

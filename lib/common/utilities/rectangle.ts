@@ -20,6 +20,7 @@ type IteratorFn<T> = (obj: T, pt: Loc, newRow?: boolean) => void
 type IteratorTestFn<T> = (obj: T, pt: Loc, newRow?: boolean) => boolean
 
 interface TransformParams {
+  translate?: Loc
   reflect?: boolean
   rotate?: number
 }
@@ -95,16 +96,10 @@ export class Rectangle<T> {
     }
   }
 
-  transform(bx: Box, fn: IteratorFn<T>): void
-  transform(bx: Box, options: TransformParams, fn: IteratorFn<T>): void
-  transform(bx: Box, p1: TransformParams | IteratorFn<T>, p2?: IteratorFn<T>): void {
-    this.assertSurrounds(bx)
-    const options = typeof p1 === 'function' ? {} : p1 as TransformParams
-    const fn = typeof p1 === 'function' ? p1 : p2 as IteratorFn<T>
-
+  transform(options: TransformParams, fn: IteratorFn<T>): void {
     const rotate = (options.rotate ?? 0) % 4
     const reflect = options.reflect ?? false
-    const { top, left} = bx
+    const { x: left, y: top } = options.translate ?? loc(0, 0)
 
     const r = this.mx
     const b = this.my
