@@ -19,9 +19,6 @@ import { SQUARE } from './square'
 import { Tile } from './tile'
 import { Vault } from './vault'
 
-import { drawRectangle, fillRectangle } from './roomGenerators/helpers/geometry'
-import { generateRoom } from './roomGenerators/helpers/room'
-
 interface CaveParams {
   height: number
   width: number
@@ -156,16 +153,6 @@ export class Cave {
         this.setMarkedGranite(offset, SQUARE.WALL_OUTER)
       }
     })
-  }
-
-  generateBasicRoom(
-    b: Box,
-    light: boolean,
-  ): void {
-    const outerBox = b.exterior()
-    generateRoom(this, outerBox, light)
-    drawRectangle(this, outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    fillRectangle(this, b, FEAT.FLOOR, SQUARE.NONE)
   }
 
   buildVault(

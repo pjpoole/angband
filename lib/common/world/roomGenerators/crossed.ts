@@ -7,6 +7,7 @@ import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
 import { drawRectangle, fillRectangle } from './helpers/geometry'
+import { generateBasicRoom } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -30,11 +31,11 @@ export function build(
 
   // tall and skinny
   const boxA = center.box(height, 3)
-  chunk.generateBasicRoom(boxA, light)
+  generateBasicRoom(chunk, boxA, light)
 
   // short and wide
   const boxB = center.box(3, width)
-  chunk.generateBasicRoom(boxB, light)
+  generateBasicRoom(chunk, boxB, light)
 
   const innerBox = boxA.intersect(boxB)
 

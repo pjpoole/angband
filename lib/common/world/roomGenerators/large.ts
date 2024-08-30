@@ -27,7 +27,7 @@ export function build(
 
   const b = center.box(height, width)
 
-  chunk.generateBasicRoom(b, light)
+  generateBasicRoom(chunk, b, light)
 
   // inner room
   // Wall boundaries

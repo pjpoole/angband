@@ -4,6 +4,7 @@ import { oneIn, randInt0, randInt1 } from '../../core/rand'
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { SQUARE } from '../square'
+import { generateBasicRoom } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -24,7 +25,7 @@ export function build(
 
   // wall boundaries
   const b = center.box(height, width)
-  chunk.generateBasicRoom(b, light)
+  generateBasicRoom(chunk, b, light)
 
   if (oneIn(20)) {
     // sometimes make a pillar room.
