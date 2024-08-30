@@ -35,3 +35,7 @@ export function build(
 
   return true
 }
+
+function getMonsterNumberPrep() {
+
+}

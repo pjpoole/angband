@@ -9,7 +9,7 @@ interface PlayerOptions {
 }
 
 interface BirthParams {
-  levelsPersist: boolean
+  levelsPersist?: boolean
 }
 
 export class Player {
@@ -26,7 +26,7 @@ export class Player {
   }
 }
 
-class BirthOptions {
+export class BirthOptions {
   readonly levelsPersist: boolean
 
   constructor(params: BirthParams) {

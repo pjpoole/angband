@@ -683,7 +683,7 @@ export class Cave {
     distance: number,
     number: number,
     needLos?: boolean,
-    fn?: (pt: Loc) => boolean
+    pred?: (pt: Loc) => boolean
   ): Loc[] {
     const bounds = center.boxR(distance)
     const possibilities = []
@@ -694,7 +694,7 @@ export class Cave {
     for (const pt of clipped) {
       if (distance > 1 && center.dist(pt) > distance) continue
       if (needLos && !this.hasLOS(center, pt)) continue
-      if (fn && !fn(pt)) continue
+      if (pred && !pred(pt)) continue
       possibilities.push(pt)
     }
 

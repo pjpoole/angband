@@ -3,13 +3,11 @@ import { getRandom } from '../../../utilities/iterator'
 
 import { Cave } from '../../cave'
 import { Dungeon } from '../../dungeon'
-import { SQUARE } from '../../square'
 import { Vault, VaultRegistry } from '../../vault'
 
 import { RoomName } from '../index'
 import {
   getRandomSymmetryTransform,
-  symmetryTransform,
   SYMTR
 } from './symmetry'
 
@@ -20,7 +18,7 @@ export function buildVaultType(dungeon: Dungeon, chunk: Cave, center: Loc, type:
   return buildVault(dungeon, chunk, center, vault)
 }
 
-function buildVault(dungeon: Dungeon, chunk: Cave, center: Loc, vault: Vault) {
+function buildVault(dungeon: Dungeon, chunk: Cave, center: Loc, vault: Vault): boolean {
   const { height, width } = vault
 
   let symmetryOp, tHeight, tWidth
