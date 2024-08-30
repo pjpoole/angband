@@ -19,10 +19,6 @@ interface CaveParams {
 type FeatureCount = Record<FEAT, number>
 
 // This is going to have significant overlap with GameMap until they're aligned
-// TODO: a lot of generation methods that are only used during a limited
-//       timeframe; for the sake of cleanliness, consider either making a
-//       separate CaveGenerator class, or make generic functions that operate
-//       over Cave objects
 export class Cave {
   readonly height: number
   readonly width: number

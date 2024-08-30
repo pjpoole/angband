@@ -7,8 +7,8 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { hollowRoom } from './helpers/room'
 import { drawFilledRectangle } from './helpers/geometry'
+import { hollowRoom } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
