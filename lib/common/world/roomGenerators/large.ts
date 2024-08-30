@@ -6,12 +6,14 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { placeClosedDoor, placeSecretDoor } from './helpers/door'
 import {
   drawPlus,
   drawRectangle,
   drawFilledRectangle,
   drawRandomHole
 } from './helpers/geometry'
+import { generateBasicRoom } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
@@ -130,8 +132,8 @@ function buildPillars(
     // Inner rectangle
     drawRectangle(chunk, center.box(3, 11), FEAT.GRANITE, SQUARE.WALL_INNER)
 
-    chunk.placeSecretDoor(center.tr(-3, oneIn(2) ? -1 : 1))
-    chunk.placeSecretDoor(center.tr(3, oneIn(2) ? -1 : 1))
+    placeSecretDoor(chunk, center.tr(-3, oneIn(2) ? -1 : 1))
+    placeSecretDoor(chunk, center.tr(3, oneIn(2) ? -1 : 1))
 
     // TODO: monsters
 
@@ -165,17 +167,17 @@ function buildQuad(
 
   if (oneIn(2)) {
     const i = randInt1(10)
-    chunk.placeClosedDoor(center.tr(i * -1, -1))
-    chunk.placeClosedDoor(center.tr(i, -1))
-    chunk.placeClosedDoor(center.tr(i * -1, 1))
-    chunk.placeClosedDoor(center.tr(i, 1))
+    placeClosedDoor(chunk, center.tr(i * -1, -1))
+    placeClosedDoor(chunk, center.tr(i, -1))
+    placeClosedDoor(chunk, center.tr(i * -1, 1))
+    placeClosedDoor(chunk, center.tr(i, 1))
 
   } else {
     const i = randInt1(3)
-    chunk.placeClosedDoor(center.tr(-1, i))
-    chunk.placeClosedDoor(center.tr(-1, i * -1))
-    chunk.placeClosedDoor(center.tr(1, i))
-    chunk.placeClosedDoor(center.tr(1, i * -1))
+    placeClosedDoor(chunk, center.tr(-1, i))
+    placeClosedDoor(chunk, center.tr(-1, i * -1))
+    placeClosedDoor(chunk, center.tr(1, i))
+    placeClosedDoor(chunk, center.tr(1, i * -1))
   }
 
   // TODO: object
