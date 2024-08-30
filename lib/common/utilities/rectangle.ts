@@ -22,7 +22,7 @@ type IteratorTestFn<T> = (obj: T, pt: Loc, newRow?: boolean) => boolean
 export class Rectangle<T> {
   readonly height: number
   readonly width: number
-  readonly rect: T[][]
+  private readonly rect: T[][]
   readonly box: Box
 
   private readonly mx: number

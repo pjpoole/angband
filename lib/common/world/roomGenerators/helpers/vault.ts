@@ -17,8 +17,7 @@ export function buildVaultType(dungeon: Dungeon, chunk: Cave, center: Loc, type:
   const vault = getRandomVault(chunk.depth, type)
   if (vault == null) return false
 
-  buildVault(dungeon, chunk, center, vault)
-  return true
+  return buildVault(dungeon, chunk, center, vault)
 }
 
 function buildVault(dungeon: Dungeon, chunk: Cave, center: Loc, vault: Vault) {

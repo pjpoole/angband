@@ -69,8 +69,8 @@ function fillCircle(
     // maybe lots of redundant writes?
     chunk.fillHorizontal(c.y - i, c.x - r - b, c.x + r + b, feature, flag, light)
     chunk.fillHorizontal(c.y + i, c.x - r - b, c.x + r + b, feature, flag, light)
-    chunk.fillVertical(c.x - i, c.y - r - b, c.x + r + b, feature, flag, light)
-    chunk.fillVertical(c.x + i, c.y - r - b, c.x + r + b, feature, flag, light)
+    chunk.fillVertical(c.x - i, c.y - r - b, c.y + r + b, feature, flag, light)
+    chunk.fillVertical(c.x + i, c.y - r - b, c.y + r + b, feature, flag, light)
     last++
 
     if (i < radius) {

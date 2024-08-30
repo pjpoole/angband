@@ -17,7 +17,7 @@ export class Player {
 
   readonly depthMax: number = 0
   readonly depthRecall: number = 0
-  readonly depth: number = 0
+  depth: number = 0
 
   quests: Quest[] = []
 

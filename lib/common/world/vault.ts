@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { getConstants } from '../core/loading'
 import { NameRegistry } from '../core/Registry'
 import { SerializableBase } from '../core/serializable'
 
@@ -60,7 +61,7 @@ export class Vault extends SerializableBase {
   readonly height: number
   readonly width: number
   readonly minDepth: number
-  readonly maxDepth: number
+  private readonly _maxDepth: number
   readonly flags: Set<ROOMF>
   readonly room: Rectangle<string>
 
@@ -73,11 +74,18 @@ export class Vault extends SerializableBase {
     this.height = params.rows
     this.width = params.columns
     this.minDepth = params.minDepth
-    this.maxDepth = params.maxDepth
+    this._maxDepth = params.maxDepth
     this.flags = new Set(params.flags)
     this.room = new Rectangle(this.height, this.width, ({ x, y}) => {
       return params.room[y][x]
     })
+  }
+
+  get maxDepth() {
+    console.log(getConstants())
+    return this._maxDepth !== 0
+      ? this._maxDepth
+      : getConstants().world.maxDepth
   }
 
   register() {
@@ -92,7 +100,7 @@ export class Vault extends SerializableBase {
       rows: this.height,
       columns: this.width,
       minDepth: this.minDepth,
-      maxDepth: this.maxDepth,
+      maxDepth: this._maxDepth,
       flags: enumValueSetToArray(this.flags, ROOMF),
       room: stringRectangleToRows(this.room),
     }

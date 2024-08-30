@@ -9,7 +9,7 @@ import { DUN } from './dungeonTypes'
 export function caveGenerate(player: any, height: number, width: number) {
   const dungeon = new Dungeon({
     profile: chooseProfile(player),
-    persist: player.options.birth.persist,
+    persist: player.options.birth.levelsPersist,
     quest: isQuest(player, player.depth),
   })
 }

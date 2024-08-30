@@ -29,6 +29,10 @@ export class Tile {
     return this.feature.glyph
   }
 
+  is(feature: FEAT): boolean {
+    return this.feature.code === feature
+  }
+
   turnOn(flag: SQUARE) {
     this.flags[flag] = true
   }

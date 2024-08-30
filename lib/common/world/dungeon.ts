@@ -65,8 +65,8 @@ export class Dungeon {
     let newCenter = b.center()
     for (let i = 0; i < MAX_TRIES; i++) {
       // random starting block in the dungeon
-      const left = randInt0(this.blockColumns)
-      const top = randInt0(this.blockRows)
+      const left = randInt0(this._blockColumns)
+      const top = randInt0(this._blockRows)
       const newBox = box(left, top, left + blocksWide - 1, top + blocksHigh -1)
 
       if (!this.checkForUnreservedBlocks(newBox)) continue
@@ -103,7 +103,7 @@ export class Dungeon {
 
   private maybeInitRoomMap() {
     if (this._blockColumns > 0 && this._blockRows > 0) {
-      this.roomMap = new Rectangle(this._blockColumns, this._blockRows, false)
+      this.roomMap = new Rectangle(this._blockRows, this._blockColumns, false)
     }
   }
 }

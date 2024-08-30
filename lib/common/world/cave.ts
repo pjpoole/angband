@@ -39,7 +39,7 @@ export class Cave {
   readonly width: number
   readonly depth: number
 
-  private readonly tiles: Rectangle<Tile>
+  readonly tiles: Rectangle<Tile>
 
   // TODO: not space efficient; bitflag
   private readonly featureCount: FeatureCount
@@ -55,7 +55,7 @@ export class Cave {
       ? FeatureRegistry.get(params.fill)
       : params.fill
 
-    this.tiles = new Rectangle(this.width, this.height, (pt: Loc): Tile => {
+    this.tiles = new Rectangle(this.height, this.width, (pt: Loc): Tile => {
       const tile = new Tile(pt, fill, params.flag)
       this.featureCount[tile.feature.code] += 1
       return tile
@@ -64,6 +64,10 @@ export class Cave {
 
   get box() {
     return this.tiles.box
+  }
+
+  get(p: Loc): Tile {
+    return this.tiles.get(p)
   }
 
   // previously known as generateMark
@@ -713,6 +717,10 @@ export class Cave {
     }
 
     return count
+  }
+
+  surrounds(b: Box): boolean {
+    return this.box.surrounds(b)
   }
 
   isInbounds(pt: Loc) {
