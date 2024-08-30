@@ -114,6 +114,22 @@ export class Box {
     return this.b
   }
 
+  get topLeft(): Loc {
+    return loc(this.l, this.t)
+  }
+
+  get topRight(): Loc {
+    return loc(this.r, this.t)
+  }
+
+  get bottomLeft(): Loc {
+    return loc(this.l, this.b)
+  }
+
+  get bottomRight(): Loc {
+    return loc(this.r, this.b)
+  }
+
   get width() {
     return this.r - this.l + 1
   }
@@ -173,6 +189,17 @@ export class Box {
 
   exterior(i: number = 1): Box {
     return box(this.l - i, this.t - i, this.r + i, this.b + i)
+  }
+
+  *corners(): IterableIterator<Loc> {
+    const leftRight = this.l === this.r ? [this.l] : [this.l, this.r]
+    const topBottom = this.t === this.b ? [this.t] : [this.t, this.b]
+
+    for (const x of leftRight) {
+      for (const y of topBottom) {
+        yield loc(x, y)
+      }
+    }
   }
 
   *borders(): IterableIterator<Loc> {
