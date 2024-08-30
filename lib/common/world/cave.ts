@@ -587,6 +587,19 @@ export class Cave {
     this.setFeature(tile, FEAT.SECRET)
   }
 
+  hollowRoom(pt: Loc) {
+    for (const p of pt.box(3)) {
+      const tile = this.tiles.get(p)
+      if (tile.is(FEAT.MAGMA)) {
+        this.setFeature(tile, FEAT.FLOOR)
+        this.hollowRoom(p)
+      } else if (tile.is(FEAT.OPEN)) {
+        this.setFeature(tile, FEAT.BROKEN)
+        this.hollowRoom(p)
+      }
+    }
+  }
+
   placeRandomStairs(pt: Loc, isQuest: boolean) {}
 
   pickAndPlaceMonster(pt: Loc, depth: number, sleep: boolean, groupOk: boolean, origin: ORIGIN) {}
