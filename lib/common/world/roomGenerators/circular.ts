@@ -6,35 +6,44 @@ import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
-import { getNewCenter } from './helpers'
+import {
+  CaveGenerationParams,
+  getCaveParams,
+  getNewCenter,
+  SizeParams
+} from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateRoomFeature, setBorderingWalls } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number, // not used
 ): boolean {
-  // range 4-7; diameter 8-14
-  const radius = 2 + randInt1(2) + randInt1(3)
-  const diameter = 2 * radius
+  const size = getSize()
 
-  const size = {
-    height: diameter,
-    width: diameter,
-    padding: 10,
-  }
-
-  const light = chunk.depth <= randInt1(25)
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  const newCenter = getNewCenter(dungeon, cave, center, size)
   if (newCenter == null) return false
   center = newCenter
 
+  const chunk = buildChunk(getCaveParams(cave, size))
+
+  cave.composite(chunk, center.box(size.height, size.width))
+
+  return true
+}
+
+function buildChunk(params: CaveGenerationParams): Cave {
+  const chunk = new Cave(params)
+  const radius = params.height / 2
+
+  const center = chunk.box.center()
+
+  const light = chunk.depth <= randInt1(25)
   fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
-  const b = center.boxR(radius + 2)
+  const b = center.box(radius + 2)
   setBorderingWalls(chunk, b)
 
   // give large rooms an inner chamber
@@ -48,7 +57,19 @@ export function build(
     // TODO: vault monsters
   }
 
-  return true
+  return chunk
+}
+
+function getSize(): SizeParams {
+  // range 4-7; diameter 8-14
+  const radius = 2 + randInt1(2) + randInt1(3)
+  const diameter = 2 * radius
+
+  return {
+    height: diameter,
+    width: diameter,
+    padding: 10,
+  }
 }
 
 // TODO: this code is opaque; understand what it is doing
