@@ -5,6 +5,7 @@ import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { SQUARE } from '../square'
 import { generateBasicRoom } from './helpers/room'
+import { getNewCenter } from './helpers'
 
 export function build(
   dungeon: Dungeon,
@@ -15,11 +16,11 @@ export function build(
   const height = 1 + randInt1(4) + randInt1(3) // 3-8
   const width = 1 + randInt1(11) + randInt1(11) // 3-23
 
-  if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const size = { height, width }
+
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   const light = chunk.depth <= randInt1(25)
 

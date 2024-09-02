@@ -6,6 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { getNewCenter } from './helpers'
 import { placeClosedDoor, placeSecretDoor } from './helpers/door'
 import {
   drawPlus,
@@ -24,13 +25,13 @@ export function build(
   const height = 9
   const width = 23
 
+  const size = { height, width }
+
   const light = chunk.depth <= randInt1(25)
 
-  if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   const b = center.box(height, width)
 

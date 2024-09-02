@@ -6,6 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { getNewCenter } from './helpers'
 import { drawRectangle, drawFilledRectangle } from './helpers/geometry'
 import { generateRoom } from './helpers/room'
 
@@ -36,11 +37,12 @@ export function build(
   const width = 2 * maxdx + 1
   const height = 2 * maxdy + 1
 
-  if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const size = { height, width }
+
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
+
 
   const roomA = box(
     center.x - r1l,

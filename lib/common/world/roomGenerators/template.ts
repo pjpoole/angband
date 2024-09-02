@@ -10,15 +10,16 @@ import { ORIGIN } from '../../objects/origin'
 import { ROOMF, RoomTemplate, RoomTemplateRegistry } from '../roomTemplate'
 import { SQUARE } from '../square'
 
+import { getSpaceBox, SizeParams } from './helpers'
+import { placeClosedDoor, placeSecretDoor } from './helpers/door'
 import { placeNVaultMonsters } from './helpers/monster'
 import { placeNVaultObjects, placeObject } from './helpers/object'
+import { placeRandomStairs } from './helpers/stairs'
 import {
   getRandomSymmetryTransform, symmetryTransform,
   SymmetryTransform,
   SYMTR
 } from './helpers/symmetry'
-import { placeClosedDoor, placeSecretDoor } from './helpers/door'
-import { placeRandomStairs } from './helpers/stairs'
 import { placeTrap } from './helpers/trap'
 
 export function build(
@@ -27,31 +28,15 @@ export function build(
   center: Loc,
   rating: number,
 ): boolean {
-  return buildRoomTemplateType(dungeon, chunk, center, 1, rating)
-}
-
-function buildRoomTemplateType(
-  dungeon: Dungeon,
-  chunk: Cave,
-  center: Loc,
-  type: number,
-  rating: number,
-): boolean {
-  const template = getRandomRoomTemplate(type, rating)
+  const template = getRandomRoomTemplate(1, rating)
   if (template == null) return false
 
   return buildRoomTemplate(dungeon, chunk, center, template)
 }
 
-function buildRoomTemplate(
-  dungeon: Dungeon,
-  chunk: Cave,
-  center: Loc,
-  template: RoomTemplate,
-): boolean {
-  const { height, width } = template
-
-  let symmetryOp, tHeight, tWidth
+function getNewCenter(dungeon: Dungeon, chunk: Cave, center: Loc, size: SizeParams): [Loc, SymmetryTransform] | [null, null] {
+  const { height, width } = size
+  let symmetryOp
   if (!chunk.isInbounds(center)) {
     symmetryOp = getRandomSymmetryTransform(
       height,
@@ -59,11 +44,8 @@ function buildRoomTemplate(
       SYMTR.FLAG_NONE,
     )
 
-    tHeight = symmetryOp.height
-    tWidth = symmetryOp.width
-
-    const newCenter = dungeon.findSpace(center.box(tHeight + 2, tWidth + 2))
-    if (newCenter == null) return false
+    const newCenter = dungeon.findSpace(getSpaceBox(center, size))
+    if (newCenter == null) return [null, null]
     center = newCenter
   } else {
     symmetryOp = getRandomSymmetryTransform(
@@ -73,12 +55,27 @@ function buildRoomTemplate(
       0,
     )
 
-    tHeight = symmetryOp.height
-    tWidth = symmetryOp.width
-
     // no rotate
-    assert(tHeight === height && tWidth === width)
+    assert(symmetryOp.height === height && symmetryOp.width === width)
   }
+
+  return [center, symmetryOp]
+}
+
+function buildRoomTemplate(
+  dungeon: Dungeon,
+  chunk: Cave,
+  center: Loc,
+  template: RoomTemplate,
+): boolean {
+  const size = {
+    height: template.height,
+    width: template.width,
+  }
+
+  const [newCenter, symmetryOp] = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   return doBuildRoomTemplate(chunk, center, template, symmetryOp)
 }

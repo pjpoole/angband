@@ -6,6 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
+import { getNewCenter } from './helpers'
 import {
   drawPlus,
   drawRectangle,
@@ -28,11 +29,11 @@ export function build(
   const height = 2 * deltaY + 1
   const width = 2 * deltaX + 1
 
-  if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center.box(height + 2, width + 2))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const size = { height, width }
+
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   // tall and skinny
   const boxA = center.box(height, 3)

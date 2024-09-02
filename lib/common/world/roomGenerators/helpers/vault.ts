@@ -23,6 +23,8 @@ import {
 import { placeTrap } from './trap'
 import { placeGold } from './treasure'
 
+import { getSpaceBox, SizeParams } from '../helpers'
+
 export function buildVaultType(
   dungeon: Dungeon,
   chunk: Cave,
@@ -35,6 +37,27 @@ export function buildVaultType(
   return buildVault(dungeon, chunk, center, vault)
 }
 
+function getNewCenter(dungeon: Dungeon, chunk: Cave, center: Loc, size: SizeParams): [Loc, SymmetryTransform] | [null, null] {
+  const { height, width } = size
+  let symmetryOp: SymmetryTransform
+  if (!chunk.isInbounds(center)) {
+    symmetryOp = getRandomSymmetryTransform(
+      height,
+      width,
+      SYMTR.FLAG_NONE,
+    )
+
+    const newCenter = dungeon.findSpace(getSpaceBox(center, size))
+    if (newCenter == null) return [null, null]
+    center = newCenter
+  } else {
+    symmetryOp = getRandomSymmetryTransform(height, width, SYMTR.FLAG_NONE, 0)
+    assert(height === symmetryOp.height && width === symmetryOp.width)
+  }
+
+  return [center, symmetryOp]
+}
+
 function buildVault(
   dungeon: Dungeon,
   chunk: Cave,
@@ -43,28 +66,11 @@ function buildVault(
 ): boolean {
   const { height, width } = vault
 
-  let symmetryOp, tHeight, tWidth
-  if (!chunk.isInbounds(center)) {
-    symmetryOp = getRandomSymmetryTransform(
-      height,
-      width,
-      SYMTR.FLAG_NONE,
-    )
+  const size = { height, width, padding: 2 }
 
-    tHeight = symmetryOp.height
-    tWidth = symmetryOp.width
-
-    const newCenter = dungeon.findSpace(center.box(tHeight + 2, tWidth + 2))
-    if (newCenter == null) return false
-    center = newCenter
-  } else {
-    symmetryOp = getRandomSymmetryTransform(height, width, SYMTR.FLAG_NONE, 0)
-
-    tHeight = symmetryOp.height
-    tWidth = symmetryOp.width
-
-    assert(height === tHeight && width === tWidth)
-  }
+  const [newCenter, symmetryOp] = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   return doBuildVault(chunk, center, vault, symmetryOp)
 }
@@ -73,7 +79,7 @@ function doBuildVault(
   chunk: Cave,
   center: Loc,
   vault: Vault,
-  transform?: SymmetryTransform,
+  transform: SymmetryTransform,
 ): boolean {
   const { height, width } = vault
   const {

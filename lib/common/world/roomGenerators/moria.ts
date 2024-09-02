@@ -1,13 +1,14 @@
 import { box, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
 
-import { buildStarburstRoom } from './helpers/starburst'
-
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 
-const MAX_TRIES = 1
+import { getNewCenter, SizeParams } from './helpers'
+import { buildStarburstRoom } from './helpers/starburst'
+
+const MAX_RETRIES = 1
 
 export function build(
   dungeon: Dungeon,
@@ -17,22 +18,21 @@ export function build(
 ): boolean {
   const light = chunk.depth <= randInt1(35)
 
-  let height = 8 + randInt0(5) // 8-12
-  let width = 10 + randInt0(5) // 10-14
+  let size: SizeParams
+  for (let tries = 0; tries <= MAX_RETRIES; tries++) {
+    const [height, width] = randomizeRoomSize(tries)
 
-  for (let tries = 0; tries <= MAX_TRIES; tries++) {
-    [height, width] = randomizeRoomSize(tries)
+    size = { height, width }
 
-    if (!chunk.isInbounds(center)) {
-      const newCenter = dungeon.findSpace(center.box(height, width))
-      if (newCenter != null) {
-        center = newCenter
-      } else {
-        if (tries < MAX_TRIES) continue
-        if (tries === MAX_TRIES) return false
-      }
+    const newCenter = getNewCenter(dungeon, chunk, center, size)
+    if (newCenter != null) {
+      center = newCenter
+    } else if (tries === MAX_RETRIES) {
+      return false
     }
   }
+
+  const { height, width } = size!
 
   const b = center.box(height, width)
 

@@ -6,6 +6,7 @@ import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
+import { getNewCenter } from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateRoomFeature, setBorderingWalls } from './helpers/room'
 
@@ -19,14 +20,17 @@ export function build(
   const radius = 2 + randInt1(2) + randInt1(3)
   const diameter = 2 * radius
 
+  const size = {
+    height: diameter,
+    width: diameter,
+    padding: 10,
+  }
+
   const light = chunk.depth <= randInt1(25)
 
-  if (!chunk.isInbounds(center)) {
-    // 5 spaces buffer around the edge of the circle
-    const newCenter = dungeon.findSpace(center.box(diameter + 10))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
 

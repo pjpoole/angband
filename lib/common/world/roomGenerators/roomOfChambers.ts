@@ -9,6 +9,7 @@ import { SQUARE } from '../square'
 
 import { drawFilledRectangle } from './helpers/geometry'
 import { hollowRoom } from './helpers/room'
+import { getNewCenter } from './helpers'
 
 export function build(
   dungeon: Dungeon,
@@ -21,11 +22,11 @@ export function build(
   const height = 20 + mBonus(20, chunk.depth)
   const width = 20 + randInt1(20) + mBonus(20, chunk.depth)
 
-  if (!chunk.isInbounds(center)) {
-    const newCenter = dungeon.findSpace(center.box(height, width))
-    if (newCenter == null) return false
-    center = newCenter
-  }
+  const size = { height, width, padding: 0 }
+
+  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  if (newCenter == null) return false
+  center = newCenter
 
   const b = box(
     center.x - Math.trunc(width / 2),
