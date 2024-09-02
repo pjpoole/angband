@@ -5,26 +5,38 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { getNewCenter } from './helpers'
+import {
+  CaveGenerationParams,
+  getCaveParams,
+  getNewCenter,
+  SizeParams
+} from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number,
 ): boolean {
-  const height = 9
-  const width = 15
+  const size = getSize()
 
-  const size = { height, width }
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  const newCenter = getNewCenter(dungeon, cave, center, size)
   if (newCenter == null) return false
   center = newCenter
 
-  const b = center.box(height, width)
+  const chunk = buildChunk(getCaveParams(cave, size))
+
+  cave.composite(chunk, center.box(size.height, size.width))
+
+  return true
+}
+
+function buildChunk(params: CaveGenerationParams): Cave {
+  const chunk = new Cave(params)
+
+  const b = chunk.box
   generateBasicRoom(chunk, b, false)
 
   const innerWall = b.interior()
@@ -35,5 +47,12 @@ export function build(
 
   // TODO: monster logic
 
-  return false
+  return chunk
+}
+
+function getSize(): SizeParams {
+  return {
+    height: 9,
+    width: 15,
+  }
 }
