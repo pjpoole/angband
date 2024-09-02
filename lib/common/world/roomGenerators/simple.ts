@@ -5,27 +5,39 @@ import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { SQUARE } from '../square'
 import { generateBasicRoom } from './helpers/room'
-import { getNewCenter } from './helpers'
+import {
+  CaveGenerationParams,
+  getCaveParams,
+  getNewCenter,
+  SizeParams
+} from './helpers'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number, // not used
 ): boolean {
-  const height = 1 + randInt1(4) + randInt1(3) // 3-8
-  const width = 1 + randInt1(11) + randInt1(11) // 3-23
+  const size = getSize()
 
-  const size = { height, width }
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
+  const newCenter = getNewCenter(dungeon, cave, center, size)
   if (newCenter == null) return false
   center = newCenter
+
+  const chunk = buildChunk(getCaveParams(cave, size))
+
+  cave.composite(chunk, center.box(size.height, size.width))
+
+  return true
+}
+
+function buildChunk(size: CaveGenerationParams): Cave {
+  const chunk = new Cave(size)
 
   const light = chunk.depth <= randInt1(25)
 
   // wall boundaries
-  const b = center.box(height, width)
+  const b = chunk.box
   generateBasicRoom(chunk, b, light)
 
   if (oneIn(20)) {
@@ -36,7 +48,14 @@ export function build(
     makeRaggedRoom(chunk, b)
   }
 
-  return true
+  return chunk
+}
+
+function getSize(): SizeParams {
+  return {
+    height: 1 + randInt1(4) + randInt1(3), // 3-8
+    width: 1 + randInt1(11) + randInt1(11), // 3-23
+  }
 }
 
 function makePillarRoom(chunk: Cave, b: Box) {

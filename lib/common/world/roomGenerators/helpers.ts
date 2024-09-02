@@ -15,6 +15,13 @@ export interface CaveGenerationParams {
   depth: number
 }
 
+export function getCaveParams(cave: Cave, size: SizeParams): CaveGenerationParams {
+  return {
+    ...size,
+    depth: cave.depth,
+  }
+}
+
 export function getSpaceBox(center: Loc, size: SizeParams): Box {
   const padding = size.padding ?? 2
   return center.box(size.height + padding, size.width + padding)
