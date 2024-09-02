@@ -10,13 +10,18 @@ import { ORIGIN } from '../../objects/origin'
 import { ROOMF, RoomTemplate, RoomTemplateRegistry } from '../roomTemplate'
 import { SQUARE } from '../square'
 
-import { getSpaceBox, SizeParams } from './helpers'
+import {
+  CaveGenerationParams,
+  getCaveParams,
+  getSpaceBox,
+  SizeParams
+} from './helpers'
 import { placeClosedDoor, placeSecretDoor } from './helpers/door'
 import { placeNVaultMonsters } from './helpers/monster'
 import { placeNVaultObjects, placeObject } from './helpers/object'
 import { placeRandomStairs } from './helpers/stairs'
 import {
-  getRandomSymmetryTransform, symmetryTransform,
+  getRandomSymmetryTransform,
   SymmetryTransform,
   SYMTR
 } from './helpers/symmetry'
@@ -64,7 +69,7 @@ function getNewCenter(dungeon: Dungeon, chunk: Cave, center: Loc, size: SizePara
 
 function buildRoomTemplate(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   template: RoomTemplate,
 ): boolean {
@@ -73,34 +78,33 @@ function buildRoomTemplate(
     width: template.width,
   }
 
-  const [newCenter, symmetryOp] = getNewCenter(dungeon, chunk, center, size)
+  const [newCenter, symmetryOp] = getNewCenter(dungeon, cave, center, size)
   if (newCenter == null) return false
   center = newCenter
 
-  return doBuildRoomTemplate(chunk, center, template, symmetryOp)
+  const chunk = buildChunk(template, getCaveParams(cave, size), symmetryOp)
+
+  cave.composite(chunk, center.box(size.height, size.width))
+
+  return true
 }
 
-function doBuildRoomTemplate(
-  chunk: Cave,
-  center: Loc,
+function buildChunk(
   template: RoomTemplate,
-  transform?: SymmetryTransform,
-): boolean {
-  const { height, width, doors } = template
-  const { rotate = 0, reflect = false } = transform ?? {}
+  params: CaveGenerationParams,
+  transform: SymmetryTransform,
+): Cave {
+  const chunk = new Cave(params)
 
   const light = chunk.depth <= randInt1(25)
   // Which random doors will we generate
-  const randomDoor = randInt1(doors)
+  const randomDoor = randInt1(template.doors)
   // Do we generate optional walls
   const randomWalls = oneIn(2)
 
-  const b = center.box(height, width)
-
-  template.room.forEach((char, ptPre) => {
+  template.room.transform(transform, (char, p) => {
     if (char === ' ') return
 
-    const p = symmetryTransform(ptPre, b, rotate, reflect)
     const tile = chunk.tiles.get(p)
     chunk.setFeature(tile, FEAT.FLOOR)
     assert(tile.isEmpty())
@@ -165,22 +169,21 @@ function doBuildRoomTemplate(
   })
 
   // Second pass to place items after first pass has completed
-  template.room.forEach((char, ptPre) => {
-    const pt = symmetryTransform(ptPre, b, rotate, reflect)
-    const tile = chunk.tiles.get(pt)
+  template.room.transform(transform, (char, p) => {
+    const tile = chunk.tiles.get(p)
 
     switch (char) {
       case '#':
         assert(tile.isRoom() && tile.isGranite() && tile.has(SQUARE.WALL_SOLID))
 
-        if ((chunk.countNeighbors(pt, false, (tile) => tile.isRoom()) === 8)) {
+        if ((chunk.countNeighbors(p, false, (tile) => tile.isRoom()) === 8)) {
           tile.turnOff(SQUARE.WALL_SOLID)
           tile.turnOn(SQUARE.WALL_INNER)
         }
         break
       case '8':
         assert(tile.isRoom() && (tile.isFloor() || tile.isStair()))
-        placeNVaultMonsters(chunk, pt, chunk.depth + 2, randInt0(2) + 3)
+        placeNVaultMonsters(chunk, p, chunk.depth + 2, randInt0(2) + 3)
         break
       case '9':
         const offset1 = loc(2, -2)
@@ -190,28 +193,28 @@ function doBuildRoomTemplate(
 
         placeNVaultMonsters(
           chunk,
-          pt.diff(offset2),
+          p.diff(offset2),
           chunk.depth + randInt0(2),
           randInt1(2)
         )
         placeNVaultMonsters(
           chunk,
-          pt.diff(offset2),
+          p.diff(offset2),
           chunk.depth + randInt0(2),
           randInt1(2)
         )
 
         if (oneIn(2)) {
-          placeNVaultObjects(chunk, pt.diff(offset1), chunk.depth, randInt1(2))
+          placeNVaultObjects(chunk, p.diff(offset1), chunk.depth, randInt1(2))
         }
         if (oneIn(2)) {
-          placeNVaultObjects(chunk, pt.diff(offset1), chunk.depth, randInt1(2))
+          placeNVaultObjects(chunk, p.diff(offset1), chunk.depth, randInt1(2))
         }
         break
     }
   })
 
-  return true
+  return chunk
 }
 
 
