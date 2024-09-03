@@ -38,13 +38,13 @@ export class OverlapRoomGenerator extends RoomGeneratorBase {
       -1 * randInt1(4),
       randInt1(10),
       randInt1(3),
-    )
+    ).exterior()
     const boxB = box(
       -1 * randInt1(3),
       -1 * randInt1(10),
       randInt1(4),
       randInt1(11),
-    )
+    ).exterior()
 
     // clear a space double the size of the max delta
     const union = boxA.union(boxB)
@@ -55,7 +55,7 @@ export class OverlapRoomGenerator extends RoomGeneratorBase {
     const width = 2 * maxDx + 1
     const height = 2 * maxDy + 1
 
-    super({ height, width, depth: params.depth })
+    super({ height, width, depth: params.depth, padding: 0 })
 
     const tr = union.topLeft.mult(-1)
 
@@ -69,17 +69,17 @@ export class OverlapRoomGenerator extends RoomGeneratorBase {
 
     const light = chunk.depth <= randInt1(25)
 
-    const extRoomA = this.boxA.exterior()
-    const extRoomB = this.boxB.exterior()
+    const intRoomA = this.boxA.interior()
+    const intRoomB = this.boxB.interior()
 
     // Same contents as generateBasicRoom, but interleaved
     // This ensures that the walls won't overlap the floors
-    generateRoom(chunk, extRoomA, light)
-    generateRoom(chunk, extRoomB, light)
-    drawRectangle(chunk, extRoomA, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    drawRectangle(chunk, extRoomB, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    drawFilledRectangle(chunk, this.boxA, FEAT.FLOOR, SQUARE.NONE)
-    drawFilledRectangle(chunk, this.boxB, FEAT.FLOOR, SQUARE.NONE)
+    generateRoom(chunk, this.boxA, light)
+    generateRoom(chunk, this.boxB, light)
+    drawRectangle(chunk, this.boxA, FEAT.GRANITE, SQUARE.WALL_OUTER)
+    drawRectangle(chunk, this.boxB, FEAT.GRANITE, SQUARE.WALL_OUTER)
+    drawFilledRectangle(chunk, intRoomA, FEAT.FLOOR, SQUARE.NONE)
+    drawFilledRectangle(chunk, intRoomB, FEAT.FLOOR, SQUARE.NONE)
 
     return chunk
   }
