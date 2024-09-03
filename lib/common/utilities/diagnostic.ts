@@ -1,5 +1,9 @@
 type WrappedFunction = (...args: any) => any
 
+export function debug(...args: any[]) {
+  console.log(...args)
+}
+
 export function timed(fn: WrappedFunction, template: string) {
   const startTime = Date.now()
   const result = fn()

@@ -1,4 +1,5 @@
 import { Box, Loc } from '../../core/loc'
+import { debug } from '../../utilities/diagnostic'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -27,6 +28,7 @@ export class RoomGeneratorBase {
     this.width = params.width
     this.depth = params.depth
     if (params.padding) this.padding = params.padding
+    debug('height: %d, width: %d, depth: %d, padding: %d', this.height, this.width, this.depth, this.padding)
   }
 
   draw(dungeon: Dungeon, cave: Cave, center: Loc): boolean {

@@ -1,23 +1,30 @@
 import { Loc, loc } from '../common/core/loc'
+import { randEl } from '../common/core/rand'
 import { DIR, moveDir } from '../common/utilities/directions'
 
 import { Entity } from '../common/game/Entity'
+import { GameMap } from '../common/game/Map'
+import { Cave } from '../common/world/cave'
+import { FEAT } from '../common/world/features'
+
+import { COMMANDS, getCommand } from './commands'
 import { loadGameObjects } from './game/loadData'
 
-import { GameMap } from '../common/game/Map'
-import { FEAT } from '../common/world/features'
-import { COMMANDS, getCommand } from './commands'
-
-import { getCave } from './testing/roomRaster'
+import { getCave, getRandomRoom } from './testing/roomRaster'
 import { loadTestRoom } from './testing/testTerrain'
-import { randInt0 } from '../common/core/rand'
-import { Cave } from '../common/world/cave'
 
 // @ts-ignore
 window.drawCave = drawCave
+// @ts-ignore
+window.drawRoom = drawRoom
 
 function drawCave(roomName?: string, depth?: number) {
   const cave = getCave(roomName, depth)
+  run(cave)
+}
+
+function drawRoom(depth?: number) {
+  const cave = getRandomRoom(depth)
   run(cave)
 }
 
@@ -30,7 +37,7 @@ function processCave(cave: Cave): [FEAT[][], Loc] {
     mapData[mapData.length - 1].push(tile.feature.code)
   })
 
-  const playerLocation = openPoints[randInt0(openPoints.length)]
+  const playerLocation = randEl(openPoints)
 
   return [mapData, playerLocation]
 }

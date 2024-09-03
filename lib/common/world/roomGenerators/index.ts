@@ -1,6 +1,7 @@
 import { box, loc, Loc } from '../../core/loc'
 import { getConstants } from '../../core/loading'
 import { randEl } from '../../core/rand'
+import { debug } from '../../utilities/diagnostic'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -30,8 +31,7 @@ import * as template from './template'
 // TODO: Debug log what params were used (in generator, probably)
 export function buildRandomRoom(): Cave | null {
   const choice = randEl(ROOM)
-  // TODO: Add debug-only console logger
-  console.log('Using ${choice.name}...')
+  debug(`Using ${choice.name}...`)
   return choice.file.buildRoom()
 }
 
