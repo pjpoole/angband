@@ -21,13 +21,13 @@ export class RoomGeneratorBase {
   height: number
   width: number
   readonly depth: number
-  padding: number = 2
+  readonly padding: number
 
   constructor(params: CaveGeneratorParams) {
     this.height = params.height
     this.width = params.width
     this.depth = params.depth
-    if (params.padding) this.padding = params.padding
+    this.padding = params.padding ?? 2
     debug('height: %d, width: %d, depth: %d, padding: %d', this.height, this.width, this.depth, this.padding)
   }
 
