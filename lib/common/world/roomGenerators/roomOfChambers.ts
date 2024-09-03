@@ -9,98 +9,105 @@ import { SQUARE } from '../square'
 
 import { drawFilledRectangle } from './helpers/geometry'
 import { hollowRoom } from './helpers/room'
-import { getNewCenter } from './helpers'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number,
 ): boolean {
-  const light = chunk.depth < randInt0(45)
+  const generator = new RoomOfChambersGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
+}
 
-  const height = 20 + mBonus(20, chunk.depth)
-  const width = 20 + randInt1(20) + mBonus(20, chunk.depth)
+export class RoomOfChambersGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    const depth = params.depth
+    const height = 20 + mBonus(20, depth)
+    const width = 20 + randInt1(20) + mBonus(20, depth)
 
-  const size = { height, width, padding: 0 }
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const b = box(
-    center.x - Math.trunc(width / 2),
-    center.y - Math.trunc(height / 2),
-    center.x + Math.trunc((width - 1) / 2),
-    center.y + Math.trunc((height - 1) / 2),
-  )
-
-  if (!chunk.surrounds(b)) return false
-
-  const bdx = (b.right - b.left)
-  const bdy = (b.top - b.bottom)
-
-  // We don't use size to preserve coded behavior
-  const area =  bdx * bdy
-
-  const countChambers = 10 + Math.trunc(area / 80)
-
-  for (let i = 0; i < countChambers; i++) {
-    const size = randInRange(3, 7)
-    const width = size + randInt0(10)
-    const height = size + randInt0(4)
-
-    const top = randInt0(1 + bdy - height)
-    const left = randInt0(1 +bdx - width)
-
-    const bottom = Math.min(top + height, b.b)
-    const right = Math.min(left + width, b.r)
-
-    const b1 = box(left, top, right, bottom)
-
-    makeChamber(chunk, b1)
+    super({ height, width, depth, padding: 0 })
   }
 
-  for (const p of b) {
-    if (!chunk.isFullyInbounds(p)) continue
+  build(): Cave | null {
+    const chunk = this.getNewCave()
+    const center = chunk.box.center()
+    const { height, width } = this
 
-    let count = 0
-
-    for (const p1 of getNeighbors(p)) {
-      const t1 = chunk.get(p1)
-      if (
-        t1.is(FEAT.GRANITE) &&
-        t1.isWallOuter() &&
-        t1.isWallSolid()
-      ) count++
-    }
-    const tile = chunk.get(p)
-    if (count === 5 && !tile.is(FEAT.MAGMA)) {
-      chunk.setMarkedGranite(p, SQUARE.WALL_INNER)
-    } else if (count > 5) {
-      chunk.setMarkedGranite(p, SQUARE.WALL_INNER)
-    }
-  }
-
-  let p1
-  for (let i = 0; i < 50; i++) {
-    p1 = loc(
-      b.left + Math.trunc(bdx / 4) + randInt0(Math.trunc(bdx / 2)),
-      b.right + Math.trunc(bdy / 4) + randInt0(Math.trunc(bdy / 2))
+    const b = box(
+      center.x - Math.trunc(width / 2),
+      center.y - Math.trunc(height / 2),
+      center.x + Math.trunc((width - 1) / 2),
+      center.y + Math.trunc((height - 1) / 2),
     )
-    if (chunk.get(p1).is(FEAT.MAGMA)) break
+
+    if (!chunk.surrounds(b)) return null
+
+    const light = chunk.depth < randInt0(45)
+
+    const bdx = (b.right - b.left)
+    const bdy = (b.top - b.bottom)
+
+    // We don't use size to preserve coded behavior
+    const area = bdx * bdy
+
+    const countChambers = 10 + Math.trunc(area / 80)
+
+    for (let i = 0; i < countChambers; i++) {
+      const size = randInRange(3, 7)
+      const width = size + randInt0(10)
+      const height = size + randInt0(4)
+
+      const top = randInt0(1 + bdy - height)
+      const left = randInt0(1 + bdx - width)
+
+      const bottom = Math.min(top + height, b.b)
+      const right = Math.min(left + width, b.r)
+
+      const b1 = box(left, top, right, bottom)
+
+      makeChamber(chunk, b1)
+    }
+
+    for (const p of b) {
+      if (!chunk.isFullyInbounds(p)) continue
+
+      let count = 0
+
+      for (const p1 of getNeighbors(p)) {
+        const t1 = chunk.get(p1)
+        if (
+          t1.is(FEAT.GRANITE) &&
+          t1.isWallOuter() &&
+          t1.isWallSolid()
+        ) count++
+      }
+      const tile = chunk.get(p)
+      if (count === 5 && !tile.is(FEAT.MAGMA)) {
+        chunk.setMarkedGranite(p, SQUARE.WALL_INNER)
+      } else if (count > 5) {
+        chunk.setMarkedGranite(p, SQUARE.WALL_INNER)
+      }
+    }
+
+    let p1
+    for (let i = 0; i < 50; i++) {
+      p1 = loc(
+        b.left + Math.trunc(bdx / 4) + randInt0(Math.trunc(bdx / 2)),
+        b.right + Math.trunc(bdy / 4) + randInt0(Math.trunc(bdy / 2))
+      )
+      if (chunk.get(p1).is(FEAT.MAGMA)) break
+    }
+    // sacrifice to the typescript gods
+    if (p1 == null) throw new Error('no point selected')
+
+    const tile = chunk.get(p1)
+    chunk.setFeature(tile, FEAT.FLOOR)
+    hollowRoom(chunk, p1!)
+
+    return chunk
   }
-  // sacrifice to the typescript gods
-  if (p1 == null) throw new Error('no point selected')
-
-  const tile = chunk.get(p1)
-  chunk.setFeature(tile, FEAT.FLOOR)
-  hollowRoom(chunk, p1!)
-
-
-
-
-  return true
 }
 
 function makeChamber(chunk: Cave, b: Box) {
