@@ -474,7 +474,7 @@ export class VaultGenerator extends RoomGeneratorBase {
   }
 }
 
-function getRandomVault(depth: number, type: RoomName) {
+export function getRandomVault(depth: number, type: RoomName) {
   return getRandom(VaultRegistry, (vault) => {
     return (
       vault.type === type &&

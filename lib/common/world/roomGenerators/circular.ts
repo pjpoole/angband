@@ -25,6 +25,12 @@ interface CircularRoomGeneratorParams {
   depth: number
 }
 
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new CircularRoomGenerator({ depth })
+  return generator.build()
+}
+
 export class CircularRoomGenerator extends RoomGeneratorBase {
   private readonly radius: number
 

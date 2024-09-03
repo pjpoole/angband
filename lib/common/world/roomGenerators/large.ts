@@ -26,6 +26,12 @@ export function build(
   return generator.draw(dungeon, cave, center)
 }
 
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new LargeRoomGenerator({ depth })
+  return generator.build()
+}
+
 export class LargeRoomGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
     super(Object.assign({ height: 9, width: 23}, params))

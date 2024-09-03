@@ -25,6 +25,12 @@ export function build(
   return generator.draw(dungeon, cave, center)
 }
 
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new CrossedRoomGenerator({ depth })
+  return generator.build()
+}
+
 export class CrossedRoomGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
     let { depth, width, height } = params

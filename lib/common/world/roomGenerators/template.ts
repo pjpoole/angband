@@ -31,6 +31,14 @@ export function build(
   return generator.draw(dungeon, cave, center)
 }
 
+export function buildRoom(): Cave | null {
+  const template = getRandomRoomTemplate(1, randInt1(3))
+  if (template == null) return null
+  const depth = randInt1(100)
+  const generator = new TemplateRoomGenerator({ template, depth })
+  return generator.build()
+}
+
 export interface TemplateRoomGeneratingParams {
   template: RoomTemplate,
   depth: number,

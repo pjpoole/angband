@@ -20,6 +20,12 @@ export function build(
   return generator.draw(dungeon, cave, center)
 }
 
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new OverlapRoomGenerator({ depth })
+  return generator.build()
+}
+
 export class OverlapRoomGenerator extends RoomGeneratorBase {
   private readonly boxA: Box
   private readonly boxB: Box

@@ -1,5 +1,5 @@
 import { Loc } from '../../core/loc'
-import { randInt0 } from '../../core/rand'
+import { randInt0, randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -18,6 +18,12 @@ export function build(
 ): boolean {
   const generator = new NestGenerator({ depth: cave.depth })
   return generator.draw(dungeon, cave, center)
+}
+
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new NestGenerator({ depth })
+  return generator.build()
 }
 
 export class NestGenerator extends RoomGeneratorBase {

@@ -24,6 +24,12 @@ export function build(
   return false
 }
 
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new MoriaRoomGenerator({ depth })
+  return generator.build()
+}
+
 export class MoriaRoomGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
     let height = params.height ?? 8 + randInt0(5) // 8-12

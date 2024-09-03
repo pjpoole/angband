@@ -26,6 +26,10 @@ export function randInRange(lower: number, upper: number) {
   return min + randInt0(1 + max - min)
 }
 
+export function randEl<T>(ary: T[]): T {
+  return ary[randInt0(ary.length)]
+}
+
 /*
  * two-pass random object selector that is always guaranteed to return a value
  *

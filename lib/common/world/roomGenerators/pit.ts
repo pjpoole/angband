@@ -1,4 +1,5 @@
 import { Loc } from '../../core/loc'
+import { randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -17,6 +18,12 @@ export function build(
 ): boolean {
   const generator = new PitGenerator({ depth: cave.depth })
   return generator.draw(dungeon, cave, center)
+}
+
+export function buildRoom(): Cave | null {
+  const depth = randInt1(100)
+  const generator = new PitGenerator({ depth })
+  return generator.build()
 }
 
 export class PitGenerator extends RoomGeneratorBase {

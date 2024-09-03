@@ -10,3 +10,7 @@ export function build(
 ): boolean {
   return false
 }
+
+export function buildRoom(): Cave | null {
+  return null
+}

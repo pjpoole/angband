@@ -1,5 +1,6 @@
 import { box, loc, Loc } from '../../core/loc'
 import { getConstants } from '../../core/loading'
+import { randEl } from '../../core/rand'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -25,6 +26,15 @@ import * as simple from './simple'
 import * as staircase from './staircase'
 import * as template from './template'
 
+// TODO: Take params, like depth
+// TODO: Debug log what params were used (in generator, probably)
+export function buildRandomRoom(): Cave | null {
+  const choice = randEl(ROOM)
+  // TODO: Add debug-only console logger
+  console.log('Using ${choice.name}...')
+  return choice.file.buildRoom()
+}
+
 type RoomBuilder = (
   dungeon: Dungeon,
   chunk: Cave,
@@ -43,30 +53,30 @@ interface RoomEntry {
   name: RoomName
   rows: number
   cols: number
-  fn: RoomBuilder
+  file: any
 }
 
 // list-rooms.h
 const ROOM: RoomEntry[] = [
-  { name: 'staircase room', rows: 0, cols: 0, fn: staircase.build },
-  { name: 'simple room', rows: 0, cols: 0, fn: simple.build },
-  { name: 'moria room', rows: 0, cols: 0, fn: moria.build },
-  { name: 'large room', rows: 0, cols: 0, fn: large.build },
-  { name: 'crossed room', rows: 0, cols: 0, fn: crossed.build },
-  { name: 'circular room', rows: 0, cols: 0, fn: circular.build },
-  { name: 'overlap room', rows: 0, cols: 0, fn: overlap.build },
-  { name: 'room template', rows: 11, cols: 33, fn: template.build },
-  { name: 'Interesting room', rows: 40, cols: 50, fn: interesting.build },
-  { name: 'monster pit', rows: 0, cols: 0, fn: pit.build },
-  { name: 'monster nest', rows: 0, cols: 0, fn: nest.build },
-  { name: 'huge room', rows: 0, cols: 0, fn: huge.build },
-  { name: 'room of chambers', rows: 0, cols: 0, fn: roomOfChambers.build },
-  { name: 'Lesser vault', rows: 22, cols: 22, fn: lesserVault.build },
-  { name: 'Medium vault', rows: 22, cols: 33, fn: mediumVault.build },
-  { name: 'Greater vault', rows: 44, cols: 66, fn: greaterVault.build },
-  { name: 'Lesser vault (new)', rows: 22, cols: 22, fn: lesserVaultNew.build },
-  { name: 'Medium vault (new)', rows: 22, cols: 33, fn: mediumVaultNew.build },
-  { name: 'Greater vault (new)', rows: 44, cols: 66, fn: greaterVaultNew.build },
+  { name: 'staircase room', rows: 0, cols: 0, file: staircase },
+  { name: 'simple room', rows: 0, cols: 0, file: simple },
+  { name: 'moria room', rows: 0, cols: 0, file: moria },
+  { name: 'large room', rows: 0, cols: 0, file: large },
+  { name: 'crossed room', rows: 0, cols: 0, file: crossed },
+  { name: 'circular room', rows: 0, cols: 0, file: circular },
+  { name: 'overlap room', rows: 0, cols: 0, file: overlap },
+  { name: 'room template', rows: 11, cols: 33, file: template },
+  { name: 'Interesting room', rows: 40, cols: 50, file: interesting },
+  { name: 'monster pit', rows: 0, cols: 0, file: pit },
+  { name: 'monster nest', rows: 0, cols: 0, file: nest },
+  { name: 'huge room', rows: 0, cols: 0, file: huge },
+  { name: 'room of chambers', rows: 0, cols: 0, file: roomOfChambers },
+  { name: 'Lesser vault', rows: 22, cols: 22, file: lesserVault },
+  { name: 'Medium vault', rows: 22, cols: 33, file: mediumVault },
+  { name: 'Greater vault', rows: 44, cols: 66, file: greaterVault },
+  { name: 'Lesser vault (new)', rows: 22, cols: 22, file: lesserVaultNew },
+  { name: 'Medium vault (new)', rows: 22, cols: 33, file: mediumVaultNew },
+  { name: 'Greater vault (new)', rows: 44, cols: 66, file: greaterVaultNew },
 ]
 
 export function buildRoom(
@@ -134,7 +144,7 @@ export function isValidRoomName(name: string): name is RoomName {
 function findBuilder(name: string): RoomBuilder {
   for (const room of ROOM) {
     if (room.name === name) {
-      return room.fn
+      return room.file.build
     }
   }
 
