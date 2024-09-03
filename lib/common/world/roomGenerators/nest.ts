@@ -6,40 +6,43 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { getNewCenter } from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number,
 ): boolean {
-  const sizeVary = randInt0(4)
-
-  const height = 9
-  const width = 11  + 2 * sizeVary
-
-  const size = { height, width }
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const b = center.box(height, width)
-  generateBasicRoom(chunk, b, false)
-
-  const innerWall = b.interior()
-  drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
-  drawRandomHole(chunk, innerWall, FEAT.CLOSED)
-
-  const innerRoom = b.interior(2)
-  // TODO: Monster logic
-
-  return true
+  const generator = new NestGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
 }
 
-function getMonsterNumberPrep() {
+export class NestGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    const sizeVary = randInt0(4)
 
+    const height = params.height ?? 9
+    const width = params.width ?? 11 + 2 * sizeVary
+
+    super({ height, width, depth: params.depth })
+  }
+
+  build(): Cave {
+    const chunk = this.getNewCave()
+
+    const b = chunk.box
+    generateBasicRoom(chunk, b, false)
+
+    const innerWall = b.interior()
+    drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
+    drawRandomHole(chunk, innerWall, FEAT.CLOSED)
+
+    const innerRoom = b.interior(2)
+    // TODO: Monster logic
+
+    return chunk
+  }
 }
