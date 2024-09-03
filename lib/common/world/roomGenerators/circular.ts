@@ -6,14 +6,9 @@ import { Dungeon } from '../dungeon'
 import { FEAT, Feature } from '../features'
 import { SQUARE } from '../square'
 
-import {
-  CaveGenerationParams,
-  getCaveParams,
-  getNewCenter,
-  SizeParams
-} from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateRoomFeature, setBorderingWalls } from './helpers/room'
+import { RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
@@ -21,54 +16,50 @@ export function build(
   center: Loc,
   rating: number, // not used
 ): boolean {
-  const size = getSize()
-
-  const newCenter = getNewCenter(dungeon, cave, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const chunk = buildChunk(getCaveParams(cave, size))
-
-  cave.composite(chunk, center.box(size.height, size.width))
-
-  return true
+  const generator = new CircularRoomGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
 }
 
-function buildChunk(params: CaveGenerationParams): Cave {
-  const chunk = new Cave(params)
-  const radius = params.height / 2
+interface CircularRoomGeneratorParams {
+  radius?: number
+  depth: number
+}
 
-  const center = chunk.box.center()
+export class CircularRoomGenerator extends RoomGeneratorBase {
+  private readonly radius: number
 
-  const light = chunk.depth <= randInt1(25)
-  fillCircle(chunk, center, radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
+  constructor(params: CircularRoomGeneratorParams) {
+    const radius = params.radius ?? 2 + randInt1(2) + randInt1(3)
+    const diameter = 2 * radius
 
-  const b = center.box(radius + 2)
-  setBorderingWalls(chunk, b)
+    super({ height: diameter, width: diameter, depth: params.depth })
 
-  // give large rooms an inner chamber
-  if (radius - 4 > 0 && radius - 4 > randInt0(4)) {
-    const inner = center.box(5)
-    drawRectangle(chunk, inner, FEAT.GRANITE, SQUARE.WALL_INNER)
-    // place a door on one of the walls at random
-    drawRandomHole(chunk, inner, FEAT.CLOSED)
-
-    // TODO: vault objects
-    // TODO: vault monsters
+    this.radius = radius
   }
 
-  return chunk
-}
+  build(): Cave {
+    const chunk = this.getNewCave()
 
-function getSize(): SizeParams {
-  // range 4-7; diameter 8-14
-  const radius = 2 + randInt1(2) + randInt1(3)
-  const diameter = 2 * radius
+    const center = chunk.box.center()
 
-  return {
-    height: diameter,
-    width: diameter,
-    padding: 10,
+    const light = chunk.depth <= randInt1(25)
+    fillCircle(chunk, center, this.radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
+
+    const b = center.box(this.radius + 2)
+    setBorderingWalls(chunk, b)
+
+    // give large rooms an inner chamber
+    if (this.radius - 4 > 0 && this.radius - 4 > randInt0(4)) {
+      const inner = center.box(5)
+      drawRectangle(chunk, inner, FEAT.GRANITE, SQUARE.WALL_INNER)
+      // place a door on one of the walls at random
+      drawRandomHole(chunk, inner, FEAT.CLOSED)
+
+      // TODO: vault objects
+      // TODO: vault monsters
+    }
+
+    return chunk
   }
 }
 
