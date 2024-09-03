@@ -54,7 +54,7 @@ export class VaultGenerator extends RoomGeneratorBase {
     const { vault, depth, rotate, reflect } = params
     const { height, width } = vault
 
-    super({ height, width, depth})
+    super({ height, width, depth })
 
     this.vault = vault
     this.reflect = reflect ?? false
@@ -92,6 +92,8 @@ export class VaultGenerator extends RoomGeneratorBase {
   build(): Cave {
     const { rotate, reflect } = this
     const chunk = this.getNewCave()
+
+    const depth = chunk.depth
 
     // porting kind of squirrelly logic
     // TODO: trace variables and see if the ?? are required
@@ -138,13 +140,13 @@ export class VaultGenerator extends RoomGeneratorBase {
           placeSecretDoor(chunk, p)
           break
         case '^': // trap
-          if (oneIn(4)) placeTrap(chunk, p, -1, chunk.depth)
+          if (oneIn(4)) placeTrap(chunk, p, -1, depth)
           break
         case '&': // treasure or trap
           if (randInt0(4) < 3) {
-            placeObject(chunk, p, chunk.depth, false, false, ORIGIN.VAULT, 0)
+            placeObject(chunk, p, depth, false, false, ORIGIN.VAULT, 0)
           } else if (oneIn(4)) {
-            placeTrap(chunk, p, -1, chunk.depth)
+            placeTrap(chunk, p, -1, depth)
           }
           break
         case '<': // up stairs
@@ -185,7 +187,7 @@ export class VaultGenerator extends RoomGeneratorBase {
               pickAndPlaceMonster(
                 chunk,
                 p,
-                chunk.depth,
+                depth,
                 true,
                 true,
                 ORIGIN.DROP_VAULT
@@ -194,21 +196,21 @@ export class VaultGenerator extends RoomGeneratorBase {
               placeObject(
                 chunk,
                 p,
-                chunk.depth,
+                depth,
                 oneIn(8),
                 false,
                 ORIGIN.VAULT,
                 0
               )
             } else if (oneIn(4)) {
-              placeTrap(chunk, p, -1, chunk.depth)
+              placeTrap(chunk, p, -1, depth)
             }
             break
           case '2': // slightly OOD monster
             pickAndPlaceMonster(
               chunk,
               p,
-              chunk.depth + 5,
+              depth + 5,
               true,
               true,
               ORIGIN.DROP_VAULT
@@ -218,7 +220,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               false,
               false,
               ORIGIN.VAULT,
@@ -230,7 +232,7 @@ export class VaultGenerator extends RoomGeneratorBase {
               pickAndPlaceMonster(
                 chunk,
                 p,
-                chunk.depth + 3,
+                depth + 3,
                 true,
                 true,
                 ORIGIN.DROP_VAULT
@@ -240,7 +242,7 @@ export class VaultGenerator extends RoomGeneratorBase {
               placeObject(
                 chunk,
                 p,
-                chunk.depth + 7,
+                depth + 7,
                 false,
                 false,
                 ORIGIN.VAULT,
@@ -252,7 +254,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 7,
+              depth + 7,
               false,
               false,
               ORIGIN.VAULT,
@@ -263,7 +265,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             pickAndPlaceMonster(
               chunk,
               p,
-              chunk.depth + 11,
+              depth + 11,
               true,
               true,
               ORIGIN.DROP_VAULT
@@ -273,7 +275,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 15,
+              depth + 15,
               false,
               false,
               ORIGIN.VAULT,
@@ -284,29 +286,29 @@ export class VaultGenerator extends RoomGeneratorBase {
             pickAndPlaceMonster(
               chunk,
               p,
-              chunk.depth + 40,
+              depth + 40,
               true,
               true,
               ORIGIN.DROP_VAULT
             )
-            placeObject(chunk, p, chunk.depth + 20, true, true, ORIGIN.VAULT, 0)
+            placeObject(chunk, p, depth + 20, true, true, ORIGIN.VAULT, 0)
             break
           case '9': // mean monster, and treasure
             pickAndPlaceMonster(
               chunk,
               p,
-              chunk.depth + 9,
+              depth + 9,
               true,
               true,
               ORIGIN.DROP_VAULT
             )
-            placeObject(chunk, p, chunk.depth + 7, true, false, ORIGIN.VAULT, 0)
+            placeObject(chunk, p, depth + 7, true, false, ORIGIN.VAULT, 0)
             break
           case '0': // very OOD monster
             pickAndPlaceMonster(
               chunk,
               p,
-              chunk.depth + 20,
+              depth + 20,
               true,
               true,
               ORIGIN.DROP_VAULT
@@ -316,7 +318,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 5,
+              depth + 5,
               false,
               false,
               ORIGIN.VAULT,
@@ -324,7 +326,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             )
             break
           case '$': // treasure
-            placeGold(chunk, p, chunk.depth, ORIGIN.VAULT)
+            placeGold(chunk, p, depth, ORIGIN.VAULT)
             break
           case ']': { // armor
             const roll = randInt0(oneIn(3) ? 9 : 8)
@@ -335,7 +337,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               true,
               false,
               ORIGIN.VAULT,
@@ -349,7 +351,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               true,
               false,
               ORIGIN.VAULT,
@@ -361,7 +363,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -372,7 +374,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -383,7 +385,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -394,7 +396,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -405,7 +407,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -417,7 +419,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
@@ -429,7 +431,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             placeObject(
               chunk,
               p,
-              chunk.depth + 3,
+              depth + 3,
               oneIn(4),
               false,
               ORIGIN.VAULT,
