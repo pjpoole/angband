@@ -16,10 +16,7 @@ import { RoomName } from '../index'
 import { placeSecretDoor } from './door'
 import { placeObject } from './object'
 import { getVaultMonsters, pickAndPlaceMonster } from './monster'
-import {
-  getRandomSymmetryTransform, symmetryTransform,
-  SYMTR
-} from './symmetry'
+import { getRandomSymmetryTransform, SYMTR } from './symmetry'
 import { placeTrap } from './trap'
 import { placeGold } from './treasure'
 
@@ -90,9 +87,9 @@ export class VaultGenerator extends RoomGeneratorBase {
   }
 
   build(): Cave {
-    const { rotate, reflect } = this
-    const chunk = this.getNewCave()
+    const transform = { rotate: this.rotate, reflect: this.reflect }
 
+    const chunk = this.getNewCave()
     const depth = chunk.depth
 
     // porting kind of squirrelly logic
@@ -102,12 +99,8 @@ export class VaultGenerator extends RoomGeneratorBase {
 
     chunk.turnOnBox(b, SQUARE.MON_RESTRICT)
 
-    this.vault.room.forEach((char, pt) => {
+    this.vault.room.transform(transform, (char, p) => {
       if (char === ' ') return
-
-      const p = symmetryTransform(pt, b, rotate, reflect)
-
-      assert(b.contains(p))
 
       const tile = chunk.tiles.get(p)
 
@@ -170,11 +163,8 @@ export class VaultGenerator extends RoomGeneratorBase {
     })
 
     const foundRaces = new Set<string>()
-    this.vault.room.forEach((char, pt) => {
+    this.vault.room.transform(transform, (char, p) => {
       if (char === ' ') return
-
-      const p = symmetryTransform(pt, b, rotate, reflect)
-      assert(b.contains(p))
 
       const tile = chunk.tiles.get(p)
 
@@ -348,15 +338,7 @@ export class VaultGenerator extends RoomGeneratorBase {
           case '|': { // weapon
             const roll = randInt0(4)
             const tval = [TV.BOOTS, TV.GLOVES, TV.HELM, TV.CROWN][roll]
-            placeObject(
-              chunk,
-              p,
-              depth + 3,
-              true,
-              false,
-              ORIGIN.VAULT,
-              tval
-            )
+            placeObject(chunk, p, depth + 3, true, false, ORIGIN.VAULT, tval)
             break
           }
           case '=': // ring
@@ -446,7 +428,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             // Convert to SQUARE.WALL_INNER if it does not touch the outside of
             // the vault
             if ((chunk.countNeighbors(
-              pt,
+              p,
               false,
               (tile) => tile.isRoom()
             ) === 8)) {
@@ -461,7 +443,7 @@ export class VaultGenerator extends RoomGeneratorBase {
             // Convert to SQUARE.WALL_INNER if it does not touch the outside of
             // the vault
             if ((chunk.countNeighbors(
-              pt,
+              p,
               false,
               (tile) => tile.isRoom()
             ) === 8)) {
