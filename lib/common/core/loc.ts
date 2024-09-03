@@ -142,6 +142,10 @@ export class Box {
     return this.width * this.height
   }
 
+  tr(p: Loc): Box {
+    return box(this.l + p.x, this.t + p.y, this.r + p.x, this.b + p.y)
+  }
+
   extents(): [Loc, Loc] {
     return [loc(this.l, this.t), loc(this.b, this.r)]
   }
