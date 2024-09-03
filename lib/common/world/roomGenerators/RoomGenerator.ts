@@ -17,8 +17,8 @@ export interface CaveGeneratorParams {
 }
 
 export class RoomGeneratorBase {
-  readonly height: number
-  readonly width: number
+  height: number
+  width: number
   readonly depth: number
   padding: number = 2
 
