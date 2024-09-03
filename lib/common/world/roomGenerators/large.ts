@@ -6,7 +6,6 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import { getNewCenter } from './helpers'
 import { placeClosedDoor, placeSecretDoor } from './helpers/door'
 import {
   drawPlus,
@@ -15,64 +14,67 @@ import {
   drawRandomHole
 } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
-  rating: number,
+  rating: number, // not used
 ): boolean {
-  const height = 9
-  const width = 23
+  const generator = new LargeRoomGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
+}
 
-  const size = { height, width }
-
-  const light = chunk.depth <= randInt1(25)
-
-  const newCenter = getNewCenter(dungeon, chunk, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const b = center.box(height, width)
-
-  generateBasicRoom(chunk, b, light)
-
-  // inner room
-  // Wall boundaries
-  const innerWall = b.interior(1)
-  drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
-
-  // Floor boundaries
-  const innerFloor = innerWall.interior(1)
-
-  switch(randInt1(5)) {
-    case 1:
-      // Inner room
-      buildSimple(dungeon, chunk, innerFloor)
-      break
-    case 2:
-      // Inner room with small inner room
-      buildNested(dungeon, chunk, innerFloor)
-      break
-    case 3:
-      // Inner room with pillars
-      buildPillars(dungeon, chunk, innerFloor)
-      break
-    case 4:
-      // Inner room with checkerboard
-      buildCheckerboard(dungeon, chunk, innerFloor)
-      break
-    case 5:
-      // Four small rooms
-      buildQuad(dungeon, chunk, innerFloor)
-      break
+export class LargeRoomGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    super(Object.assign({ height: 9, width: 23}, params))
   }
 
-  return true
+  build(): Cave {
+    const chunk = this.getNewCave()
+
+    const b = chunk.box
+
+    const light = chunk.depth <= randInt1(25)
+    generateBasicRoom(chunk, b, light)
+
+    // inner room
+    // Wall boundaries
+    const innerWall = b.interior(1)
+    drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
+
+    // Floor boundaries
+    const innerFloor = innerWall.interior(1)
+
+    switch (randInt1(5)) {
+      case 1:
+        // Inner room
+        buildSimple(chunk, innerFloor)
+        break
+      case 2:
+        // Inner room with small inner room
+        buildNested(chunk, innerFloor)
+        break
+      case 3:
+        // Inner room with pillars
+        buildPillars(chunk, innerFloor)
+        break
+      case 4:
+        // Inner room with checkerboard
+        buildCheckerboard(chunk, innerFloor)
+        break
+      case 5:
+        // Four small rooms
+        buildQuad(chunk, innerFloor)
+        break
+    }
+
+    return chunk
+  }
 }
 
 function buildSimple(
-  dungeon: Dungeon,
   chunk: Cave,
   b: Box,
 ) {
@@ -81,7 +83,6 @@ function buildSimple(
 }
 
 function buildNested(
-  dungeon: Dungeon,
   chunk: Cave,
   b: Box,
 ) {
@@ -97,7 +98,8 @@ function buildNested(
   // TODO: Monsters
 
   // Why not !oneIn(5) ?
-  if (randInt0(100) < 80 || dungeon.persist) {
+  // TODO: dungeon.persist
+  if (randInt0(100) < 80) {
     // TODO: place object
   } else {
     // TODO: place stairs
@@ -107,7 +109,6 @@ function buildNested(
 }
 
 function buildPillars(
-  dungeon: Dungeon,
   chunk: Cave,
   b: Box,
 ) {
@@ -143,7 +144,6 @@ function buildPillars(
 }
 
 function buildCheckerboard(
-  dungeon: Dungeon,
   chunk: Cave,
   b: Box,
 ) {
@@ -159,7 +159,6 @@ function buildCheckerboard(
 }
 
 function buildQuad(
-  dungeon: Dungeon,
   chunk: Cave,
   b: Box,
 ) {
