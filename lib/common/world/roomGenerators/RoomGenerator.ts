@@ -3,6 +3,12 @@ import { Box, Loc } from '../../core/loc'
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 
+export interface DimensionGeneratingParams {
+  depth: number
+  height?: number
+  width?: number
+}
+
 export interface CaveGeneratorParams {
   height: number
   width: number
