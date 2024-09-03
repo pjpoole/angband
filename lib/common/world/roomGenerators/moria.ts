@@ -5,84 +5,72 @@ import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 
-import { getNewCenter, SizeParams } from './helpers'
 import { buildStarburstRoom } from './helpers/starburst'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
-const MAX_RETRIES = 1
+const MAX_RETRIES = 2
 
 export function build(
   dungeon: Dungeon,
-  chunk: Cave,
+  cave: Cave,
   center: Loc,
   rating: number, // not used
 ): boolean {
-  const light = chunk.depth <= randInt1(35)
-
-  let size: SizeParams
-  for (let tries = 0; tries <= MAX_RETRIES; tries++) {
-    const [height, width] = randomizeRoomSize(tries)
-
-    size = { height, width }
-
-    const newCenter = getNewCenter(dungeon, chunk, center, size)
-    if (newCenter != null) {
-      center = newCenter
-    } else if (tries === MAX_RETRIES) {
-      return false
-    }
+  for (let tries = 0; tries < MAX_RETRIES; tries++) {
+    const generator = new MoriaRoomGenerator({ depth: cave.depth })
+    const success = generator.draw(dungeon, cave, center)
+    if (success) return true
   }
-
-  const { height, width } = size!
-
-  const b = center.box(height, width)
-
-  if (!buildStarburstRoom(chunk, b, light, FEAT.FLOOR, true)) {
-    return false
-  }
-
-  if (oneIn(10)) {
-    const innerWidth = Math.trunc(width / 4)
-    const innerHeight = Math.trunc(height / 4)
-    const innerBox = box(
-      b.l + randInt0(innerWidth),
-      b.t + randInt0(innerHeight),
-      b.r - randInt0(innerWidth),
-      b.b - randInt0(innerHeight),
-    )
-
-    buildStarburstRoom(chunk, innerBox, false, FEAT.PASS_RUBBLE, false)
-  }
-
-  return true
+  return false
 }
 
-function randomizeRoomSize(tries: number): [number, number] {
-  let height = 8 + randInt0(5) // 8-12
-  let width = 10 + randInt0(5) // 10-14
+export class MoriaRoomGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    let height = params.height ?? 8 + randInt0(5) // 8-12
+    let width = params.width ?? 10 + randInt0(5) // 10-14
 
-  /*
-   * Sometimes, make the room big
-   * first try:
-   *   20/300 chance: 16-36, 30-70 (big)
-   *   14/300 chance: 16-36, 10-14 (tall)
-   *  196/300 chance:  8-12, 20-56 (wide)
-   *   70/300 chance:  8-12, 10-14 (fallthrough)
-   *
-   * second try:
-   *   15/300 chance: 16-36, 10-14 (tall)
-   *  210/300 chance:  8-12, 20-56 (wide)
-   *   75/300 chance:  8-12, 10-14 (fallthrough)
-   */
-  if (tries === 0 && oneIn(15)) {
-    height *= 1 + randInt1(2) // 2-3
-    width *= 2 + randInt1(3) // 3-5
-  } else if (!oneIn(4)) {
+    /*
+     * Sometimes, make the room big
+     *   15/300 chance: 16-36, 10-14 (tall)
+     *  210/300 chance:  8-12, 20-56 (wide)
+     *   75/300 chance:  8-12, 10-14 (fallthrough)
+     */
     if (oneIn(15)) {
-      height *= 2 + randInt0(2) // 2-3
-    } else {
-      width *= 2 + randInt0(3) // 2-4
+      height *= 1 + randInt1(2) // 2-3
+      width *= 2 + randInt1(3) // 3-5
+    } else if (!oneIn(4)) {
+      if (oneIn(15)) {
+        height *= 2 + randInt0(2) // 2-3
+      } else {
+        width *= 2 + randInt0(3) // 2-4
+      }
     }
+
+    super({ height, width, depth: params.depth })
   }
 
-  return [height, width]
+  build(): Cave | null {
+    const chunk = this.getNewCave()
+    const b = chunk.box
+    const light = this.depth <= randInt1(35)
+
+    if (!buildStarburstRoom(chunk, b, light, FEAT.FLOOR, true)) {
+      return null
+    }
+
+    if (oneIn(10)) {
+      const innerWidth = Math.trunc(this.width / 4)
+      const innerHeight = Math.trunc(this.height / 4)
+      const innerBox = box(
+        b.l + randInt0(innerWidth),
+        b.t + randInt0(innerHeight),
+        b.r - randInt0(innerWidth),
+        b.b - randInt0(innerHeight),
+      )
+
+      buildStarburstRoom(chunk, innerBox, false, FEAT.PASS_RUBBLE, false)
+    }
+
+    return chunk
+  }
 }

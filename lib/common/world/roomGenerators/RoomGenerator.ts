@@ -36,12 +36,14 @@ export class RoomGeneratorBase {
 
     const chunk = this.build()
 
+    if (chunk == null) return false
+
     cave.composite(chunk, center.box(this.height, this.width))
 
     return true
   }
 
-  build(): Cave {
+  build(): Cave | null {
     throw new Error('implement in subclass')
   }
 
