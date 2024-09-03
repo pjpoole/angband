@@ -4,13 +4,9 @@ import { oneIn, randInt0, randInt1 } from '../../core/rand'
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
 import { SQUARE } from '../square'
+
 import { generateBasicRoom } from './helpers/room'
-import {
-  CaveGenerationParams,
-  getCaveParams,
-  getNewCenter,
-  SizeParams
-} from './helpers'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
@@ -18,43 +14,36 @@ export function build(
   center: Loc,
   rating: number, // not used
 ): boolean {
-  const size = getSize()
-
-  const newCenter = getNewCenter(dungeon, cave, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const chunk = buildChunk(getCaveParams(cave, size))
-
-  cave.composite(chunk, center.box(size.height, size.width))
-
-  return true
+  const generator = new SimpleRoomGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
 }
 
-function buildChunk(size: CaveGenerationParams): Cave {
-  const chunk = new Cave(size)
+export class SimpleRoomGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    const height = params.height ?? 1 + randInt1(4) + randInt1(3) // 3-8
+    const width = params.width ?? 1 + randInt1(11) + randInt1(11) // 3-23
 
-  const light = chunk.depth <= randInt1(25)
-
-  // wall boundaries
-  const b = chunk.box
-  generateBasicRoom(chunk, b, light)
-
-  if (oneIn(20)) {
-    // sometimes make a pillar room.
-    makePillarRoom(chunk, b)
-  } else if (oneIn(50)) {
-    // sometimes make a ragged-edge room
-    makeRaggedRoom(chunk, b)
+    super({ height, width, depth: params.depth })
   }
 
-  return chunk
-}
+  build(): Cave {
+    const chunk = this.getNewCave()
 
-function getSize(): SizeParams {
-  return {
-    height: 1 + randInt1(4) + randInt1(3), // 3-8
-    width: 1 + randInt1(11) + randInt1(11), // 3-23
+    const light = chunk.depth <= randInt1(25)
+
+    // wall boundaries
+    const b = chunk.box
+    generateBasicRoom(chunk, b, light)
+
+    if (oneIn(20)) {
+      // sometimes make a pillar room.
+      makePillarRoom(chunk, b)
+    } else if (oneIn(50)) {
+      // sometimes make a ragged-edge room
+      makeRaggedRoom(chunk, b)
+    }
+
+    return chunk
   }
 }
 
