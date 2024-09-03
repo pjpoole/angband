@@ -5,14 +5,9 @@ import { Dungeon } from '../dungeon'
 import { FEAT } from '../features'
 import { SQUARE } from '../square'
 
-import {
-  CaveGenerationParams,
-  getCaveParams,
-  getNewCenter,
-  SizeParams
-} from './helpers'
 import { drawRectangle, drawRandomHole } from './helpers/geometry'
 import { generateBasicRoom } from './helpers/room'
+import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
   dungeon: Dungeon,
@@ -20,39 +15,31 @@ export function build(
   center: Loc,
   rating: number,
 ): boolean {
-  const size = getSize()
-
-  const newCenter = getNewCenter(dungeon, cave, center, size)
-  if (newCenter == null) return false
-  center = newCenter
-
-  const chunk = buildChunk(getCaveParams(cave, size))
-
-  cave.composite(chunk, center.box(size.height, size.width))
-
-  return true
+  const generator = new PitGenerator({ depth: cave.depth })
+  return generator.draw(dungeon, cave, center)
 }
 
-function buildChunk(params: CaveGenerationParams): Cave {
-  const chunk = new Cave(params)
+export class PitGenerator extends RoomGeneratorBase {
+  constructor(params: DimensionGeneratingParams) {
+    const height = params.height ?? 9
+    const width = params.width ?? 15
+    super({ height, width, depth: params.depth })
+  }
 
-  const b = chunk.box
-  generateBasicRoom(chunk, b, false)
+  build(): Cave {
+    const chunk = this.getNewCave()
 
-  const innerWall = b.interior()
-  drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
-  drawRandomHole(chunk, innerWall, FEAT.CLOSED)
+    const b = chunk.box
+    generateBasicRoom(chunk, b, false)
 
-  const innerRoom = b.interior(2)
+    const innerWall = b.interior()
+    drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
+    drawRandomHole(chunk, innerWall, FEAT.CLOSED)
 
-  // TODO: monster logic
+    const innerRoom = b.interior(2)
 
-  return chunk
-}
+    // TODO: monster logic
 
-function getSize(): SizeParams {
-  return {
-    height: 9,
-    width: 15,
+    return chunk
   }
 }
