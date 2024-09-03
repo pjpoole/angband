@@ -1,5 +1,6 @@
 import { Loc } from '../../../core/loc'
 import { oneIn, randInt0 } from '../../../core/rand'
+import { debug } from '../../../utilities/diagnostic'
 import { getRandom } from '../../../utilities/iterator'
 import { isAlpha } from '../../../utilities/string'
 
@@ -459,11 +460,19 @@ export class VaultGenerator extends RoomGeneratorBase {
 }
 
 export function getRandomVault(depth: number, type: RoomName) {
-  return getRandom(VaultRegistry, (vault) => {
+  const vault = getRandom(VaultRegistry, (vault) => {
     return (
       vault.type === type &&
       vault.minDepth <= depth &&
       vault.maxDepth >= depth
     )
   })
+
+  if (vault != null) {
+    debug(`type: ${type}, depth: ${depth}, found: ${vault.name}`)
+  } else {
+    debug(`type: ${type}, depth: ${depth}, no vault found`)
+  }
+
+  return vault
 }

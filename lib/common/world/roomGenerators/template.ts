@@ -1,5 +1,6 @@
 import { loc, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
+import { debug } from '../../utilities/diagnostic'
 import { getRandom } from '../../utilities/iterator'
 import { asInteger } from '../../utilities/parsing/primitives'
 
@@ -230,7 +231,15 @@ function getRandomRoomTemplate(
   type: number,
   rating: number,
 ): RoomTemplate | undefined {
-  return getRandom(RoomTemplateRegistry, (template) => {
+  const template = getRandom(RoomTemplateRegistry, (template) => {
     return template.type === type && template.rating === rating
   })
+
+  if (template != null) {
+    debug(`type: ${type}, rating: ${rating}, found: ${template.name}`)
+  } else {
+    debug(`type: ${type}, rating: ${rating}, no template found`)
+  }
+
+  return template
 }
