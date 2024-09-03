@@ -23,8 +23,8 @@ function drawCave(roomName?: string, depth?: number) {
   run(cave)
 }
 
-function drawRoom(depth?: number) {
-  const cave = getRandomRoom(depth)
+function drawRoom(roomName?: string, depth?: number) {
+  const cave = getRandomRoom(roomName, depth)
   run(cave)
 }
 

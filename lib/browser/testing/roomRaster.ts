@@ -60,21 +60,21 @@ function getObjects(depth?: number): [Dungeon, Cave, Player] {
   return [dungeon, cave, player]
 }
 
-export function getRandomRoom(depth?: number) {
+export function getRandomRoom(roomName?: string, depth?: number) {
   const [dungeon, cave] = getObjects(depth)
 
   let success = false
   let tries = 0
   while (!success && tries < 10) {
     tries++
-    success = composite(cave)
+    success = composite(cave, roomName)
   }
 
   return cave
 }
 
-function composite(cave: Cave): boolean {
-  const chunk = buildRandomRoom()
+function composite(cave: Cave, roomName?: string): boolean {
+  const chunk = buildRandomRoom(roomName)
   if (chunk == null) return false
   const b = box(0, 0, chunk.width - 1, chunk.height - 1)
   cave.composite(chunk, b)

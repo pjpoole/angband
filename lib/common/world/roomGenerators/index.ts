@@ -29,8 +29,13 @@ import * as template from './template'
 
 // TODO: Take params, like depth
 // TODO: Debug log what params were used (in generator, probably)
-export function buildRandomRoom(): Cave | null {
-  const choice = randEl(ROOM)
+export function buildRandomRoom(roomName?: string): Cave | null {
+  let choice
+  if (roomName == null) {
+    choice = randEl(ROOM)
+  } else {
+    choice = findRoom(roomName)
+  }
   debug(`Using ${choice.name}...`)
   return choice.file.buildRoom()
 }
@@ -141,12 +146,18 @@ export function isValidRoomName(name: string): name is RoomName {
   return false
 }
 
-function findBuilder(name: string): RoomBuilder {
+function findRoom(name: string): RoomEntry {
   for (const room of ROOM) {
     if (room.name === name) {
-      return room.file.build
+      return room
     }
   }
+
+  throw new Error('invalid room name')
+}
+
+function findBuilder(name: string): RoomBuilder {
+  findRoom(name).file.build
 
   throw new Error('invalid room name')
 }
