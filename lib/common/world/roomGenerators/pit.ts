@@ -28,9 +28,9 @@ export function buildRoom(): Cave | null {
 
 export class PitGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
-    const height = params.height ?? 9
-    const width = params.width ?? 15
-    super({ height, width, depth: params.depth })
+    const height = params.height ?? 11
+    const width = params.width ?? 17
+    super({ height, width, depth: params.depth, padding: 0 })
   }
 
   build(): Cave {
@@ -39,11 +39,11 @@ export class PitGenerator extends RoomGeneratorBase {
     const b = chunk.box
     generateBasicRoom(chunk, b, false)
 
-    const innerWall = b.interior()
+    const innerWall = b.interior(2)
     drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
     drawRandomHole(chunk, innerWall, FEAT.CLOSED)
 
-    const innerRoom = b.interior(2)
+    const innerRoom = innerWall.interior()
 
     // TODO: monster logic
 

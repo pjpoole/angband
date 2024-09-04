@@ -26,10 +26,10 @@ export function buildRoom(): Cave | null {
 
 export class SimpleRoomGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
-    const height = params.height ?? 1 + randInt1(4) + randInt1(3) // 3-8
-    const width = params.width ?? 1 + randInt1(11) + randInt1(11) // 3-23
+    const height = params.height ?? 1 + randInt1(4) + randInt1(3) + 2 // 5-10
+    const width = params.width ?? 1 + randInt1(11) + randInt1(11) + 2 // 5-25
 
-    super({ height, width, depth: params.depth })
+    super({ height, width, depth: params.depth, padding: 0 })
   }
 
   build(): Cave {
@@ -43,10 +43,10 @@ export class SimpleRoomGenerator extends RoomGeneratorBase {
 
     if (oneIn(20)) {
       // sometimes make a pillar room.
-      makePillarRoom(chunk, b)
+      makePillarRoom(chunk, b.interior())
     } else if (oneIn(50)) {
       // sometimes make a ragged-edge room
-      makeRaggedRoom(chunk, b)
+      makeRaggedRoom(chunk, b.interior())
     }
 
     return chunk
@@ -119,6 +119,8 @@ function markNoConnection (chunk: Cave, p: Loc) {
 }
 
 // i.e., columns around the outside
+// TODO: May be rendering the side columns wrong; check
+// TODO: May be doing the offsets wrong; check
 function makeRaggedRoom(chunk: Cave, b: Box) {
   const xOffset = (b.right - b.left) % 2 === 0 ? 0 : randInt0(2)
   const yOffset = (b.bottom - b.top) % 2 === 0 ? 0 : randInt0(2)

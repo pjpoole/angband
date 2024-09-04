@@ -12,10 +12,29 @@ export function generateBasicRoom(
   b: Box,
   light: boolean,
 ): void {
-  const outerBox = b.exterior()
-  generateRoom(chunk, outerBox, light)
-  drawRectangle(chunk, outerBox, FEAT.GRANITE, SQUARE.WALL_OUTER)
-  drawFilledRectangle(chunk, b, FEAT.FLOOR, SQUARE.NONE)
+  const innerBox = b.interior()
+  generateRoom(chunk, b, light)
+  drawRectangle(chunk, b, FEAT.GRANITE, SQUARE.WALL_OUTER)
+  drawFilledRectangle(chunk, innerBox, FEAT.FLOOR, SQUARE.NONE)
+}
+
+// Same contents as generateBasicRoom, but interleaved
+// This ensures that the walls won't overlap the floors
+export function generateOverlapRooms(
+  chunk: Cave,
+  b1: Box,
+  b2: Box,
+  light: boolean,
+): void {
+  const innerA = b1.interior()
+  const innerB = b2.interior()
+
+  generateRoom(chunk, b1, light)
+  generateRoom(chunk, b2, light)
+  drawRectangle(chunk, b1, FEAT.GRANITE, SQUARE.WALL_OUTER)
+  drawRectangle(chunk, b2, FEAT.GRANITE, SQUARE.WALL_OUTER)
+  drawFilledRectangle(chunk, innerA, FEAT.FLOOR, SQUARE.NONE)
+  drawFilledRectangle(chunk, innerB, FEAT.FLOOR, SQUARE.NONE)
 }
 
 export function generateRoom(chunk: Cave, b: Box, light: boolean) {

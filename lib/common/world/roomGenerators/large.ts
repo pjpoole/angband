@@ -1,5 +1,6 @@
-import { Box, Loc } from '../../core/loc'
+import { Box, loc, Loc } from '../../core/loc'
 import { oneIn, randInt0, randInt1 } from '../../core/rand'
+import { debug } from '../../utilities/diagnostic'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -34,7 +35,7 @@ export function buildRoom(): Cave | null {
 
 export class LargeRoomGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
-    super(Object.assign({ height: 9, width: 23}, params))
+    super(Object.assign({ height: 11, width: 25, padding: 0 }, params))
   }
 
   build(): Cave {
@@ -47,11 +48,11 @@ export class LargeRoomGenerator extends RoomGeneratorBase {
 
     // inner room
     // Wall boundaries
-    const innerWall = b.interior(1)
+    const innerWall = b.interior(2)
     drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
 
     // Floor boundaries
-    const innerFloor = innerWall.interior(1)
+    const innerFloor = innerWall.interior()
 
     switch (randInt1(5)) {
       case 1:
@@ -84,6 +85,7 @@ function buildSimple(
   chunk: Cave,
   b: Box,
 ) {
+  debug('large simple room')
   drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
   // TODO: Monsters
 }
@@ -92,6 +94,7 @@ function buildNested(
   chunk: Cave,
   b: Box,
 ) {
+  debug('large nested room')
   drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
 
   const nested = b.center().box(3)
@@ -118,6 +121,7 @@ function buildPillars(
   chunk: Cave,
   b: Box,
 ) {
+  debug('large pillar room')
   const center = b.center()
 
   drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
@@ -153,6 +157,7 @@ function buildCheckerboard(
   chunk: Cave,
   b: Box,
 ) {
+  debug('large checkboard room')
   drawRandomHole(chunk, b.exterior(), FEAT.CLOSED)
 
   for (const pt of b) {
@@ -168,22 +173,27 @@ function buildQuad(
   chunk: Cave,
   b: Box,
 ) {
+  debug('large quad room')
   const center = b.center()
   drawPlus(chunk, b, FEAT.GRANITE, SQUARE.WALL_INNER)
 
+  const insideWall = b.exterior()
+  const { left, top, right, bottom } = insideWall
+  const { x, y } = center
+
   if (oneIn(2)) {
     const i = randInt1(10)
-    placeClosedDoor(chunk, center.tr(i * -1, -1))
-    placeClosedDoor(chunk, center.tr(i, -1))
-    placeClosedDoor(chunk, center.tr(i * -1, 1))
-    placeClosedDoor(chunk, center.tr(i, 1))
+    placeClosedDoor(chunk, loc(x - i, top))
+    placeClosedDoor(chunk, loc(x + i, top))
+    placeClosedDoor(chunk, loc(x - i, bottom))
+    placeClosedDoor(chunk, loc(x + i, bottom))
 
   } else {
     const i = randInt1(3)
-    placeClosedDoor(chunk, center.tr(-1, i))
-    placeClosedDoor(chunk, center.tr(-1, i * -1))
-    placeClosedDoor(chunk, center.tr(1, i))
-    placeClosedDoor(chunk, center.tr(1, i * -1))
+    placeClosedDoor(chunk, loc(left, y + i))
+    placeClosedDoor(chunk, loc(left, y - i))
+    placeClosedDoor(chunk, loc(right, y + i))
+    placeClosedDoor(chunk, loc(right, y - i))
   }
 
   // TODO: object

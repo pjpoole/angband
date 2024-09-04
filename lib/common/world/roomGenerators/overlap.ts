@@ -3,11 +3,8 @@ import { randInt1 } from '../../core/rand'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
-import { FEAT } from '../features'
-import { SQUARE } from '../square'
 
-import { drawRectangle, drawFilledRectangle } from './helpers/geometry'
-import { generateRoom } from './helpers/room'
+import { generateOverlapRooms } from './helpers/room'
 import { DimensionGeneratingParams, RoomGeneratorBase } from './RoomGenerator'
 
 export function build(
@@ -69,17 +66,7 @@ export class OverlapRoomGenerator extends RoomGeneratorBase {
 
     const light = chunk.depth <= randInt1(25)
 
-    const intRoomA = this.boxA.interior()
-    const intRoomB = this.boxB.interior()
-
-    // Same contents as generateBasicRoom, but interleaved
-    // This ensures that the walls won't overlap the floors
-    generateRoom(chunk, this.boxA, light)
-    generateRoom(chunk, this.boxB, light)
-    drawRectangle(chunk, this.boxA, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    drawRectangle(chunk, this.boxB, FEAT.GRANITE, SQUARE.WALL_OUTER)
-    drawFilledRectangle(chunk, intRoomA, FEAT.FLOOR, SQUARE.NONE)
-    drawFilledRectangle(chunk, intRoomB, FEAT.FLOOR, SQUARE.NONE)
+    generateOverlapRooms(chunk, this.boxA, this.boxB, light)
 
     return chunk
   }

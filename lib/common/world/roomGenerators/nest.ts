@@ -30,10 +30,10 @@ export class NestGenerator extends RoomGeneratorBase {
   constructor(params: DimensionGeneratingParams) {
     const sizeVary = randInt0(4)
 
-    const height = params.height ?? 9
-    const width = params.width ?? 11 + 2 * sizeVary
+    const height = params.height ?? 11
+    const width = params.width ?? 13 + 2 * sizeVary
 
-    super({ height, width, depth: params.depth })
+    super({ height, width, depth: params.depth, padding: 0 })
   }
 
   build(): Cave {
@@ -42,11 +42,11 @@ export class NestGenerator extends RoomGeneratorBase {
     const b = chunk.box
     generateBasicRoom(chunk, b, false)
 
-    const innerWall = b.interior()
+    const innerWall = b.interior(2)
     drawRectangle(chunk, innerWall, FEAT.GRANITE, SQUARE.WALL_INNER)
     drawRandomHole(chunk, innerWall, FEAT.CLOSED)
 
-    const innerRoom = b.interior(2)
+    const innerRoom = innerWall.interior()
     // TODO: Monster logic
 
     return chunk

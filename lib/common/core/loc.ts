@@ -66,7 +66,7 @@ export class Loc {
   box(height: number, width?: number): Box {
     width ??= height
     const l = this.x - Math.trunc(width / 2)
-    const t = this.y - Math.trunc(width / 2)
+    const t = this.y - Math.trunc(height / 2)
     const r = l + width - 1
     const b = t + height - 1
     return box(l, t, r, b)
