@@ -1,25 +1,28 @@
 import { Loc } from '../core/loc'
 import { Rectangle, stringRectangleToRaster } from '../utilities/rectangle'
 
+import { Cave } from '../world/cave'
 import { Tile } from '../world/tile'
-import { FEAT, FeatureRegistry } from '../world/features'
 import { Entity } from './Entity'
 
 export class GameMap {
-  private readonly width: number
-  private readonly height: number
-  private readonly tiles: Rectangle<Tile>
+  private readonly cave: Cave
   private readonly entities: Set<Entity> = new Set()
 
-  constructor(features: FEAT[][]) {
-    this.height = features.length
-    this.width = features[0].length
+  constructor(cave: Cave) {
+    this.cave = cave
+  }
 
-    this.tiles = new Rectangle(this.height, this.width, (pt) => {
-      const tile = new Tile(pt)
-      tile.feature = FeatureRegistry.get(features[pt.y][pt.x])
-      return tile
-    })
+  get height() {
+    return this.cave.height
+  }
+
+  get width() {
+    return this.cave.width
+  }
+
+  get tiles() {
+    return this.cave.tiles
   }
 
   addEntity(entity: Entity): boolean {
@@ -38,7 +41,7 @@ export class GameMap {
 
   draw(): string {
     const rect = new Rectangle(this.height, this.width, (pt) => {
-      return this.tiles.get(pt).glyph
+      return this.cave.tiles.get(pt).glyph
     })
 
     for (const entity of this.entities) {
@@ -54,7 +57,7 @@ export class GameMap {
     if (!this.isInbounds(pt)) {
       return undefined
     }
-    return this.tiles.get(pt)
+    return this.cave.tiles.get(pt)
   }
 
   isInbounds(pt: Loc): boolean {
