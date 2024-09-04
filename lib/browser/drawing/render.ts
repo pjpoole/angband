@@ -17,41 +17,88 @@ export function render(map: GameMap) {
 
   const player = getPlayer()
 
-  const renderBox = getRenderBox(player)
+  const viewport = box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+  const renderBox = getRenderBox(map, player)
 
-  const iteratorBox = renderBox.intersect(map.tiles.box)
-  const transform = iteratorBox.topLeft
+  const transform = renderBox.topLeft
 
-  function translate(pt: Loc) {
-    return pt.x - transform.x + (pt.y - transform.y) * NUM_COLS
+  function toMapCoords(pt: Loc): Loc { return pt.sum(transform) }
+  function toBasisCoords(pt: Loc): Loc { return pt.diff(transform) }
+
+  function toDOM(pt: Loc) {
+    return pt.x + pt.y * NUM_COLS
   }
 
-  for (const pt of iteratorBox) {
-    const tile = map.get(pt)
+  for (const pt of viewport) {
+    const tile = map.get(toMapCoords(pt))
+    const child = children[toDOM(pt)]
     // This is normal
     // TODO: better viewport functions
-    if (!tile) return
-    const idx = translate(pt)
-    const child = children[idx]
-    // TODO: Error handling
-    if (!child) return
-    renderTileTo(tile, child)
+    if (!tile) {
+      clearDiv(child)
+    } else {
+      renderTileToDiv(tile, child)
+    }
   }
 
-  if (player.pt && iteratorBox.contains(player.pt)) {
-    const idx = translate(player.pt)
+  if (player.pt && renderBox.contains(player.pt)) {
+    const idx = toDOM(toBasisCoords(player.pt))
     const child = children[idx]
     child.innerText = '@'
   }
 }
 
-function getRenderBox(player: Entity): Box {
-  return player.pt
+// TODO: Maybe make a separate mode that always centers the player
+function getRenderBox(map: GameMap, player: Entity): Box {
+  let left, right, top, bottom
+
+  const playerBox = player.pt
     ? player.pt.box(NUM_ROWS, NUM_COLS)
     : box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+
+  // if the map is too small, or the player is too close to the edge, cap the box
+  if (map.width < NUM_COLS) {
+    left = 0
+    right = NUM_COLS - 1
+  } else {
+    if (playerBox.left < 0) {
+      left = 0
+      right = playerBox.right + playerBox.left
+    } else if (playerBox.right > map.box.right) {
+      right = map.box.right
+      left = playerBox.left - (playerBox.right - map.box.right)
+    } else {
+      left = playerBox.left
+      right = playerBox.right
+    }
+  }
+
+  if (map.height < NUM_ROWS) {
+    top = 0
+    bottom = NUM_ROWS - 1
+  } else {
+    if (playerBox.top < 0) {
+      top = 0
+      bottom = playerBox.bottom + playerBox.top
+    } else if (playerBox.bottom > map.box.bottom) {
+      bottom = map.box.bottom
+      top = playerBox.top - (playerBox.bottom - map.box.bottom)
+    } else {
+      top = playerBox.top
+      bottom = playerBox.bottom
+    }
+  }
+
+  return box(left, top, right, bottom)
 }
 
-function renderTileTo(tile: Tile, div: HTMLElement) {
+function clearDiv(div: HTMLElement) {
+  div.innerText = ''
+  // TODO: better way to do this; maybe make divs in divs
+  div.classList.remove('solid-wall', 'inner-wall', 'outer-wall', 'perm-wall')
+}
+
+function renderTileToDiv(tile: Tile, div: HTMLElement) {
   div.innerText = tile.glyph
   tile.isWallSolid() ? div.classList.add('solid-wall') : div.classList.remove('solid-wall')
   tile.isWallInner() ? div.classList.add('inner-wall') : div.classList.remove('inner-wall')

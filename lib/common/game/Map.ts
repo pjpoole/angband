@@ -25,6 +25,10 @@ export class GameMap {
     return this.cave.tiles
   }
 
+  get box() {
+    return this.cave.tiles.box
+  }
+
   addEntity(entity: Entity): boolean {
     if (this.entities.has(entity)) return false
     if (entity.pt == null) return false
