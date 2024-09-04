@@ -1,5 +1,6 @@
-import { box, Loc } from '../../core/loc'
+import { Box, Loc } from '../../core/loc'
 import { randInt0, randInt1 } from '../../core/rand'
+import { debug } from '../../utilities/diagnostic'
 
 import { Cave } from '../cave'
 import { Dungeon } from '../dungeon'
@@ -20,15 +21,15 @@ export function build(
   return generator.draw(dungeon, cave, center)
 }
 
-interface CircularRoomGeneratorParams {
-  radius?: number
-  depth: number
-}
-
 export function buildRoom(): Cave | null {
   const depth = randInt1(100)
   const generator = new CircularRoomGenerator({ depth })
   return generator.build()
+}
+
+interface CircularRoomGeneratorParams {
+  radius?: number
+  depth: number
 }
 
 export class CircularRoomGenerator extends RoomGeneratorBase {
@@ -38,7 +39,7 @@ export class CircularRoomGenerator extends RoomGeneratorBase {
     const radius = params.radius ?? 2 + randInt1(2) + randInt1(3)
     const diameter = 2 * radius
 
-    super({ height: diameter, width: diameter, depth: params.depth })
+    super({ height: diameter + 10, width: diameter + 10, depth: params.depth, padding: 0 })
 
     this.radius = radius
   }
@@ -49,10 +50,11 @@ export class CircularRoomGenerator extends RoomGeneratorBase {
     const center = chunk.box.center()
 
     const light = chunk.depth <= randInt1(25)
-    fillCircle(chunk, center, this.radius + 1, 0, FEAT.FLOOR, SQUARE.NONE, light)
+    const circle = center.box(2 * (this.radius + 1) + 1)
+    fillCircle(chunk, circle, 0, FEAT.FLOOR, SQUARE.NONE, light)
 
-    const b = center.box(this.radius + 2)
-    setBorderingWalls(chunk, b)
+    const outer = circle.exterior()
+    setBorderingWalls(chunk, circle)
 
     // give large rooms an inner chamber
     if (this.radius - 4 > 0 && this.radius - 4 > randInt0(4)) {
@@ -69,46 +71,59 @@ export class CircularRoomGenerator extends RoomGeneratorBase {
   }
 }
 
-// TODO: this code is opaque; understand what it is doing
 // TODO: Take a Box argument
 function fillCircle(
   chunk: Cave,
-  center: Loc,
-  radius: number,
+  b: Box,
   border: number,
   feature: Feature | FEAT,
   flag: SQUARE,
   light: boolean
 ) {
-  let last = 0
+  const center = b.center()
+  const radius = b.radius
+
+  debug('circle room radius %d, border %d', radius, border)
+
+  let lastR = 0
   let r = radius
-  let c = center
-  let pythag = 0
+  let errorTerm = 0
   // Fill progressively larger circles
   for (let i = 0; i <= radius; i++) {
-    let b = border !== 0 && last > r ? border + 1 : border
+    // if there is a border and we just shrunk down in radius, bump the border
+    // size up by 1
+    let b = border !== 0 && lastR > r ? border + 1 : border
 
+    // twice the current radius, plus the border, plus the center
+    const length = 2 * (r + b) + 1
+    // offset outwards from the center with lines of decreasing width
     const boxes = [
-      box(c.x - r - b, c.y - i, c.x + r + b, c.y - i),
-      box(c.x - r - b, c.y + i, c.x + r + b, c.y + i),
-      box(c.x - i, c.y - r - b, c.x - i, c.y + r + b),
-      box(c.x + i, c.y - r - b, c.y + r + b, c.x + i),
+      center.trY(i).box(1, length),
+      center.trY(-i).box(1, length),
+      center.trX(i).box(length, 1),
+      center.trX(-i).box(length, 1),
     ]
 
     // fill center cross outwards
-    // maybe lots of redundant writes?
+    // lots of redundant writes
     for (const line of boxes) {
       generateRoomFeature(chunk, line, feature, flag, light)
     }
-    last++
+    lastR = r
 
-    if (i < radius) {
-      pythag -= 2 * i + 1
+    if (i < radius) { // only until the last iteration
+      // this is an error term for the length of the hypotenuse
+      // a^2 + b^2 = c^2 ==> c^2 - a^2 - b^2 = 0
+      // adding/subtracting repeated odd numbers is the same as calculating sums
+      // and differences of squares: 1, 4, 9, ... ==> 1, 1 + 3, 1 + 3 + 5, ...
+      errorTerm -= 2 * i + 1
       while (true) {
+        // if we decrease the radius by 1, will that increase the magnitude of
+        // the error term? if so, don't decrease the radius
         const adjustment = 2 * r - 1
-        if (Math.abs(pythag + adjustment) >= Math.abs(pythag)) break
+        if (Math.abs(errorTerm + adjustment) >= Math.abs(errorTerm)) break
         r--
-        pythag += adjustment
+        errorTerm += adjustment
       }
     }
   }

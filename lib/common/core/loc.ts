@@ -138,6 +138,13 @@ export class Box {
     return this.b - this.t + 1
   }
 
+  // largest circle that could fit inside
+  get radius() {
+    const diameter = Math.min(this.height, this.width)
+    // 1 => 0, 2 => 0, 3 => 1, 4 => 1, ...
+    return Math.ceil(diameter / 2) - 1
+  }
+
   get size() {
     return this.width * this.height
   }

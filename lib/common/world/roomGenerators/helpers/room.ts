@@ -1,4 +1,4 @@
-import { Box, Loc, loc } from '../../../core/loc'
+import { Box, Loc } from '../../../core/loc'
 import { Rectangle } from '../../../utilities/rectangle'
 
 import { Cave } from '../../cave'
@@ -62,12 +62,11 @@ export function generateRoomFeature(
 
 export function setBorderingWalls(chunk: Cave, b: Box) {
   const clipped = chunk.tiles.intersect(b)
-  const topLeft = loc(clipped.left, clipped.top)
+  const topLeft = clipped.topLeft
 
   const refToOffset = (p: Loc): Loc => p.diff(topLeft)
-  const offsetToRef = (p: Loc): Loc => p.sum(topLeft)
 
-  const walls = new Rectangle(b.height, b.width, true)
+  const walls = new Rectangle(b.height + 1, b.width + 1, false)
 
   chunk.tiles.forEach(clipped, (tile, pt) => {
     if (!tile.isFloor()) {
@@ -96,12 +95,11 @@ export function setBorderingWalls(chunk: Cave, b: Box) {
     }
   })
 
-  walls.forEach((val, pt) => {
+  walls.transform({ translate: topLeft }, (val, pt) => {
     if (val) {
-      const offset = offsetToRef(pt)
-      const tile = chunk.tiles.get(offset)
+      const tile = chunk.tiles.get(pt)
       assert(tile.isFloor() && tile.isRoom())
-      chunk.setMarkedGranite(offset, SQUARE.WALL_OUTER)
+      chunk.setMarkedGranite(pt, SQUARE.WALL_OUTER)
     }
   })
 }
