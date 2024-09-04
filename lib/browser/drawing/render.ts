@@ -1,4 +1,4 @@
-import { loc, box } from '../../common/core/loc'
+import { box, Loc } from '../../common/core/loc'
 
 import { GameMap } from '../../common/game/Map'
 import { Tile } from '../../common/world/tile'
@@ -14,28 +14,33 @@ export function render(map: GameMap) {
 
   const children = (gameElement.querySelectorAll('div.cell') as NodeListOf<HTMLDivElement>)
 
-  const renderBox = box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+  const player = getPlayer()
+
+  const renderBox = player.pt
+    ? player.pt.box(NUM_ROWS, NUM_COLS)
+    : box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
 
   const iteratorBox = renderBox.intersect(map.tiles.box)
+  const transform = iteratorBox.topLeft
+
+  function translate(pt: Loc) {
+    return pt.x - transform.x + (pt.y - transform.y) * NUM_COLS
+  }
 
   for (const pt of iteratorBox) {
     const tile = map.get(pt)
     // This is normal
     // TODO: better viewport functions
     if (!tile) return
-    const { x, y } = pt
-    const idx = x + y * NUM_COLS
+    const idx = translate(pt)
     const child = children[idx]
     // TODO: Error handling
     if (!child) return
     renderTileTo(tile, child)
   }
 
-  const player = getPlayer()
-
   if (player.pt && iteratorBox.contains(player.pt)) {
-    const { x, y } = player.pt
-    const idx = x + y * NUM_COLS
+    const idx = translate(player.pt)
     const child = children[idx]
     child.innerText = '@'
   }

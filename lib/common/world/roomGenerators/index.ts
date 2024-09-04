@@ -109,6 +109,7 @@ export function buildRoom(
       return false
     }
   } else {
+    // TODO: throws sometimes
     if (!dungeon.checkForUnreservedBlocks(bb)) {
       return false
     }
@@ -157,7 +158,5 @@ function findRoom(name: string): RoomEntry {
 }
 
 function findBuilder(name: string): RoomBuilder {
-  findRoom(name).file.build
-
-  throw new Error('invalid room name')
+  return findRoom(name).file.build
 }

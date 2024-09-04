@@ -7,11 +7,16 @@ import { initializeMap } from './game/init'
 import { loadGameObjects } from './game/loadData'
 import { drawCave, drawRoom } from './testing/testRooms'
 
-
 // @ts-ignore
 window.drawCave = drawCave
 // @ts-ignore
 window.drawRoom = drawRoom
+
+window.assert = (condition, message) => {
+  if (!condition) {
+    throw new Error(message || 'Assertion failed')
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   drawCells()
