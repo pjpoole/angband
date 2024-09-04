@@ -7,6 +7,10 @@ import { DUN } from '../../common/world/dungeonTypes'
 import { FEAT } from '../../common/world/features'
 import { SQUARE } from '../../common/world/square'
 
+import {
+  drawRectangle
+} from '../../common/world/roomGenerators/helpers/geometry'
+
 export function getObjects(depth?: number): [Dungeon, Cave, Player] {
   const player = buildPlayer()
   player.depth = depth ?? 50
@@ -20,6 +24,8 @@ export function getObjects(depth?: number): [Dungeon, Cave, Player] {
     fill: FEAT.GRANITE,
     flag: SQUARE.NONE,
   })
+
+  drawRectangle(cave, cave.box, FEAT.PERM, SQUARE.NONE, true)
 
   dungeon.blockHeight = dungeon.profile.blockSize
   dungeon.blockWidth = dungeon.profile.blockSize
