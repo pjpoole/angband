@@ -109,7 +109,7 @@ export class Cave {
     this.featureCount[current.feature.code]--
     this.featureCount[tile.feature.code]++
 
-    this.tiles.set(pt, tile)
+    this.tiles.get(pt).copy(tile)
   }
 
   // this should be the only code setting features

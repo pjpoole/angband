@@ -1,10 +1,11 @@
-import { box, Loc } from '../../common/core/loc'
+import { Box, box, Loc } from '../../common/core/loc'
 
 import { GameMap } from '../../common/game/Map'
 import { Tile } from '../../common/world/tile'
 
 import { getPlayer } from '../game/gameData'
 import { NUM_COLS, NUM_ROWS } from './init'
+import { Entity } from '../../common/game/Entity'
 
 export function render(map: GameMap) {
   // @ts-ignore
@@ -16,9 +17,7 @@ export function render(map: GameMap) {
 
   const player = getPlayer()
 
-  const renderBox = player.pt
-    ? player.pt.box(NUM_ROWS, NUM_COLS)
-    : box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+  const renderBox = getRenderBox(player)
 
   const iteratorBox = renderBox.intersect(map.tiles.box)
   const transform = iteratorBox.topLeft
@@ -46,10 +45,16 @@ export function render(map: GameMap) {
   }
 }
 
+function getRenderBox(player: Entity): Box {
+  return player.pt
+    ? player.pt.box(NUM_ROWS, NUM_COLS)
+    : box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+}
+
 function renderTileTo(tile: Tile, div: HTMLElement) {
   div.innerText = tile.glyph
-  tile.isWallOuter() ? div.classList.add('outer-wall') : div.classList.remove('outer-wall')
-  tile.isWallInner() ? div.classList.add('inner-wall') : div.classList.remove('inner-wall')
-  tile.isPermanent() ? div.classList.add('perm-wall') : div.classList.remove('perm-wall')
   tile.isWallSolid() ? div.classList.add('solid-wall') : div.classList.remove('solid-wall')
+  tile.isWallInner() ? div.classList.add('inner-wall') : div.classList.remove('inner-wall')
+  tile.isWallOuter() ? div.classList.add('outer-wall') : div.classList.remove('outer-wall')
+  tile.isPermanent() ? div.classList.add('perm-wall') : div.classList.remove('perm-wall')
 }

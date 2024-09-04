@@ -27,6 +27,17 @@ export class Tile {
     if (flag) this.turnOn(flag)
   }
 
+  copy(tile: Tile) {
+    this.flags.copy(tile.flags)
+    this.feature = tile.feature
+    this.light = tile.light
+    this.monster = tile.monster
+    this.objects.length = tile.objects.length
+    for (let i = 0; i < tile.objects.length; i++) {
+      this.objects[i] = tile.objects[i]
+    }
+  }
+
   turnOn(flag: SQUARE) {
     this.flags.turnOn(flag)
   }

@@ -25,7 +25,17 @@ export function getCave(roomName?: string, depth?: number): Cave {
     const room = pickRoom(roomName)
     console.log('trying room...', room)
     tries++
-    success = buildRoom(dungeon, cave, bpt, room, false)
+    try {
+      success = buildRoom(dungeon, cave, bpt, room, false)
+    } catch (e) {
+      console.log(e)
+      if ((e as Error).cause) {
+        console.log((e as Error).cause)
+      } else {
+        console.log('no cause')
+      }
+      success = false
+    }
   }
 
   return cave

@@ -10,16 +10,7 @@ import { getPlayer, setMap } from './gameData'
 import { getCave } from '../testing/roomRaster'
 
 export function initializeMap(cave?: Cave) {
-  try {
-    cave ??= getCave()
-  } catch (e) {
-    if ((e as Error).cause) {
-      console.log((e as Error).cause)
-    } else {
-      console.log('no cause')
-    }
-    throw e
-  }
+  cave ??= getCave()
   const map = new GameMap(cave)
   setMap(map)
   const player = getPlayer()

@@ -47,6 +47,7 @@ export class Dungeon {
   // generation
   checkForUnreservedBlocks(b: Box): boolean {
     assertInitialized(this.roomMap)
+    if (!this.roomMap.surrounds(b)) return false
     return this.roomMap.every(b, (cell) => !cell)
   }
 

@@ -5,6 +5,12 @@ export class Flags {
     this.flags = new Array(size)
   }
 
+  copy(flags: Flags) {
+    for (let i = 0; i < flags.flags.length; i++) {
+      this.flags[i] = flags.flags[i]
+    }
+  }
+
   has(flag: number): boolean {
     return this.flags[flag] === true
   }

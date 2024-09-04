@@ -186,17 +186,34 @@ export class Rectangle<T> {
   }
 
   assertContains(p: Loc) {
-    if (!this.contains(p)) throw new Error(
-      'invalid coordinates',
-      { cause: { x: p.x, y: p.y } }
-    )
+    if (!this.contains(p)) {
+      const { l, t, r, b } = this.box
+      throw new Error(
+        'invalid coordinates',
+        {
+          cause: {
+            point: { x: p.x, y: p.y },
+            self: { l, t, r, b }
+          }
+        }
+      )
+    }
   }
 
-  assertSurrounds(b: Box) {
-    if (!this.surrounds(b)) throw new Error(
-      'invalid coordinates',
-      { cause: { x1: b.left, y1: b.top, x2: b.right, y2: b.bottom } }
-    )
+  assertSurrounds(bx: Box) {
+    if (!this.surrounds(bx)) {
+      const { left, top, right, bottom } = bx
+      const { l, t, r, b } = this.box
+      throw new Error(
+        'invalid coordinates',
+        {
+          cause: {
+            box: { l: left, t: top, r: right, b: bottom },
+            self: { l, t, r, b },
+          }
+        }
+      )
+    }
   }
 
   intersect(b: Box): Box {
