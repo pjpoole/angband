@@ -59,6 +59,8 @@ export class Dungeon {
     }
   }
 
+  // TODO: Make deterministic by enumerating all blocks of size N x M and
+  //       choosing one at random
   findSpace(b: Box): Loc | undefined {
     const blocksHigh = 1 + Math.trunc((b.height - 1) / this.blockHeight)
     const blocksWide = 1 + Math.trunc((b.width - 1) / this.blockWidth)
