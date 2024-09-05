@@ -7,6 +7,9 @@ import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
 import { Tile } from './tile'
 
+// are we currently building the dungeon?
+let characterDungeon = false
+
 interface CaveParams {
   height: number
   width: number
@@ -144,10 +147,16 @@ export class Cave {
     if (feature.isBright()) {
       tile.turnOn(SQUARE.GLOW)
     }
-    // TODO: if character_dungeon (what's the alternative?)
-    // TODO: traps
-    // TODO: square_note_spot
-    // TODO: square_light_spot
+
+    if (characterDungeon) {
+      // TODO: traps
+      // TODO: square_note_spot
+      // TODO: square_light_spot
+    } else {
+      tile.turnOff(SQUARE.WALL_INNER)
+      tile.turnOff(SQUARE.WALL_OUTER)
+      tile.turnOff(SQUARE.WALL_SOLID)
+    }
   }
 
   hasLOS(p1: Loc, p2: Loc): boolean {
