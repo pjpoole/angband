@@ -18,8 +18,8 @@ export function getObjects(depth?: number): [Dungeon, Cave, Player] {
   const dungeon = buildDungeon(player)
 
   const cave = new Cave({
-    height: 50,
-    width: 100,
+    height: 100,
+    width: 200,
     depth: player.depth,
     fill: FEAT.GRANITE,
     flag: SQUARE.NONE,

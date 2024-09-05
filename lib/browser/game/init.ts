@@ -19,7 +19,6 @@ export function initializeMap(cave?: Cave) {
   render(map)
 }
 
-
 function getOpenPosition(cave: Cave): Loc {
   const openPoints: Loc[] = []
   cave.tiles.forEach((tile, pt, newRow) => {

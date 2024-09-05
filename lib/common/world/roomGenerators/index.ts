@@ -110,9 +110,7 @@ export function buildRoom(
     }
   } else {
     // TODO: throws sometimes
-    if (!dungeon.checkForUnreservedBlocks(bb)) {
-      return false
-    }
+    if (!dungeon.checkForUnreservedBlocks(bb)) return false
 
     // actual point, not block point
     const center = loc(
