@@ -1,6 +1,6 @@
 import { Box, Loc } from '../core/loc'
 
-import { getNeighbors } from '../utilities/directions'
+import { getAllNeighbors } from '../utilities/directions'
 import { Rectangle } from '../utilities/rectangle'
 
 import { FEAT, Feature, FeatureRegistry } from './features'
@@ -164,7 +164,7 @@ export class Cave {
   countNeighbors(pt: Loc, countSelf: boolean, fn: (tile: Tile, pt: Loc, chunk: this) => boolean) {
     let count = 0
 
-    for (const neighbor of getNeighbors(pt, countSelf)) {
+    for (const neighbor of getAllNeighbors(pt, countSelf)) {
       if (!this.isInbounds(neighbor)) continue
       const tile = this.tiles.get(neighbor)
       if (!fn(tile, neighbor, this)) continue

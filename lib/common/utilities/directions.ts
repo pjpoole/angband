@@ -25,7 +25,13 @@ export function dirToCoord(direction: DIR): Loc {
   return loc(...NP_XY[direction])
 }
 
-export function* getNeighbors(pt: Loc, includeSelf?: boolean) {
+export function* getNeighbors(pt: Loc) {
+  for (let i = 0; i < 4; i++) {
+    yield pt.sum(dirToCoord(NP_KEYS[i]))
+  }
+}
+
+export function* getAllNeighbors(pt: Loc, includeSelf?: boolean) {
   const limit = includeSelf ? 9 : 8
   for (let i = 0; i < limit; i++) {
     yield pt.sum(dirToCoord(NP_KEYS[i]))
