@@ -6,7 +6,7 @@ import { FEAT, Feature, FeatureRegistry } from './features'
 import { SQUARE } from './square'
 
 export class Tile {
-  private readonly pt: Loc
+  readonly pt: Loc
   feature: Feature
 
   light: number = 0

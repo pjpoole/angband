@@ -24,6 +24,8 @@ export class Cave {
   readonly width: number
   readonly depth: number
 
+  readonly fill?: Feature
+
   readonly tiles: Rectangle<Tile>
 
   private readonly featureCount: FeatureCount
@@ -35,12 +37,12 @@ export class Cave {
 
     this.featureCount = this.initFeatureCount()
 
-    const fill: Feature | undefined = params.fill !== null && typeof params.fill === 'number'
+    this.fill = params.fill !== null && typeof params.fill === 'number'
       ? FeatureRegistry.get(params.fill)
       : params.fill
 
     this.tiles = new Rectangle(this.height, this.width, (pt: Loc): Tile => {
-      const tile = new Tile(pt, fill, params.flag)
+      const tile = new Tile(pt, this.fill, params.flag)
       this.featureCount[tile.feature.code] += 1
       return tile
     })
@@ -96,6 +98,25 @@ export class Cave {
       if (tile.is(FEAT.NONE)) return
       this.copyTile(tile, pt)
     })
+  }
+
+  static from(cave: Cave): Cave {
+    return new Cave({
+      height: cave.height,
+      width: cave.width,
+      depth: cave.depth,
+      fill: cave.fill,
+    })
+  }
+
+  static copy(cave: Cave): Cave {
+    const copy = Cave.from(cave)
+
+    cave.tiles.forEach((tile, pt) => {
+      copy.copyTile(tile, pt)
+    })
+
+    return copy
   }
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {

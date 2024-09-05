@@ -1,5 +1,5 @@
 export const NUM_COLS = 80
-export const NUM_ROWS = 24
+export const NUM_ROWS = 40
 
 export function drawCells() {
   const gameNode = document.getElementById('game')

@@ -26,7 +26,7 @@
         @property --num-rows {
           syntax: "<integer>";
           inherits: true;
-          initial-value: 24;
+          initial-value: 40;
         }
 
         body {
@@ -75,6 +75,10 @@
 
         .cell.solid-wall {
           color: green;
+        }
+
+        .cell.editing {
+          border: 1px solid green;
         }
     </style>
     <script src="/static/app.js"></script>

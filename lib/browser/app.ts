@@ -5,10 +5,12 @@ import { drawCells } from './drawing/init'
 import { setPlayer } from './game/gameData'
 import { initializeMap } from './game/init'
 import { loadGameObjects } from './game/loadData'
-import { drawCave, drawRoom } from './testing/testRooms'
+import { drawCave, drawCaveLive, drawRoom } from './testing/testRooms'
 
 // @ts-ignore
 window.drawCave = drawCave
+// @ts-ignore
+window.drawCaveLive = drawCaveLive
 // @ts-ignore
 window.drawRoom = drawRoom
 

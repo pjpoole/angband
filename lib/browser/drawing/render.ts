@@ -1,5 +1,6 @@
 import { Box, box, Loc } from '../../common/core/loc'
 
+import { Cave } from '../../common/world/cave'
 import { GameMap } from '../../common/game/Map'
 import { Tile } from '../../common/world/tile'
 
@@ -7,30 +8,65 @@ import { getPlayer } from '../game/gameData'
 import { NUM_COLS, NUM_ROWS } from './init'
 import { Entity } from '../../common/game/Entity'
 
+export const RENDER_BOX = box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+
 export function render(map: GameMap) {
   // @ts-ignore
   window.gamemap = map
-  const gameElement = document.getElementById('game')
-  if (!gameElement) throw new Error('missing root game element')
-
-  const children = (gameElement.querySelectorAll('div.cell') as NodeListOf<HTMLDivElement>)
 
   const player = getPlayer()
 
-  const viewport = box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
-  const renderBox = getRenderBox(map, player)
+  renderMapToViewport(map, player)
+  renderPlayer(map, player)
+}
 
+export function renderBare(map: Cave | GameMap) {
+  renderMapToViewport(map)
+}
+
+export function renderChange(cave: Cave | GameMap, tile: Tile): boolean {
+  return renderTileToViewport(cave, undefined, tile)
+}
+
+function getGameView(): NodeListOf<HTMLDivElement> {
+  const gameElement = document.getElementById('game')
+  if (!gameElement) throw new Error('missing root game element')
+  return (gameElement.querySelectorAll('div.cell') as NodeListOf<HTMLDivElement>)
+}
+
+function renderTileToViewport(map: Cave | GameMap, player: Entity | undefined, tile: Tile): boolean {
+  if (!map.isInbounds(tile.pt)) return false
+
+  const children = getGameView()
+
+  const renderBox = getRenderBox(map, player)
   const transform = renderBox.topLeft
 
-  function toMapCoords(pt: Loc): Loc { return pt.sum(transform) }
-  function toBasisCoords(pt: Loc): Loc { return pt.diff(transform) }
+  const toBasisCoords = basisCoordTransformer(transform)
+  const basisCoords = toBasisCoords(tile.pt)
+  if (!renderBox.contains(basisCoords)) return false
 
-  function toDOM(pt: Loc) {
-    return pt.x + pt.y * NUM_COLS
+  for (let i = 0; i < children.length; i++) {
+    children[i].classList.remove('editing')
   }
 
-  for (const pt of viewport) {
-    const tile = map.get(toMapCoords(pt))
+  const child = children[toDOM(basisCoords)]
+  child.classList.add('editing')
+
+  renderTileToDiv(tile, child)
+  return true
+}
+
+function renderMapToViewport(map: Cave | GameMap, player?: Entity) {
+  const children = getGameView()
+
+  const renderBox = getRenderBox(map, player)
+  const transform = renderBox.topLeft
+
+  const toMapCoords = mapCoordTransformer(transform)
+
+  for (const pt of RENDER_BOX) {
+    const tile = map.isInbounds(pt) ? map.get(toMapCoords(pt)) : null
     const child = children[toDOM(pt)]
     // This is normal
     // TODO: better viewport functions
@@ -40,6 +76,15 @@ export function render(map: GameMap) {
       renderTileToDiv(tile, child)
     }
   }
+}
+
+function renderPlayer(map: GameMap, player: Entity) {
+  const children = getGameView()
+
+  const renderBox = getRenderBox(map, player)
+  const transform = renderBox.topLeft
+
+  const toBasisCoords = basisCoordTransformer(transform)
 
   if (player.pt && renderBox.contains(player.pt)) {
     const idx = toDOM(toBasisCoords(player.pt))
@@ -48,13 +93,31 @@ export function render(map: GameMap) {
   }
 }
 
+type CoordTransformer = (pt: Loc) => Loc
+
+function mapCoordTransformer(transform: Loc): CoordTransformer {
+  return function (pt: Loc): Loc {
+    return pt.sum(transform)
+  }
+}
+
+function basisCoordTransformer(transform: Loc): CoordTransformer {
+  return function (pt: Loc): Loc {
+    return pt.diff(transform)
+  }
+}
+
+function toDOM(pt: Loc): number {
+  return pt.x + pt.y * NUM_COLS
+}
+
 // TODO: Maybe make a separate mode that always centers the player
-function getRenderBox(map: GameMap, player: Entity): Box {
+function getRenderBox(map: Cave | GameMap, player?: Entity): Box {
   let left, right, top, bottom
 
-  const playerBox = player.pt
+  const playerBox = player && player.pt
     ? player.pt.box(NUM_ROWS, NUM_COLS)
-    : box(0, 0, NUM_COLS - 1, NUM_ROWS - 1)
+    : RENDER_BOX
 
   // if the map is too small, or the player is too close to the edge, cap the box
   if (map.width < NUM_COLS) {
