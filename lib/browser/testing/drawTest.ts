@@ -44,7 +44,7 @@ export function withLiveUpdate<T>(fn: (...args: any) => T): T {
   }
 
   Tile.prototype.turnOff = function turnOff(flag: SQUARE){
-    oldTurnOn.call(this, flag)
+    oldTurnOff.call(this, flag)
     enqueueFrame({ op: 'turnOff', pt: this.pt, flag })
   }
 
