@@ -100,7 +100,7 @@ export class Cave {
 
   setMarkedGranite(pt: Loc, flag?: SQUARE) {
     const tile = this.tiles.get(pt)
-    tile.feature = FeatureRegistry.get(FEAT.GRANITE)
+    this.setFeature(tile, FEAT.GRANITE)
     if (flag) tile.turnOn(flag)
   }
 
